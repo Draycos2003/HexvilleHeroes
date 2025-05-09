@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class playerController : MonoBehaviour
+public class playerController : MonoBehaviour, IDamage
 {
     [SerializeField] CharacterController controller;
     [SerializeField] LayerMask ignoreLayer;
@@ -14,6 +14,9 @@ public class playerController : MonoBehaviour
 
     bool isSprinting;
     int jumpCount;
+
+    [SerializeField] int HP;
+    int HPOrig;
 
     [SerializeField] int speed;
     [SerializeField] int sprintMod;
@@ -31,7 +34,7 @@ public class playerController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        HPOrig = HP;
     }
 
     // Update is called once per frame
@@ -105,6 +108,18 @@ public class playerController : MonoBehaviour
             {
                 dmg.TakeDamage(shootDamage);
             }
+        }
+    }
+
+    public void TakeDamage(int amount)
+    {
+        HP -= amount;
+
+        // check for death
+
+        if (HP <= 0)
+        {
+            gamemanager.instance.youLose(); 
         }
     }
 }
