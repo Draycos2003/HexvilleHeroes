@@ -32,7 +32,7 @@ public class cameraController : MonoBehaviour
         rotX = Mathf.Clamp(rotX, lockVertMin, lockVertMax);
 
         // Rotate the Camera on X Axis to look up and down
-        transform.localRotation = Quaternion.Euler(rotX, 0, 0);
+        //transform.localRotation = Quaternion.Euler(rotX, 0, 0);
 
         // Rotate the Player on Y Axis to look left and right
         transform.parent.Rotate(Vector3.up * mouseX);
