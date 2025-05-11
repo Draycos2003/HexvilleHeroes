@@ -11981,6 +11981,7 @@ GameObject:
   - component: {fileID: 1768209413366259805}
   - component: {fileID: 1768209413366259807}
   - component: {fileID: 1768209413366259811}
+  - component: {fileID: 1768209413366259812}
   - component: {fileID: 1768209413366259806}
   - component: {fileID: 1768209413366259810}
   - component: {fileID: 1768209413366259809}
@@ -12508,6 +12509,24 @@ MonoBehaviour:
   trail: {fileID: 0}
   projectile: {fileID: 0}
   Distance: 200
+--- !u!114 &1768209413366259812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1423737520562305767}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60e2c037ed6b84142a8069a5b8ea5e1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 2
+  body: {fileID: 0}
+  damageAmount: 0
+  damageRate: 0
+  speed: 0
+  destroyTime: 0
 --- !u!4 &1841143619901626656
 Transform:
   m_ObjectHideFlags: 0
