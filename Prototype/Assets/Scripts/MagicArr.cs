@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class MagicArr : MonoBehaviour
 {
@@ -8,9 +9,22 @@ public class MagicArr : MonoBehaviour
         //Compares if the object is tagged "Player"
         if (other.CompareTag("Player"))
         {
-            //If the object is tagged "Player" exicute the RandomMagic function
+            //Exicuting RandomMagic() if the object is tagged "Player"
+            //This is our immediate cast that will happen when the enemy is close enough
             RandomMagic();
+            //The start of a coroutine that makes the attacker randomly cast a spell after 2 seconds.
+            StartCoroutine(DelaySpell(2f));
+
         }
+    }
+    //IEnumerator that is used to control the speed that RandomMagic() is cast in a row
+    IEnumerator DelaySpell(float spellTime)
+    {
+        //defining spellTime
+        spellTime = 2f;
+        //Wait for the spellTime before using RandomMagic() again.
+        yield return new WaitForSeconds(spellTime);
+        RandomMagic();
     }
     void RandomMagic()
     {
