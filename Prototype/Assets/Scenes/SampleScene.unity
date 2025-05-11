@@ -1079,13 +1079,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a916b528e6f2244ba6ff1ede11ee90f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  model: {fileID: 217002092}
   HP: 5
   faceTargetSpeed: 0
+  target: {fileID: 0}
+  model: {fileID: 217002092}
   shootPos: {fileID: 0}
   bullet: {fileID: 0}
   shootRate: 0
-  target: {fileID: 0}
 --- !u!1 &220133806 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 26d8f0830b959af49902105ae0374258, type: 3}
@@ -8147,13 +8147,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a916b528e6f2244ba6ff1ede11ee90f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  model: {fileID: 1651777868}
   HP: 2
   faceTargetSpeed: 0
+  target: {fileID: 0}
+  model: {fileID: 1651777868}
   shootPos: {fileID: 0}
   bullet: {fileID: 0}
   shootRate: 0
-  target: {fileID: 0}
 --- !u!4 &1657175342 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1094558088158263147, guid: 0b6aec1404a63bc4e82bbc16c04c9aab, type: 3}
@@ -8373,13 +8373,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a916b528e6f2244ba6ff1ede11ee90f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  model: {fileID: 1677226588}
   HP: 7
   faceTargetSpeed: 0
+  target: {fileID: 0}
+  model: {fileID: 1677226588}
   shootPos: {fileID: 0}
   bullet: {fileID: 0}
   shootRate: 0
-  target: {fileID: 0}
 --- !u!1001 &1686292895
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11980,6 +11980,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1768209413366259805}
   - component: {fileID: 1768209413366259807}
+  - component: {fileID: 1768209413366259811}
   - component: {fileID: 1768209413366259806}
   - component: {fileID: 1768209413366259810}
   - component: {fileID: 1768209413366259809}
@@ -12400,13 +12401,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a916b528e6f2244ba6ff1ede11ee90f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  model: {fileID: 0}
   HP: 5
   faceTargetSpeed: 10
-  shootPos: {fileID: 0}
+  target: {fileID: 543450653627254527}
+  model: {fileID: 0}
+  shootPos: {fileID: 543450653627254527}
   bullet: {fileID: 0}
   shootRate: 5
-  target: {fileID: 543450653627254527}
 --- !u!195 &1768209413366259807
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -12422,7 +12423,7 @@ NavMeshAgent:
   avoidancePriority: 50
   m_AngularSpeed: 120
   m_StoppingDistance: 8
-  m_AutoTraverseOffMeshLink: 1
+  m_AutoTraverseOffMeshLink: 0
   m_AutoBraking: 1
   m_AutoRepath: 0
   m_Height: 2
@@ -12487,6 +12488,26 @@ MonoBehaviour:
   navMesh: {fileID: 1768209413366259807}
   animate: {fileID: 1768209413366259808}
   pathUpdateDely: 0.2
+--- !u!114 &1768209413366259811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1423737520562305767}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 677013c4dbbfdd341be60fe19868c184, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shootPoint: {fileID: 333218750}
+  gunPoint: {fileID: 4517348484565954218}
+  layer:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  trail: {fileID: 0}
+  projectile: {fileID: 0}
+  Distance: 200
 --- !u!4 &1841143619901626656
 Transform:
   m_ObjectHideFlags: 0
@@ -18057,13 +18078,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a916b528e6f2244ba6ff1ede11ee90f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  model: {fileID: 766240109866553850}
   HP: 2147483647
   faceTargetSpeed: 0
+  target: {fileID: 0}
+  model: {fileID: 766240109866553850}
   shootPos: {fileID: 0}
   bullet: {fileID: 0}
   shootRate: 0
-  target: {fileID: 0}
 --- !u!23 &7193613643812150710
 MeshRenderer:
   m_ObjectHideFlags: 0
