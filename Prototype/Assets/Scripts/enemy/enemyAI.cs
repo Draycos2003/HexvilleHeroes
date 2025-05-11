@@ -1,11 +1,10 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.AI;
-using System.Diagnostics.CodeAnalysis;
 
 public class enemyAI : MonoBehaviour, IDamage
 {
-//  -- enemy qualities
+    //  -- enemy qualities
     [SerializeField] int HP;
     [SerializeField] float faceTargetSpeed;
     private float updatePathDeadline;
@@ -14,7 +13,7 @@ public class enemyAI : MonoBehaviour, IDamage
     [SerializeField] Renderer model;
 
 
-//  -- shooting fields
+    //  -- shooting fields
     [SerializeField] Transform shootPos;
     [SerializeField] GameObject bullet;
     [SerializeField] float shootRate;
@@ -33,18 +32,18 @@ public class enemyAI : MonoBehaviour, IDamage
     {
         colorOrig = model.material.color; // Starter color
         gamemanager.instance.updateGameGoal(1); // total enemy count
-        shootDistance = references.navMesh.stoppingDistance; 
+        shootDistance = references.navMesh.stoppingDistance;
     }
 
     // Update is called once per frame
     void Update()
     {
-        shootTimer += Time.deltaTime;
+        
 
         if (target != null)
         {
 //          -- in range is true if the outcome is less or equal to stopping distance
-            inRange = Vector3.Distance(transform.position, target.position) <= shootDistance; 
+            inRange = Vector3.Distance(transform.position, target.position) <= shootDistance;
 
             if (inRange)
             {
@@ -55,14 +54,6 @@ public class enemyAI : MonoBehaviour, IDamage
             {
                 UpdatePath();
             }
-            
-
-//          -- Possibly not needed anymore not sure yet. 
-            //if (shootTimer >= shootRate)
-            //{
-            //    shoot();
-            //}
-
 
 //          -- Faces target if still in range
             if (references.navMesh.remainingDistance < references.navMesh.stoppingDistance)
@@ -70,15 +61,15 @@ public class enemyAI : MonoBehaviour, IDamage
                 faceTarget();
             }
         }
-       if(!inRange) 
-        references.animate.SetFloat("speed", references.navMesh.desiredVelocity.sqrMagnitude);
+        if (!inRange)
+            references.animate.SetFloat("speed", references.navMesh.desiredVelocity.sqrMagnitude);
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            // playerInRange = true;
+            inRange = true;
         }
     }
 
@@ -86,7 +77,7 @@ public class enemyAI : MonoBehaviour, IDamage
     {
         if (other.CompareTag("Player"))
         {
-            //playerInRange = false;
+            inRange = false;
         }
     }
 
@@ -94,11 +85,13 @@ public class enemyAI : MonoBehaviour, IDamage
     {
         HP -= Amount;
 
-        if (HP <= 0) {
+        if (HP <= 0)
+        {
             Destroy(gameObject);
             gamemanager.instance.updateGameGoal(-1);
 
-        } else 
+        }
+        else
         {
             StartCoroutine(flashRed());
         }
@@ -115,8 +108,9 @@ public class enemyAI : MonoBehaviour, IDamage
     {
 //      --  Creates a smoother rotation by using Slerp.
 //      -- I use Slerp instead of lerp because i don't know what type of rotation the character could make it could be big but if not, it could be juddery using lerp so be safe with Slerp.
-        Vector3 lookPos = target.position - transform.position; 
-        lookPos.y = 0; 
+
+        Vector3 lookPos = target.position - transform.position;
+        lookPos.y = 0;
         Quaternion rotation = Quaternion.LookRotation(lookPos);
         transform.rotation = Quaternion.Slerp(transform.rotation, rotation, faceTargetSpeed * Time.deltaTime);
 
@@ -133,11 +127,12 @@ public class enemyAI : MonoBehaviour, IDamage
     private void UpdatePath()
     {
 //      -- Updates the Path every 0.2 seconds instead of every frame like navMesh.SetDestination(target.postion)
-        if(Time.time >= updatePathDeadline)
+        if (Time.time >= updatePathDeadline)
         {
             Debug.Log("Updating Path");
             updatePathDeadline = Time.time + references.pathUpdateDely;
             references.navMesh.SetDestination(target.position);
         }
     }
+
 }
