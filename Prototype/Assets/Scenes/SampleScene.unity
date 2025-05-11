@@ -11980,8 +11980,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1768209413366259805}
   - component: {fileID: 1768209413366259807}
-  - component: {fileID: 1768209413366259811}
-  - component: {fileID: 1768209413366259812}
   - component: {fileID: 1768209413366259806}
   - component: {fileID: 1768209413366259810}
   - component: {fileID: 1768209413366259809}
@@ -12406,9 +12404,9 @@ MonoBehaviour:
   faceTargetSpeed: 10
   target: {fileID: 543450653627254527}
   model: {fileID: 0}
-  shootPos: {fileID: 543450653627254527}
-  bullet: {fileID: 0}
-  shootRate: 5
+  shootPos: {fileID: 333218750}
+  bullet: {fileID: 2871579447102847620, guid: 6cca30d082b92a447acd68472f7e8a07, type: 3}
+  shootRate: 1
 --- !u!195 &1768209413366259807
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -12469,7 +12467,7 @@ SphereCollider:
     m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
-  m_ProvidesContacts: 0
+  m_ProvidesContacts: 1
   m_Enabled: 1
   serializedVersion: 3
   m_Radius: 10
@@ -12489,44 +12487,6 @@ MonoBehaviour:
   navMesh: {fileID: 1768209413366259807}
   animate: {fileID: 1768209413366259808}
   pathUpdateDely: 0.2
---- !u!114 &1768209413366259811
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1423737520562305767}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 677013c4dbbfdd341be60fe19868c184, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shootPoint: {fileID: 333218750}
-  gunPoint: {fileID: 4517348484565954218}
-  layer:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  trail: {fileID: 0}
-  projectile: {fileID: 0}
-  Distance: 200
---- !u!114 &1768209413366259812
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1423737520562305767}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60e2c037ed6b84142a8069a5b8ea5e1b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  type: 2
-  body: {fileID: 0}
-  damageAmount: 0
-  damageRate: 0
-  speed: 0
-  destroyTime: 0
 --- !u!4 &1841143619901626656
 Transform:
   m_ObjectHideFlags: 0
@@ -20254,6 +20214,6 @@ SceneRoots:
   - {fileID: 543450653627254527}
   - {fileID: 4443570075452537302}
   - {fileID: 888641027}
-  - {fileID: 808647320}
   - {fileID: 865460487}
   - {fileID: 142515926}
+  - {fileID: 808647320}
