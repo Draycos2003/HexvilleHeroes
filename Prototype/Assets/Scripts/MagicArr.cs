@@ -1,16 +1,25 @@
 using UnityEngine;
 
-public class NewMonoBehaviourScript : MonoBehaviour
+public class MagicArr : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    //Dont need a start, instead using an OnTriggerEnter to determine if the player is within range of the caster
+    void OnTriggerEnter(Collider other)
     {
-        string[] cars = { "Fireball", "Call Lightning", "Summon Skeleton" };
+        //Compares if the object is tagged "Player"
+        if (other.CompareTag("Player"))
+        {
+            //If the object is tagged "Player" exicute the RandomMagic function
+            RandomMagic();
+        }
     }
-
-    // Update is called once per frame
-    void Update()
+    void RandomMagic()
     {
-        
+        //Array for Random Magic
+        string[] spells = { "Fireball", "Call Lightning", "Summon Skeleton" };
+        //Randomly selects spell
+        string RandomSpell = spells[Random.Range(0, spells.Length)];
+        //Print to the console that you casted a spell
+        Debug.Log("You cast: " + RandomSpell);
     }
+ 
 }
