@@ -6,7 +6,7 @@ public class Damage : MonoBehaviour
 
     enum DamageType
     {
-        ranged, melee, casting, homing, DOT 
+        ranged, melee, casting, homing, DOT, AOE 
     }
 
     [SerializeField] DamageType type;
@@ -16,6 +16,12 @@ public class Damage : MonoBehaviour
     [SerializeField] int damageRate;
     [SerializeField] int speed;
     [SerializeField] int destroyTime;
+    [SerializeField] int damageAOE;
+    [SerializeField] float radiusAOE;
+
+    Vector2 centerAOE;
+    Vector2 rangeAOE;
+   
 
     bool isDamaging;
 
@@ -40,6 +46,8 @@ public class Damage : MonoBehaviour
         {
             body.linearVelocity = (gamemanager.instance.Player.transform.position - transform.position).normalized * speed * Time.deltaTime;
         }
+
+        rangeAOE = gamemanager.instance.Player.transform.position;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -58,6 +66,16 @@ public class Damage : MonoBehaviour
         if (type == DamageType.ranged || type == DamageType.homing || type == DamageType.casting)
         {
             Destroy(gameObject);
+        }
+
+        if (type == DamageType.AOE)
+        {
+            centerAOE = gamemanager.instance.Player.transform.position;
+
+            if (Vector2.Distance(centerAOE, rangeAOE) <= radiusAOE)
+            {
+                damage.TakeDamage(damageAmount);
+            }
         }
     }
 
