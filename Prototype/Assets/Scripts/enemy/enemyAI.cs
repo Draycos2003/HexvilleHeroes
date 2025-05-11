@@ -23,6 +23,8 @@ public class enemyAI : MonoBehaviour, IDamage
 
     private EnemyReferences references;
 
+    public int CurrentHP => HP;
+
     private void Awake()
     {
         references = GetComponent<EnemyReferences>();
