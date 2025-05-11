@@ -4,60 +4,74 @@ using UnityEngine.AI;
 
 public class enemyAI : MonoBehaviour, IDamage
 {
-    [SerializeField] Renderer model;
-    [SerializeField] NavMeshAgent agent;
-
+    //  -- enemy qualities
     [SerializeField] int HP;
-    [SerializeField] int faceTargetSpeed;
+    [SerializeField] float faceTargetSpeed;
+    private float updatePathDeadline;
+    public Transform target;
+    Color colorOrig;
+    [SerializeField] Renderer model;
 
+
+    //  -- shooting fields
     [SerializeField] Transform shootPos;
     [SerializeField] GameObject bullet;
     [SerializeField] float shootRate;
-
-    Color colorOrig;
-
-    Vector3 PlayerDir;
-
+    private float shootDistance;
     float shootTimer;
+    bool inRange;
 
-    bool playerInRange;
+    private EnemyReferences references;
 
+    public int CurrentHP => HP;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private void Awake()
+    {
+        references = GetComponent<EnemyReferences>();
+    }
+
     void Start()
     {
-        colorOrig = model.material.color;
-        gamemanager.instance.updateGameGoal(1);
+        colorOrig = model.material.color; // Starter color
+        gamemanager.instance.updateGameGoal(1); // total enemy count
+        shootDistance = references.navMesh.stoppingDistance;
     }
 
     // Update is called once per frame
     void Update()
     {
-        shootTimer += Time.deltaTime;
+        
 
-        if (playerInRange)
+        if (target != null)
         {
-            PlayerDir = gamemanager.instance.Player.transform.position - transform.position;
+//          -- in range is true if the outcome is less or equal to stopping distance
+            inRange = Vector3.Distance(transform.position, target.position) <= shootDistance;
 
-            agent.SetDestination(gamemanager.instance.Player.transform.position);
-
-            if (shootTimer >= shootRate)
+            if (inRange)
             {
-                shoot();
+                faceTarget();
+                references.animate.SetBool("casting", inRange);
+            }
+            else
+            {
+                UpdatePath();
             }
 
-            if (agent.remainingDistance < agent.stoppingDistance)
+//          -- Faces target if still in range
+            if (references.navMesh.remainingDistance < references.navMesh.stoppingDistance)
             {
                 faceTarget();
             }
         }
+        if (!inRange)
+            references.animate.SetFloat("speed", references.navMesh.desiredVelocity.sqrMagnitude);
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            playerInRange = true;
+            inRange = true;
         }
     }
 
@@ -65,7 +79,7 @@ public class enemyAI : MonoBehaviour, IDamage
     {
         if (other.CompareTag("Player"))
         {
-            playerInRange = false;
+            inRange = false;
         }
     }
 
@@ -73,11 +87,14 @@ public class enemyAI : MonoBehaviour, IDamage
     {
         HP -= Amount;
 
-        if (HP <= 0) {
+        if (HP <= 0)
+        {
             Destroy(gameObject);
             gamemanager.instance.updateGameGoal(-1);
 
-        } else {
+        }
+        else
+        {
             StartCoroutine(flashRed());
         }
     }
@@ -89,11 +106,15 @@ public class enemyAI : MonoBehaviour, IDamage
         model.material.color = colorOrig;
     }
 
-    void faceTarget() // can add arg here for player to face
+    void faceTarget()
     {
-        Quaternion rot = Quaternion.LookRotation(new Vector3(PlayerDir.x, transform.position.y, PlayerDir.z));
+//      --  Creates a smoother rotation by using Slerp.
+//      -- I use Slerp instead of lerp because i don't know what type of rotation the character could make it could be big but if not, it could be juddery using lerp so be safe with Slerp.
 
-        transform.rotation = Quaternion.Lerp(transform.rotation, rot, Time.deltaTime * faceTargetSpeed);
+        Vector3 lookPos = target.position - transform.position;
+        lookPos.y = 0;
+        Quaternion rotation = Quaternion.LookRotation(lookPos);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, faceTargetSpeed * Time.deltaTime);
 
     }
 
@@ -104,4 +125,16 @@ public class enemyAI : MonoBehaviour, IDamage
         Instantiate(bullet, shootPos.position, transform.rotation);
 
     }
+
+    private void UpdatePath()
+    {
+//      -- Updates the Path every 0.2 seconds instead of every frame like navMesh.SetDestination(target.postion)
+        if (Time.time >= updatePathDeadline)
+        {
+            Debug.Log("Updating Path");
+            updatePathDeadline = Time.time + references.pathUpdateDely;
+            references.navMesh.SetDestination(target.position);
+        }
+    }
+
 }

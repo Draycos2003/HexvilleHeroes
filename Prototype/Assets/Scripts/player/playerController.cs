@@ -16,7 +16,7 @@ public class playerController : MonoBehaviour, IDamage
     int jumpCount;
 
     [SerializeField] int HP;
-    int HPOrig;
+    public int HPOrig => HP;
 
     [SerializeField] int speed;
     [SerializeField] int sprintMod;
@@ -34,7 +34,7 @@ public class playerController : MonoBehaviour, IDamage
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        HPOrig = HP;
+
     }
 
     // Update is called once per frame
