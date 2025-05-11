@@ -49,12 +49,13 @@ public class enemyAI : MonoBehaviour, IDamage
             if (inRange)
             {
                 faceTarget();
-                shoot();
+                references.animate.SetBool("casting", inRange);
             }
             else
             {
                 UpdatePath();
             }
+            
 
 //          -- Possibly not needed anymore not sure yet. 
             //if (shootTimer >= shootRate)
@@ -69,6 +70,8 @@ public class enemyAI : MonoBehaviour, IDamage
                 faceTarget();
             }
         }
+       if(!inRange) 
+        references.animate.SetFloat("speed", references.navMesh.desiredVelocity.sqrMagnitude);
     }
 
     private void OnTriggerEnter(Collider other)
