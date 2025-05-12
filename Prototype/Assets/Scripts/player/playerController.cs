@@ -42,19 +42,21 @@ public class playerController : MonoBehaviour, IDamage
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetButtonDown("Vertical"))
+        {
+            animator.SetBool("isWalking", true);
+        }
+        else if (Input.GetButtonUp("Vertical"))
+        {
+            animator.SetBool("isWalking", false);
+        } 
+
         Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * shootDist, Color.red);
 
         Movement();
         Sprint();
 
-        if (Input.GetButtonDown("Vertical"))
-        {
-            animator.SetBool("isWalking", true);
-        }
-        else if ((Input.GetButtonUp("Vertical")))
-        {
-            animator.SetBool("isWalking", false);
-        }
+        
 
     }
 

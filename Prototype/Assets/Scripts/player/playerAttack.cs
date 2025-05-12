@@ -3,7 +3,7 @@ using UnityEngine;
 public class playerAttack : MonoBehaviour
 {
     [SerializeField] GameObject attackArea = default;
-    [SerializeField] int attackRate;
+    [SerializeField] float attackRate;
 
     private Animator animator;
 
@@ -26,14 +26,18 @@ public class playerAttack : MonoBehaviour
 
         if (Input.GetButton("Fire1") && attackRate <= attackTimer)
         {
-            attack();
+            attack("attack");
+        }
+        if (Input.GetButton("Fire2") && attackRate <= attackTimer)
+        {
+            attack("attack1");
         }
     }
 
-    private void attack()
+    private void attack(System.String triggerName)
     {
         Debug.Log("Attack!");
-        animator.SetTrigger("attack");
+        animator.SetTrigger(triggerName);
         if (!attacking)
         {
             attacking = true;
