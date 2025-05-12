@@ -38,7 +38,7 @@ public class HealthBarController : MonoBehaviour
     {
 
         if (enemy != null)
-            maxHP = enemy.CurrentHP;
+            maxHP = enemy.currentHP;
         else if (player != null)
             maxHP = player.HPOrig;
         else
@@ -62,7 +62,7 @@ public class HealthBarController : MonoBehaviour
 
         // pick current HP
         int currentHP = (enemy != null)
-            ? enemy.CurrentHP
+            ? enemy.currentHP
             : player.HPOrig;
 
         // compute fill percentage

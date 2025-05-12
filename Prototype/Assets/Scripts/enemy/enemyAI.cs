@@ -2,11 +2,13 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.AI;
 
+
 public class enemyAI : MonoBehaviour, IDamage
 {
     //  -- enemy qualities
     [SerializeField] int HP;
     [SerializeField] float faceTargetSpeed;
+    public int currentHP => HP;
     private float updatePathDeadline;
     public Transform target;
     Color colorOrig;
@@ -17,13 +19,9 @@ public class enemyAI : MonoBehaviour, IDamage
     [SerializeField] Transform shootPos;
     [SerializeField] GameObject bullet;
     [SerializeField] float shootRate;
-    private float shootDistance;
-    float shootTimer;
     bool inRange;
 
     private EnemyReferences references;
-
-    public int CurrentHP => HP;
 
     private void Awake()
     {
@@ -34,26 +32,21 @@ public class enemyAI : MonoBehaviour, IDamage
     {
         colorOrig = model.material.color; // Starter color
         gamemanager.instance.updateGameGoal(1); // total enemy count
-        shootDistance = references.navMesh.stoppingDistance;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
-
         if (target != null)
         {
-//          -- in range is true if the outcome is less or equal to stopping distance
-            inRange = Vector3.Distance(transform.position, target.position) <= shootDistance;
 
             if (inRange)
             {
-                faceTarget();
-                references.animate.SetBool("casting", inRange);
+                references.animate.SetBool("casting", inRange);   
             }
             else
             {
+                references.animate.SetBool("casting", !inRange);
                 UpdatePath();
             }
 
@@ -63,21 +56,19 @@ public class enemyAI : MonoBehaviour, IDamage
                 faceTarget();
             }
         }
-        if (!inRange)
-            references.animate.SetFloat("speed", references.navMesh.desiredVelocity.sqrMagnitude);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.tag == ("Player"))
         {
             inRange = true;
         }
-    }
 
+    }
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.tag ==("Player"))
         {
             inRange = false;
         }
@@ -120,10 +111,7 @@ public class enemyAI : MonoBehaviour, IDamage
 
     void shoot()
     {
-        shootTimer = 0;
-
         Instantiate(bullet, shootPos.position, transform.rotation);
-
     }
 
     private void UpdatePath()
@@ -136,5 +124,4 @@ public class enemyAI : MonoBehaviour, IDamage
             references.navMesh.SetDestination(target.position);
         }
     }
-
 }
