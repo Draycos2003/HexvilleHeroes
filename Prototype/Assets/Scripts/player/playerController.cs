@@ -31,25 +31,40 @@ public class playerController : MonoBehaviour, IDamage
 
     float shootTimer;
 
+    private Animator animator;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-
+        animator = gamemanager.instance.Player.GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetButtonDown("Vertical"))
+        {
+            animator.SetBool("isWalking", true);
+        }
+        else if (Input.GetButtonUp("Vertical"))
+        {
+            animator.SetBool("isWalking", false);
+        } 
+
         Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * shootDist, Color.red);
 
         Movement();
         Sprint();
+
+        
+
     }
 
     void Movement()
     {
         shootTimer += Time.deltaTime;
 
+        
         if (controller.isGrounded && jumpCount != 0) 
         {
             jumpCount = 0;
