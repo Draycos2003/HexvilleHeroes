@@ -58,14 +58,14 @@ public class Damage : MonoBehaviour
         }
 
         IDamage damage = other.GetComponent<IDamage>();
-        if ((damage != null && type == DamageType.ranged || type == DamageType.melee || type == DamageType.casting || type == DamageType.casting))
+        if (damage != null && (type == DamageType.ranged || type == DamageType.melee || type == DamageType.casting || type == DamageType.casting))
         {
             damage.TakeDamage(damageAmount);
         }
 
         if (type == DamageType.ranged || type == DamageType.homing || type == DamageType.casting)
         {
-            //Destroy(gameObject);
+            Destroy(gameObject);
         }
 
         if (type == DamageType.AOE)
