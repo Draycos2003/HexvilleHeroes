@@ -28,11 +28,11 @@ public class Damage : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        if (type == DamageType.ranged || type == DamageType.homing)
+        if (type == DamageType.ranged || type == DamageType.homing || type == DamageType.casting)
         {
             Destroy(gameObject, destroyTime);
 
-            if(type == DamageType.ranged)
+            if(type == DamageType.ranged || type == DamageType.casting)
             {
                 body.linearVelocity = transform.forward * speed; 
             }
@@ -58,7 +58,7 @@ public class Damage : MonoBehaviour
         }
 
         IDamage damage = other.GetComponent<IDamage>();
-        if ((damage != null && type == DamageType.ranged || type == DamageType.melee || type == DamageType.casting || type == DamageType.casting))
+        if (damage != null && (type == DamageType.ranged || type == DamageType.melee || type == DamageType.casting || type == DamageType.casting))
         {
             damage.TakeDamage(damageAmount);
         }
