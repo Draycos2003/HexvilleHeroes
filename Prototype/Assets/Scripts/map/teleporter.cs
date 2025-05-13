@@ -18,13 +18,13 @@ public class TeleportPad : MonoBehaviour
     [Tooltip("Seconds before you can teleport again")]
     [SerializeField] private float teleportCooldown = 0.25f;
 
-    private Collider _col;
-    private bool _isOnCooldown;
+    private Collider col;
+    private bool isOnCooldown;
 
     void Awake()
     {
-        _col = GetComponent<Collider>();
-        _col.isTrigger = true;
+        col = GetComponent<Collider>();
+        col.isTrigger = true;
 
         if (targetDestination == null)
             Debug.LogError("[TeleportPad] No target assigned!", this);
@@ -33,14 +33,14 @@ public class TeleportPad : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         var gm = gamemanager.instance;
-        if (_isOnCooldown || gm == null || other.gameObject != gm.Player) return;
+        if (isOnCooldown || gm == null || other.gameObject != gm.Player) return;
         StartCoroutine(TeleportRoutine(gm.Player.transform));
     }
 
     private IEnumerator TeleportRoutine(Transform playerT)
     {
-        _isOnCooldown = true;
-        _col.enabled = false;
+        isOnCooldown = true;
+        col.enabled = false;
 
         var cc = playerT.GetComponent<CharacterController>();
         if (cc != null) cc.enabled = false;
@@ -53,7 +53,7 @@ public class TeleportPad : MonoBehaviour
         if (cc != null) cc.enabled = true;
         yield return new WaitForSeconds(teleportCooldown);
 
-        _col.enabled = true;
-        _isOnCooldown = false;
+        col.enabled = true;
+        isOnCooldown = false;
     }
 }
