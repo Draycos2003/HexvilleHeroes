@@ -40,13 +40,13 @@ public class enemyAI : MonoBehaviour, IDamage
         if (target != null)
         {
 
-            if (inRange)
+            if (inRange == true)
             {
                 references.animate.SetBool("casting", inRange);   
             }
             else
             {
-                references.animate.SetBool("casting", !inRange);
+                references.animate.SetBool("casting", inRange);
                 UpdatePath();
             }
 
