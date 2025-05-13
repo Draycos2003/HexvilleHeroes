@@ -5233,7 +5233,7 @@ Transform:
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.001, y: 1.602, z: 0.162}
+  m_LocalPosition: {x: -0.001, y: 2.102, z: 0.162}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11365,9 +11365,6 @@ MonoBehaviour:
   sprintMod: 2
   jumpMax: 2
   jumpForce: 12
-  shootDamage: 1
-  shootRate: 0.25
-  shootDist: 150
 --- !u!1001 &2066629435
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13124,6 +13121,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackArea: {fileID: 541187230}
   attackRate: 0.25
+  stabDamageAmount: 5
+  slashDamageAmount: 10
 --- !u!1 &954683107229652374
 GameObject:
   m_ObjectHideFlags: 0
@@ -13689,6 +13688,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1768209413366259805}
   - component: {fileID: 1768209413366259807}
+  - component: {fileID: 1768209413366259811}
   - component: {fileID: 1768209413366259806}
   - component: {fileID: 1768209413366259810}
   - component: {fileID: 1768209413366259809}
@@ -14132,7 +14132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a916b528e6f2244ba6ff1ede11ee90f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 5
+  HP: 50
   faceTargetSpeed: 10
   target: {fileID: 543450653627254527}
   model: {fileID: 7899406614238566185}
@@ -14219,6 +14219,19 @@ MonoBehaviour:
   navMesh: {fileID: 1768209413366259807}
   animate: {fileID: 1768209413366259808}
   pathUpdateDely: 0.2
+--- !u!114 &1768209413366259811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1423737520562305767}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cbfa3716377abb41bb8f92d064b15a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healthBarFill: {fileID: 366763670}
 --- !u!4 &1841143619901626656
 Transform:
   m_ObjectHideFlags: 0

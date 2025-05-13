@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using UnityEngine;
 
 public class playerAttack : MonoBehaviour
@@ -5,7 +7,11 @@ public class playerAttack : MonoBehaviour
     [SerializeField] GameObject attackArea = default;
     [SerializeField] float attackRate;
 
+    [SerializeField] int stabDamageAmount;
+    [SerializeField] int slashDamageAmount;
+
     private Animator animator;
+    private attackArea area;
 
     private float attackTimer;
     private bool attacking;
@@ -27,10 +33,12 @@ public class playerAttack : MonoBehaviour
         if (Input.GetButton("Fire1") && attackRate <= attackTimer)
         {
             attack("attack");
+            StartCoroutine(hit(false));
         }
         if (Input.GetButton("Fire2") && attackRate <= attackTimer)
         {
             attack("attack1");
+            StartCoroutine(hit(true));
         }
     }
 
@@ -42,6 +50,17 @@ public class playerAttack : MonoBehaviour
         {
             attacking = true;
             attackArea.SetActive(attacking);
+        }
+    }
+
+    private IEnumerator hit(bool stab)
+    {
+        yield return new WaitForSeconds(attackRate);
+        {
+            foreach (IDamage dmg in area.Damagables)
+            {
+                dmg.TakeDamage(stab ? stabDamageAmount : slashDamageAmount);
+            }
         }
     }
 }
