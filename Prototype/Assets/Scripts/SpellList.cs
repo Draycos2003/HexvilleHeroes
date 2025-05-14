@@ -18,13 +18,13 @@ public class SpellList : MonoBehaviour
     Spell summonSkeleton;
 
     //A list containing the spells
-    List<Spell> spellList = new List<Spell>();
+    List<Spell> listOfSpells = new List<Spell>();
 
     void Start()
     {
-    //Adding spells to the list once the game initializes 
-        spellList.Add(fireball);
-        spellList.Add(callLightning);
-        spellList.Add(summonSkeleton);
+        //Adding spells to the list once the game initializes 
+        listOfSpells.Add(fireball);
+        listOfSpells.Add(callLightning);
+        listOfSpells.Add(summonSkeleton);
     }
 }
