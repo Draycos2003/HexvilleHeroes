@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class playerController : MonoBehaviour, IDamage
+public class playerController : MonoBehaviour, IDamage, IPickup
 {
     [SerializeField] CharacterController controller;
     [SerializeField] LayerMask ignoreLayer;
@@ -101,5 +101,28 @@ public class playerController : MonoBehaviour, IDamage
         {
             gamemanager.instance.youLose(); 
         }
+    }
+
+    public void gainHealth(int amount)
+    {
+        // check if player is damaged
+        if(HP < HPOrig)
+        {
+            HP += amount;
+        }
+
+        // make sure health doesn't exceed max
+        if(HP > HPOrig)
+        {
+            HP = HPOrig;
+        }
+    }
+
+    public void gainShield(int amount)
+    {
+        // check if player needs shield
+
+        // make sure shield doesn't exceed max
+        
     }
 }

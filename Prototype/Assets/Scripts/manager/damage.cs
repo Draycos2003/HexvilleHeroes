@@ -11,6 +11,7 @@ public class Damage : MonoBehaviour
 
     [SerializeField] DamageType type;
     [SerializeField] Rigidbody body;
+    [SerializeField] playerAttack playerAttack;
 
     [SerializeField] int damageAmount;
     [SerializeField] int damageRate;
@@ -59,7 +60,7 @@ public class Damage : MonoBehaviour
         IDamage damage = other.GetComponent<IDamage>();
         if (damage != null && (type == DamageType.ranged || type == DamageType.melee || type == DamageType.casting || type == DamageType.casting))
         {
-                damage.TakeDamage(damageAmount);
+            damage.TakeDamage(damageAmount);
         }
 
         if (type == DamageType.ranged || type == DamageType.homing || type == DamageType.casting)

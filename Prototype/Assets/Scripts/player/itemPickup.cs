@@ -2,15 +2,23 @@ using UnityEngine;
 
 public class itemPickup : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    public int health;
+    public int shield;
 
-    // Update is called once per frame
-    void Update()
+    private void OnTriggerEnter(Collider other)
     {
-        
+        IPickup item = other.GetComponent<IPickup>();
+        if (item != null)
+        {
+            Debug.Log("HP");
+            item.gainHealth(health);
+        }
+        else if (item != null)
+        {
+            Debug.Log("Shield");
+            item.gainShield(shield);
+        }
     }
+    
+
 }
