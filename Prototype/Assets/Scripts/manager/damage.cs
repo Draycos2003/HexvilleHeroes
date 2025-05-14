@@ -64,8 +64,14 @@ public class Damage : MonoBehaviour
             {  
                 Debug.Log(other.name);
                 other.GetComponent<Animator>().SetTrigger("hit");
+<<<<<<< HEAD
             }
             else if(type == DamageType.ranged || type == DamageType.casting)
+=======
+                StartCoroutine(damageMelee(damage));
+            }
+            else if (type == DamageType.ranged || type == DamageType.casting)
+>>>>>>> f672830b14d5555ce8aa64c3c0c5bd395cbec528
             {
                 damage.TakeDamage(damageAmount);
             }
@@ -111,5 +117,16 @@ public class Damage : MonoBehaviour
         damage.TakeDamage(damageAmount);
         yield return new WaitForSeconds(damageRate);
         isDamaging = false;
+    }
+
+    IEnumerator damageMelee(IDamage damage)
+    {
+        playerAttack.isAttacking = true;
+        damage.TakeDamage(damageAmount);
+        gameObject.GetComponent<Collider>().isTrigger = false;
+
+        yield return new WaitForSeconds(damageRate);
+        playerAttack.isAttacking = false;
+        gameObject.GetComponent<Collider>().isTrigger = true;
     }
 }
