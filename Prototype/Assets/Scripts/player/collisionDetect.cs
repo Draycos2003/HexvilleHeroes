@@ -13,5 +13,11 @@ public class collisionDetect : MonoBehaviour
             other.GetComponent<Animator>().SetTrigger("hit");
             other.GetComponent<IDamage>().TakeDamage(damage);
         }
+
+        IPickup item = other.GetComponent<IPickup>();
+        if (item != null )
+        {
+
+        }
     }
 }
