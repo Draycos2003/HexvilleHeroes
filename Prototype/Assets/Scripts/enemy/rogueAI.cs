@@ -12,6 +12,8 @@ public class rogueAI : enemyAI
     [SerializeField] float meleCooldownTimer;
     [SerializeField] float rangeCooldownTimer;
 
+    float playerDist;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     protected override void Start()
     {
@@ -27,7 +29,7 @@ public class rogueAI : enemyAI
 
         if (target != null)
         {
-            float playerDist = Vector3.Distance(transform.position, target.position);
+             playerDist = Vector3.Distance(transform.position, target.position);
             if (playerDist <= rangeAttackRange)
             {
                 if (playerDist <= meleeRange)
@@ -52,7 +54,7 @@ public class rogueAI : enemyAI
         {
             Debug.Log("melee attack");
 
-            float playerDist = Vector3.Distance(transform.position, target.position);
+            playerDist = Vector3.Distance(transform.position, target.position);
 
             if (playerDist <= meleeRange)
             {
