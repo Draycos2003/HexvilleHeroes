@@ -18,7 +18,7 @@ public class enemyAI : MonoBehaviour, IDamage
     //  -- shooting fields
     [SerializeField] Transform shootPos;
     [SerializeField] GameObject bullet;
-    [SerializeField] float shootRate;
+    [SerializeField] protected float shootRate;
     bool inRange;
 
     private EnemyReferences references;
@@ -28,14 +28,14 @@ public class enemyAI : MonoBehaviour, IDamage
         references = GetComponent<EnemyReferences>();
     }
 
-    void Start()
+    protected virtual void Start()
     {
         colorOrig = model.material.color; // Starter color
         gamemanager.instance.updateGameGoal(1); // total enemy count
     }
 
     // Update is called once per frame
-    void Update()
+    protected virtual void Update()
     {
         if (target != null)
         {
@@ -58,7 +58,7 @@ public class enemyAI : MonoBehaviour, IDamage
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    protected virtual void OnTriggerEnter(Collider other)
     {
         if (other.tag == ("Player"))
         {
@@ -66,7 +66,7 @@ public class enemyAI : MonoBehaviour, IDamage
         }
 
     }
-    private void OnTriggerExit(Collider other)
+    protected virtual void OnTriggerExit(Collider other)
     {
         if (other.tag ==("Player"))
         {
