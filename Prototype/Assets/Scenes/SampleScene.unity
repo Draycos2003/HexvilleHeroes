@@ -557,8 +557,8 @@ Transform:
   m_GameObject: {fileID: 111839061}
   serializedVersion: 2
   m_LocalRotation: {x: -0.5, y: -0.5, z: -0.50000006, w: -0.49999994}
-  m_LocalPosition: {x: 0.731, y: 0.07, z: -0.053}
-  m_LocalScale: {x: 0.2834532, y: 0.49762768, z: 2.091039}
+  m_LocalPosition: {x: 0.835, y: 0.1691, z: -0.066}
+  m_LocalScale: {x: 0.14010702, y: 0.1481776, z: 1.9769741}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1567499633605383546}
@@ -576,7 +576,7 @@ BoxCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
@@ -12276,11 +12276,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 2146985641}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d6a6083379df6447a5f3a50c3cc73e8, type: 3}
+  m_Script: {fileID: 11500000, guid: 1de9e013fae54ca44b54e1840cfe5170, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PA: {fileID: 919132149101648969}
-  damage: 0
+  health: 20
+  shield: 0
 --- !u!4 &4300312139579457
 Transform:
   m_ObjectHideFlags: 0

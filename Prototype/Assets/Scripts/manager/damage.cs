@@ -20,8 +20,6 @@ public class Damage : MonoBehaviour
     [SerializeField] int damageAOE;
     [SerializeField] float radiusAOE;
 
-    [SerializeField] playerAttack playerAttack;
-
     Vector2 centerAOE;
     Vector2 rangeAOE;
    
@@ -60,15 +58,14 @@ public class Damage : MonoBehaviour
         }
 
         IDamage damage = other.GetComponent<IDamage>();
-        if (damage != null && (type == DamageType.ranged || type == DamageType.melee || type == DamageType.casting || type == DamageType.casting))
+        if (damage != null)
         {
             if (type == DamageType.melee && playerAttack.isAttacking)
-            {
+            {  
                 Debug.Log(other.name);
                 other.GetComponent<Animator>().SetTrigger("hit");
-                damage.TakeDamage(damageAmount);
             }
-            else
+            else if(type == DamageType.ranged || type == DamageType.casting)
             {
                 damage.TakeDamage(damageAmount);
             }
@@ -103,12 +100,12 @@ public class Damage : MonoBehaviour
         {
             if(!isDamaging)
             {
-                StartCoroutine(damageOther(damage));
+                StartCoroutine(damageOverTime(damage));
             }
         }
     }
 
-    IEnumerator damageOther(IDamage damage)
+    IEnumerator damageOverTime(IDamage damage)
     {
         isDamaging = true;
         damage.TakeDamage(damageAmount);
