@@ -29,20 +29,18 @@ public class playerController : MonoBehaviour, IDamage
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        animator = gamemanager.instance.Player.GetComponent<Animator>();
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        Attacking();
         Movement();
         Sprint();
     }
 
     void Movement()
     {
-        
         if (controller.isGrounded && jumpCount != 0) 
         {
             jumpCount = 0;
@@ -50,8 +48,10 @@ public class playerController : MonoBehaviour, IDamage
         }
 
         moveDir = (Input.GetAxis("Horizontal") * transform.right) + (Input.GetAxis("Vertical") * transform.forward);
-        //transform.position += moveDir * speed * Time.deltaTime;
         controller.Move(moveDir * speed * Time.deltaTime);
+
+        animator.SetFloat("speed", moveDir.magnitude);
+
 
         Jump();
 
@@ -93,18 +93,6 @@ public class playerController : MonoBehaviour, IDamage
         if (HP <= 0)
         {
             gamemanager.instance.youLose(); 
-        }
-    }
-
-    void Attacking()
-    {
-        if (Input.GetButtonDown("Vertical"))
-        {
-            animator.SetBool("isWalking", true);
-        }
-        else if (Input.GetButtonUp("Vertical"))
-        {
-            animator.SetBool("isWalking", false);
         }
     }
 }

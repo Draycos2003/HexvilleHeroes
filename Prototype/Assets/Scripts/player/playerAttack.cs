@@ -1,65 +1,55 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class playerAttack : MonoBehaviour
 {
-    [SerializeField] GameObject attackArea = default;
-    [SerializeField] float attackRate;
-
-    [SerializeField] int stabDamageAmount;
-    [SerializeField] int slashDamageAmount;
-
     private Animator animator;
-    private attackArea area;
 
-    private float attackTimer;
-    private bool attacking;
+    [SerializeField] private float attackCooldown;
 
+    public bool isAttacking = false;
+    public bool canAttack = true;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Awake()
     {
-        animator = gamemanager.instance.Player.GetComponent<Animator>();
+        animator = GetComponent<Animator>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void OnAttack1(InputValue input)
     {
-        attackTimer += Time.deltaTime;
-        attacking = false;
-
-        if (Input.GetButton("Fire1") && attackRate <= attackTimer)
+        if (canAttack)
         {
-            attack("attack");
-            StartCoroutine(hit(false));
-        }
-        if (Input.GetButton("Fire2") && attackRate <= attackTimer)
-        {
-            attack("attack1");
-            StartCoroutine(hit(true));
+            isAttacking = true;
+            canAttack = false;
+            animator.SetTrigger("attack1");
+            StartCoroutine(resetCooldown());
         }
     }
 
-    private void attack(System.String triggerName)
+    public void OnAttack2(InputValue input)
     {
-        Debug.Log("Attack!");
-        animator.SetTrigger(triggerName);
-        if (!attacking)
+        if (canAttack)
         {
-            attacking = true;
-            attackArea.SetActive(attacking);
+            isAttacking = true;
+            canAttack = false;
+            animator.SetTrigger("attack2");
+            StartCoroutine(resetCooldown());
         }
     }
 
-    private IEnumerator hit(bool stab)
+    IEnumerator resetCooldown()
     {
-        yield return new WaitForSeconds(attackRate);
-        {
-            foreach (IDamage dmg in area.Damagables)
-            {
-                dmg.TakeDamage(stab ? stabDamageAmount : slashDamageAmount);
-            }
-        }
+        StartCoroutine(resetAttackBool());
+        yield return new WaitForSeconds(attackCooldown);
+        canAttack = true;
+    }
+
+    IEnumerator resetAttackBool()
+    {
+        yield return new WaitForSeconds(1.0f);
+        isAttacking = false;
     }
 }
