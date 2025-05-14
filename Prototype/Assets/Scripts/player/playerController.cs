@@ -81,6 +81,13 @@ public class playerController : MonoBehaviour, IDamage
             jumpCount++;
 
             playerVel.y = jumpForce;
+
+            animator.SetBool("isJumping", true);
+        }
+
+        if (Input.GetButtonUp("Jump"))
+        {
+            animator.SetBool("isJumping", false);
         }
     }
 
