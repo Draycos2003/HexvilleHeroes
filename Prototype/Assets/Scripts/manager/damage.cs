@@ -22,7 +22,6 @@ public class Damage : MonoBehaviour
     Vector2 centerAOE;
     Vector2 rangeAOE;
    
-
     bool isDamaging;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -60,7 +59,7 @@ public class Damage : MonoBehaviour
         IDamage damage = other.GetComponent<IDamage>();
         if (damage != null && (type == DamageType.ranged || type == DamageType.melee || type == DamageType.casting || type == DamageType.casting))
         {
-            damage.TakeDamage(damageAmount);
+                damage.TakeDamage(damageAmount);
         }
 
         if (type == DamageType.ranged || type == DamageType.homing || type == DamageType.casting)
