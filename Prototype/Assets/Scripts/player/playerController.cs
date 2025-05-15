@@ -2,32 +2,35 @@ using UnityEngine;
 
 public class playerController : MonoBehaviour, IDamage
 {
+    // Player
+
+
+    [Header("Controllers")]
     [SerializeField] CharacterController controller;
     [SerializeField] LayerMask ignoreLayer;
 
-    // World 
+    [Header("World")] // World 
     [SerializeField] int gravity;
 
-    // Player
-    Vector3 moveDir;
-    Vector3 playerVel;
-
-    bool isSprinting;
-    int jumpCount;
-
+    [Header("Player")] // Player
     [SerializeField] int HP;
-    public int HPOrig => HP;
-
+ 
     [SerializeField] int speed;
     [SerializeField] int sprintMod;
 
     [SerializeField] int jumpMax;
     [SerializeField] int jumpForce;
 
-    // Weapon
+    [Header("Weapon")] // Weapon
     [SerializeField] int shootDamage;
     [SerializeField] float shootRate;
     [SerializeField] int shootDist;
+
+    public int HPOrig => HP;
+    Vector3 moveDir;
+    Vector3 playerVel;
+    bool isSprinting;
+    int jumpCount;
 
     float shootTimer;
 
