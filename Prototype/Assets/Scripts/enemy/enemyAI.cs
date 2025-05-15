@@ -1,41 +1,43 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.AI;
-using Unity.VisualScripting;
 
 
-public class enemyAI : MonoBehaviour, IDamage
+public class EnemyAI : MonoBehaviour, IDamage
 {
-    //  -- enemy qualities
-    public enum enemyType
-    {
-        Ranged,
-        Melee,
-    }
-    
-    [SerializeField] enemyType EnemyType;
+   public enum EnemyTypes
+   {
+        Ranged, 
+        Melee
+   }
 
+    public EnemyTypes enemyType;
+
+
+    //  -- enemy qualities
     [Header("Enemy Attributes")]
     [SerializeField] int HP;
     [SerializeField] float faceTargetSpeed;
     [SerializeField] Renderer model;
-    public Transform target;
+    [SerializeField] Transform target;
     public int currentHP => HP;
     private float updatePathDeadline;
     Color colorOrig;
 
-
     [Header("Ranged Enemy Attributes")]
-    public Transform shootPos;
-    public  GameObject bullet;
-    public  float shootRate;
+    [SerializeField] Transform shootPos;
+    [SerializeField] GameObject bullet;
+    [SerializeField] float shootRate;
 
     [Header("Melee Enemy Attributes")]
-    public int attackSpeed;
-    public GameObject weapon;
-    public Collider hitPos;       
+    [SerializeField] int attackSpeed;
+    [SerializeField] GameObject weapon;
+    [SerializeField] Collider hitPos;
+
 
     bool inRange;
+
+
 
     private EnemyReferences references;
 
@@ -53,8 +55,6 @@ public class enemyAI : MonoBehaviour, IDamage
     // Update is called once per frame
     void Update()
     {
-
-
         if (target != null)
         {
 
@@ -70,7 +70,7 @@ public class enemyAI : MonoBehaviour, IDamage
                 UpdatePath();
             }
 
-          // Faces target if still in range
+//          -- Faces target if still in range
             if (references.navMesh.remainingDistance < references.navMesh.stoppingDistance)
             {
                 faceTarget();
@@ -144,5 +144,4 @@ public class enemyAI : MonoBehaviour, IDamage
             references.navMesh.SetDestination(target.position);
         }
     }
-
 }

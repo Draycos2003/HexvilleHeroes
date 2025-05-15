@@ -1,12 +1,12 @@
 using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(enemyAI))]
+[CustomEditor(typeof(EnemyAI))]
 public class enemyEditor : Editor
 {
     public override void OnInspectorGUI()
     {              
-        enemyAI stats = (enemyAI)target; // target is the object that will be inspected. Meaning the enemy, And we cast the custom editor to it.
+        EnemyAI stats = (EnemyAI)target; // target is the object that will be inspected. Meaning the enemy, And we cast the custom editor to it.
 
         // All the fields for the enemy
         SerializedProperty HP = serializedObject.FindProperty("HP");
@@ -36,10 +36,10 @@ public class enemyEditor : Editor
         serializedObject.Update();
 
         // var to hold the enum
-        var type = (enemyAI.enemyType)enemyType.enumValueIndex;
+        var type = (EnemyAI.EnemyTypes)enemyType.enumValueIndex;
 
         // apply range enemy attributes
-        if (type == enemyAI.enemyType.Ranged)
+        if (type == EnemyAI.EnemyTypes.Ranged)
         {
             EditorGUILayout.PropertyField(HP);
             EditorGUILayout.PropertyField(model);
@@ -50,7 +50,7 @@ public class enemyEditor : Editor
             EditorGUILayout.PropertyField(fireRate);
         }
         // apply melee enemy attributes
-        else if (type == enemyAI.enemyType.Melee)
+        else if (type == EnemyAI.EnemyTypes.Melee)
         {
             EditorGUILayout.PropertyField(HP);
             EditorGUILayout.PropertyField(model);

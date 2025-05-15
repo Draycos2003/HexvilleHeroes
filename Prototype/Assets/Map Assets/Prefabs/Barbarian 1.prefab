@@ -1568,7 +1568,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6071702423078658850}
-  - component: {fileID: 6944156968250621203}
+  - component: {fileID: -5522206764334391098}
   - component: {fileID: 4685920530187137684}
   - component: {fileID: 3676765533376582803}
   - component: {fileID: 5722889356604524007}
@@ -1604,7 +1604,7 @@ Transform:
   - {fileID: 6323627468582722359}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -94.622, z: 0}
---- !u!114 &6944156968250621203
+--- !u!114 &-5522206764334391098
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1616,16 +1616,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a916b528e6f2244ba6ff1ede11ee90f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EnemyType: 1
-  HP: 50
-  faceTargetSpeed: 50
-  model: {fileID: 7189743097567852668}
+  HP: 0
+  faceTargetSpeed: 0
+  model: {fileID: 0}
   target: {fileID: 0}
   shootPos: {fileID: 0}
   bullet: {fileID: 0}
   shootRate: 0
-  attackSpeed: 5
-  weapon: {fileID: 3104503235324613773}
+  attackSpeed: 0
+  weapon: {fileID: 0}
   hitPos: {fileID: 0}
 --- !u!114 &4685920530187137684
 MonoBehaviour:
