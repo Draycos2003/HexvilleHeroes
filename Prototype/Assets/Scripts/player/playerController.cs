@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class playerController : MonoBehaviour, IDamage
+public class playerController : MonoBehaviour, IDamage, IPickup
 {
     [SerializeField] CharacterController controller;
     [SerializeField] LayerMask ignoreLayer;
@@ -17,6 +17,7 @@ public class playerController : MonoBehaviour, IDamage
 
     [SerializeField] int HP;
     public int HPOrig => HP;
+    private int maxHP;
 
     [SerializeField] int speed;
     [SerializeField] int sprintMod;
@@ -30,6 +31,7 @@ public class playerController : MonoBehaviour, IDamage
     void Start()
     {
         animator = GetComponent<Animator>();
+        maxHP = HP;
     }
 
     // Update is called once per frame
@@ -81,6 +83,13 @@ public class playerController : MonoBehaviour, IDamage
             jumpCount++;
 
             playerVel.y = jumpForce;
+
+            animator.SetBool("isJumping", true);
+        }
+
+        if (Input.GetButtonUp("Jump"))
+        {
+            animator.SetBool("isJumping", false);
         }
     }
 
@@ -94,5 +103,32 @@ public class playerController : MonoBehaviour, IDamage
         {
             gamemanager.instance.youLose(); 
         }
+    }
+
+    public void gainHealth(int amount)
+    {
+        Debug.Log("HP");
+
+        // check if player is damaged
+        if (HP < maxHP)
+        {
+            HP += amount;
+        }
+
+        // make sure health doesn't exceed max
+        if(HP > maxHP)
+        {
+            HP = maxHP;
+        }
+    }
+
+    public void gainShield(int amount)
+    {
+        Debug.Log("Shield");
+
+        // check if player needs shield
+
+        // make sure shield doesn't exceed max
+
     }
 }
