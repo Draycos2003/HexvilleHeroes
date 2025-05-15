@@ -64,14 +64,9 @@ public class Damage : MonoBehaviour
             {  
                 Debug.Log(other.name);
                 other.GetComponent<Animator>().SetTrigger("hit");
-<<<<<<< HEAD
-            }
-            else if(type == DamageType.ranged || type == DamageType.casting)
-=======
                 StartCoroutine(damageMelee(damage));
             }
             else if (type == DamageType.ranged || type == DamageType.casting)
->>>>>>> f672830b14d5555ce8aa64c3c0c5bd395cbec528
             {
                 damage.TakeDamage(damageAmount);
             }

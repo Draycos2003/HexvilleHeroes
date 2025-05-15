@@ -17,6 +17,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     [SerializeField] int HP;
     public int HPOrig => HP;
+    private int maxHP;
 
     [SerializeField] int speed;
     [SerializeField] int sprintMod;
@@ -30,6 +31,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     void Start()
     {
         animator = GetComponent<Animator>();
+        maxHP = HP;
     }
 
     // Update is called once per frame
@@ -105,24 +107,28 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     public void gainHealth(int amount)
     {
+        Debug.Log("HP");
+
         // check if player is damaged
-        if(HP < HPOrig)
+        if (HP < maxHP)
         {
             HP += amount;
         }
 
         // make sure health doesn't exceed max
-        if(HP > HPOrig)
+        if(HP > maxHP)
         {
-            HP = HPOrig;
+            HP = maxHP;
         }
     }
 
     public void gainShield(int amount)
     {
+        Debug.Log("Shield");
+
         // check if player needs shield
 
         // make sure shield doesn't exceed max
-        
+
     }
 }

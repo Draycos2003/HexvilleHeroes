@@ -429,9 +429,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 621584630249350254, guid: af9d1131c788d454fa7dae4544fa99d2, type: 3}
-      insertIndex: 1
-      addedObject: {fileID: 765776089}
-    - targetCorrespondingSourceObject: {fileID: 621584630249350254, guid: af9d1131c788d454fa7dae4544fa99d2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 765776088}
   m_SourcePrefab: {fileID: 100100000, guid: af9d1131c788d454fa7dae4544fa99d2, type: 3}
@@ -4871,20 +4868,6 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.75
   m_Center: {x: -0.00000035762787, y: -0.07026231, z: -0.000000059604645}
---- !u!114 &765776089
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 765776082}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1de9e013fae54ca44b54e1840cfe5170, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: 20
-  shield: 0
 --- !u!1 &777763920 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100000, guid: 96aaa09c10467274cbbf817bc514a254, type: 3}
@@ -13482,6 +13465,7 @@ GameObject:
   - component: {fileID: 543450653627254527}
   - component: {fileID: 919132149101648969}
   - component: {fileID: 2059353165}
+  - component: {fileID: 919132149101648971}
   - component: {fileID: 919132149101648968}
   - component: {fileID: 2059353164}
   - component: {fileID: 919132149101648966}
@@ -13573,6 +13557,20 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &919132149101648971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132149101648965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1de9e013fae54ca44b54e1840cfe5170, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 20
+  shield: 0
 --- !u!1 &954683107229652374
 GameObject:
   m_ObjectHideFlags: 0
