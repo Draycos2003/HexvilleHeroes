@@ -13,7 +13,7 @@ public class HealthBarController : MonoBehaviour
     [Header("HP Text")]
     [SerializeField] private TMP_Text hpText;
 
-    private enemyAINew enemy;
+    private enemyAI enemy;
     private playerController player;
     private int maxHP;
     private int maxShield;
@@ -34,7 +34,7 @@ public class HealthBarController : MonoBehaviour
         }
         else if (gameObject.CompareTag("Enemy"))
         {
-            enemy = GetComponent<enemyAINew>();
+            enemy = GetComponent<enemyAI>();
             if (enemy == null)
                 Debug.LogError($"HealthBarController on {name}: tagged Enemy but no enemyAI!", this);
         }
@@ -61,7 +61,7 @@ public class HealthBarController : MonoBehaviour
         // Grab max HP for the found object
         if (enemy != null)
         {
-            maxHP = enemy.currentHP;
+            maxHP = enemy.CurrentHP;
             maxShield = enemy.currentShield;
         }
         else if (player != null)
@@ -105,7 +105,7 @@ public class HealthBarController : MonoBehaviour
         }
         else if (gameObject.CompareTag("Enemy"))
         {
-            currentHP = enemy.currentHP;
+            currentHP = enemy.CurrentHP;
             currentShield = enemy.currentShield;
         }
 

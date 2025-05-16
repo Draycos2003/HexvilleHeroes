@@ -21,10 +21,9 @@ public class enemyAI : MonoBehaviour, IDamage
     public float faceTargetSpeed;
     public Transform target;
 
-    public int currentHP => HP;
+    public int CurrentHP => HP;
     public int currentShield => Shield;
     private float updatePathDeadline;
-    Color colorOrig;
 
     [Header("Range Fields")]
     public Transform shootPos;
@@ -37,7 +36,7 @@ public class enemyAI : MonoBehaviour, IDamage
     public GameObject weapon;
     public Collider hitPos;
 
-
+    private bool inRange;
 
     private EnemyReferences references;
 
