@@ -139,9 +139,9 @@ public class HealthBarController : MonoBehaviour
             }
         }
 
-         // Update HP Bar
-         if (healthBarFill != null)
-         {
+        // Update HP Bar
+        if (healthBarFill != null)
+        {
             if (currentHP > 0 && maxHP > 0)
             {
                 float hpPct = Mathf.Clamp01((float)currentHP / maxHP);
