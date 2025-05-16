@@ -1,20 +1,19 @@
 using UnityEngine;
+using System.Collections;
 
 public class playerController : MonoBehaviour, IDamage, IPickup
 {
+    // Player
+
+
+    [Header("Controllers")]
     [SerializeField] CharacterController controller;
     [SerializeField] LayerMask ignoreLayer;
 
-    // World 
+    [Header("World")] // World 
     [SerializeField] int gravity;
 
-    // Player
-    Vector3 moveDir;
-    Vector3 playerVel;
-
-    bool isSprinting;
-    int jumpCount;
-
+    [Header("Player")] // Player
     [SerializeField] int HP;
     public int HPOrig => HP;
     private int maxHP;
@@ -27,6 +26,18 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     [SerializeField] int jumpMax;
     [SerializeField] int jumpForce;
+
+    [Header("Weapon")] // Weapon
+    [SerializeField] int shootDamage;
+    [SerializeField] float shootRate;
+    [SerializeField] int shootDist;
+
+    Vector3 moveDir;
+    Vector3 playerVel;
+    bool isSprinting;
+    int jumpCount;
+
+    float shootTimer;
 
     private Animator animator;
 
@@ -99,13 +110,21 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     public void TakeDamage(int amount)
     {
         HP -= amount;
+        StartCoroutine(flashDamageScreen());
 
         // check for death
-
         if (HP <= 0)
         {
             gamemanager.instance.youLose(); 
         }
+    }
+
+    IEnumerator flashDamageScreen()
+    {
+        gamemanager.instance.playerDMGScreen.SetActive(true);
+        yield return new WaitForSeconds(0.1f);
+        gamemanager.instance.playerDMGScreen.SetActive(false);
+
     }
 
     public void gainHealth(int amount)

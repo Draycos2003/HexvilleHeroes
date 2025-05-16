@@ -1,12 +1,15 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Collider))]
 public class TeleportPad : MonoBehaviour
 {
     [Header("Where to send the player")]
-    [Tooltip("Destination Door")]
+    [Tooltip("Destination (Object)")]
     [SerializeField] private Transform targetDestination;
+    [Tooltip("Destination (Scene)")]
+    [SerializeField] private int sceneIndexToLoad;
 
     [Header("How far out from the door")]
     [Tooltip("Forward offset from the destination")]
@@ -40,8 +43,19 @@ public class TeleportPad : MonoBehaviour
     private IEnumerator TeleportRoutine(Transform playerT)
     {
         isOnCooldown = true;
-        col.enabled = false;
+        
+        // If target is scene tag
 
+        if (targetDestination != null && targetDestination.CompareTag("SceneLoader"))
+        {
+            Debug.Log("[Loading Scene Index " + sceneIndexToLoad);
+            SceneManager.LoadScene(sceneIndexToLoad);
+            yield break; // Breaks function
+        }
+
+        col.enabled = false;
+        
+        // Otherwise do normal teleport logic
         var cc = playerT.GetComponent<CharacterController>();
         if (cc != null) cc.enabled = false;
 

@@ -1,9 +1,14 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class HealthBarController : MonoBehaviour
 {
     [Header("HP Bar")]
     [SerializeField] private Transform healthBarFill;
+
+    [Header("HP Text")]
+    [SerializeField] private TMP_Text hpText;
 
     private enemyAI enemy;
     private playerController player;
@@ -13,17 +18,22 @@ public class HealthBarController : MonoBehaviour
 
     void Awake()
     {
-        // Cache references
+        // figure out if we're on the Player or an Enemy via tag
         if (gameObject.CompareTag("Player"))
         {
             player = GetComponent<playerController>();
+            if (player == null)
+                Debug.LogError($"HealthBarController on {name}: tagged Player but no playerController!", this);
         }
         else if (gameObject.CompareTag("Enemy"))
         {
             enemy = GetComponent<enemyAI>();
+            if (enemy == null)
+                Debug.LogError($"HealthBarController on {name}: tagged Enemy but no enemyAI!", this);
         }
         else
         {
+            Debug.LogError($"HealthBarController on {name}: wrong tag (must be Player or Enemy)", this);
             enabled = false;
             return;
         }
@@ -36,7 +46,7 @@ public class HealthBarController : MonoBehaviour
 
     void Start()
     {
-
+        // Grab max HP for the found object
         if (enemy != null)
             maxHP = enemy.currentHP;
         else if (player != null)
@@ -50,35 +60,41 @@ public class HealthBarController : MonoBehaviour
             return;
         }
 
-        // guard against zero (just in case)
+        // just in case someone set HPOrig to 0 in the Inspector
         if (maxHP <= 0)
         {
             Debug.LogWarning($"HealthBarController on {name}: maxHP ≤ 0, clamping to 1");
             maxHP = 1;
         }
+
+        // initial
+        if (hpText != null)
+            hpText.text = $"{maxHP}/{maxHP}";
     }
 
     void LateUpdate()
     {
         if (healthBarFill == null) return;
 
-        // pick current HP
+        // read current HP
         int currentHP = (enemy != null)
             ? enemy.currentHP
             : player.HPOrig;
 
-        // compute fill percentage
+        // percent full
         float pct = Mathf.Clamp01((float)currentHP / maxHP);
 
-        // scale X only
+        // compute and lerp the bar
         Vector3 targetScale = origFillScale;
         targetScale.x *= pct;
-
-        // smooth‐lerp
         healthBarFill.localScale = Vector3.Lerp(
             healthBarFill.localScale,
             targetScale,
             Time.deltaTime * lerpSpeed
         );
+
+        // update HP text
+        if (hpText != null)
+            hpText.text = $"{currentHP}/{maxHP}";
     }
 }
