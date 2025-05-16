@@ -110,6 +110,8 @@ public class HealthBarController : MonoBehaviour
             currentShield = enemy.currentShield;
         }
 
+
+        // Update Shield Bar
         if (shieldBarFill != null && currentShield > 0 && maxShield > 0)
         {
             float shieldPct = Mathf.Clamp01((float)currentShield / maxShield);
@@ -132,33 +134,32 @@ public class HealthBarController : MonoBehaviour
                 shieldTargetScale,
                 Time.deltaTime * lerpSpeed
             );
-
-            // HP BAR (only once shield is gone)
-            if (maxHP > 0)
-            {
-                float hpPct = Mathf.Clamp01((float)currentHP / maxHP);
-                Vector3 hpTargetScale = hporigFillScale;
-                hpTargetScale.x *= hpPct;
-
-                healthBarFill.localScale = Vector3.Lerp(
-                    healthBarFill.localScale,
-                    hpTargetScale,
-                    Time.deltaTime * lerpSpeed
-                );
-            }
-            else
-            {
-                // Fallback if maxHP is invalid
-                Vector3 hpTargetScale = hporigFillScale;
-                hpTargetScale.x = 0f;
-                healthBarFill.localScale = Vector3.Lerp(
-                    healthBarFill.localScale,
-                    hpTargetScale,
-                    Time.deltaTime * lerpSpeed
-                );
-            }
         }
 
+            // Update HP Bar
+         if (healthBarFill != null)
+         {
+            float hpPct = Mathf.Clamp01((float)currentHP / maxHP);
+            Vector3 hpTargetScale = hporigFillScale;
+            hpTargetScale.x *= hpPct;
+
+            healthBarFill.localScale = Vector3.Lerp(
+                healthBarFill.localScale,
+                hpTargetScale,
+                Time.deltaTime * lerpSpeed
+            );
+        }
+        else
+        {
+            // Fallback if maxHP is invalid
+            Vector3 hpTargetScale = hporigFillScale;
+            hpTargetScale.x = 0f;
+            healthBarFill.localScale = Vector3.Lerp(
+                healthBarFill.localScale,
+                hpTargetScale,
+                Time.deltaTime * lerpSpeed
+            );
+        }
         // Always update Health/Shield text so you see your real HP
         if (hpText != null)
             hpText.text = $"{currentHP + currentShield}/{maxHP + maxShield}";
