@@ -58,6 +58,7 @@ public class Damage : MonoBehaviour
         }
 
         IDamage damage = other.GetComponent<IDamage>();
+        
         if (damage != null && (type == DamageType.ranged || type == DamageType.casting))
         {
                 damage.TakeDamage(damageAmount);
