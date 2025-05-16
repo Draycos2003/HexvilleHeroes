@@ -11,6 +11,7 @@ public class Damage : MonoBehaviour
 
     [SerializeField] DamageType type;
     [SerializeField] Rigidbody body;
+    [SerializeField] playerAttack playerAttack;
 
     [SerializeField] int damageAmount;
     [SerializeField] int damageRate;
@@ -57,7 +58,8 @@ public class Damage : MonoBehaviour
         }
 
         IDamage damage = other.GetComponent<IDamage>();
-        if (damage != null && (type == DamageType.ranged || type == DamageType.melee || type == DamageType.casting || type == DamageType.casting))
+        
+        if (damage != null && (type == DamageType.ranged || type == DamageType.casting))
         {
                 damage.TakeDamage(damageAmount);
         }
@@ -91,12 +93,18 @@ public class Damage : MonoBehaviour
         {
             if(!isDamaging)
             {
-                StartCoroutine(damageOther(damage));
+                StartCoroutine(damageOverTime(damage));
             }
+        }
+        if (damage != null && type == DamageType.melee && playerAttack.isAttacking)
+        {
+            Debug.Log(other.name);
+            other.GetComponent<Animator>().SetTrigger("hit");
+            StartCoroutine(damageMelee(damage));
         }
     }
 
-    IEnumerator damageOther(IDamage damage)
+    IEnumerator damageOverTime(IDamage damage)
     {
         isDamaging = true;
         damage.TakeDamage(damageAmount);

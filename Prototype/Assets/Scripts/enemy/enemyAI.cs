@@ -42,7 +42,8 @@ public class enemyAI : MonoBehaviour, IDamage
 
             if (inRange == true)
             {
-                references.animate.SetBool("casting", inRange);   
+                references.animate.SetBool("casting", inRange);
+
             }
             else
             {
@@ -50,7 +51,7 @@ public class enemyAI : MonoBehaviour, IDamage
                 UpdatePath();
             }
 
-//          -- Faces target if still in range
+            //          -- Faces target if still in range
             if (references.navMesh.remainingDistance < references.navMesh.stoppingDistance)
             {
                 faceTarget();
