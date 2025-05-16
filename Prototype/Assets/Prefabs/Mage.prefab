@@ -1275,6 +1275,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9176521110088201726}
+  - component: {fileID: -3117723925587385500}
   - component: {fileID: 424115313170645497}
   - component: {fileID: 1789039313886536684}
   - component: {fileID: 3119387258145641240}
@@ -1312,6 +1313,30 @@ Transform:
   - {fileID: 153500925714996236}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -94.186, z: 0}
+--- !u!114 &-3117723925587385500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4736252399356697294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a916b528e6f2244ba6ff1ede11ee90f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyType: 0
+  HP: 0
+  Shield: 0
+  model: {fileID: 0}
+  faceTargetSpeed: 0
+  target: {fileID: 0}
+  shootPos: {fileID: 0}
+  bullet: {fileID: 0}
+  shootRate: 0
+  attackSpeed: 0
+  weapon: {fileID: 0}
+  hitPos: {fileID: 0}
 --- !u!114 &424115313170645497
 MonoBehaviour:
   m_ObjectHideFlags: 0
