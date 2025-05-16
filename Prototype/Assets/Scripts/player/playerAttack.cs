@@ -20,38 +20,28 @@ public class playerAttack : MonoBehaviour
 
     private void Update()
     {
-        Attack1();
-        Attack2();
+        Attack();
     }
 
-    public void Attack1()
+    public void Attack()
     {
-        if (Input.GetButton("Fire1"))
+
+        if (canAttack)
         {
-            if (canAttack)
+            if (Input.GetButton("Fire1"))
             {
                 isAttacking = true;
                 canAttack = false;
                 StartCoroutine(resetCooldown());
             }
         }
-    }
-
-    public void Attack2()
-    {
-        if (Input.GetButton("Fire1"))
-        {
-            if (canAttack)
-            {
-                isAttacking = true;
-                canAttack = false;
-                StartCoroutine(resetCooldown());
-            }
-        }
+           
     }
 
     IEnumerator resetCooldown()
     {
+        yield return new WaitForSeconds(0.1f);
+        isAttacking = false;
         yield return new WaitForSeconds(attackCooldown);
         canAttack = true;
     }
