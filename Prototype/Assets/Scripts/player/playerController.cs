@@ -15,8 +15,11 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     [Header("Player")] // Player
     [SerializeField] int HP;
+    [SerializeField] int Shield;
     public int HPOrig => HP;
     private int maxHP;
+    public int ShieldOrig => Shield;
+    private int maxShield;
 
     [SerializeField] int DEF;
     private int maxDEF;
