@@ -5,7 +5,15 @@ using UnityEngine.AI;
 
 public class enemyAI : MonoBehaviour, IDamage
 {
-    //  -- enemy qualities
+    public enum EnemyTypes
+    {
+        Range, 
+        Melee,
+    }
+
+    public EnemyTypes enemyType;
+    
+    [Header("Enemy Fields")]
     [SerializeField] int HP;
     [SerializeField] float faceTargetSpeed;
     public int currentHP => HP;
@@ -15,11 +23,16 @@ public class enemyAI : MonoBehaviour, IDamage
     [SerializeField] Renderer model;
 
 
-    //  -- shooting fields
-    [SerializeField] Transform shootPos;
-    [SerializeField] GameObject bullet;
-    [SerializeField] float shootRate;
+    [Header("Range Fields")]
+    public Transform shootPos;
+    public GameObject bullet;
+    public float shootRate;
     bool inRange;
+
+    [Header("Melee Fields")]
+    public float attackSpeed;
+    public GameObject weapon;
+    public Collider hitPos;
 
     private EnemyReferences references;
 
