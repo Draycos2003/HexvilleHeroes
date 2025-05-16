@@ -14,7 +14,12 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     [Header("Player")] // Player
     [SerializeField] int HP;
- 
+    public int HPOrig => HP;
+    private int maxHP;
+
+    [SerializeField] int DEF;
+    private int maxDEF;
+
     [SerializeField] int speed;
     [SerializeField] int sprintMod;
 

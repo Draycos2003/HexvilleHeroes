@@ -49,8 +49,16 @@ public class HealthBarController : MonoBehaviour
         // Grab max HP for the found object
         if (enemy != null)
             maxHP = enemy.currentHP;
-        else // player != null
+        else if (player != null)
+        {
             maxHP = player.HPOrig;
+        }
+        else
+        {
+            Debug.LogError("HealthBarController: no enemyAI or playerController found", this);
+            enabled = false;
+            return;
+        }
 
         // just in case someone set HPOrig to 0 in the Inspector
         if (maxHP <= 0)

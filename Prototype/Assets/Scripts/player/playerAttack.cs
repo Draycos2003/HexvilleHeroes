@@ -24,7 +24,6 @@ public class playerAttack : MonoBehaviour
         {
             isAttacking = true;
             canAttack = false;
-            animator.SetTrigger("attack1");
             StartCoroutine(resetCooldown());
         }
     }
@@ -35,21 +34,13 @@ public class playerAttack : MonoBehaviour
         {
             isAttacking = true;
             canAttack = false;
-            animator.SetTrigger("attack2");
             StartCoroutine(resetCooldown());
         }
     }
 
     IEnumerator resetCooldown()
     {
-        StartCoroutine(resetAttackBool());
         yield return new WaitForSeconds(attackCooldown);
         canAttack = true;
-    }
-
-    IEnumerator resetAttackBool()
-    {
-        yield return new WaitForSeconds(1.0f);
-        isAttacking = false;
     }
 }

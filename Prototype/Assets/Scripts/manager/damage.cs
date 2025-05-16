@@ -58,18 +58,9 @@ public class Damage : MonoBehaviour
         }
 
         IDamage damage = other.GetComponent<IDamage>();
-        if (damage != null)
+        if (damage != null && (type == DamageType.ranged || type == DamageType.casting))
         {
-            if (type == DamageType.melee && playerAttack.isAttacking)
-            {  
-                Debug.Log(other.name);
-                other.GetComponent<Animator>().SetTrigger("hit");
-                StartCoroutine(damageMelee(damage));
-            }
-            else if (type == DamageType.ranged || type == DamageType.casting)
-            {
                 damage.TakeDamage(damageAmount);
-            }
         }
 
         if (type == DamageType.ranged || type == DamageType.homing || type == DamageType.casting)
@@ -103,6 +94,12 @@ public class Damage : MonoBehaviour
             {
                 StartCoroutine(damageOverTime(damage));
             }
+        }
+        if (damage != null && type == DamageType.melee && playerAttack.isAttacking)
+        {
+            Debug.Log(other.name);
+            other.GetComponent<Animator>().SetTrigger("hit");
+            StartCoroutine(damageMelee(damage));
         }
     }
 
