@@ -26,7 +26,7 @@ public class enemyAI : MonoBehaviour, IDamage
 
     [Header("Range enemy Attribrutes")]
     public Transform shootPos;
-    public GameObject bullet;
+    public GameObject projectile;
     public float shootRate;
 
     [Header("Melee Enemy Attribrutes")]
@@ -59,14 +59,16 @@ public class enemyAI : MonoBehaviour, IDamage
             if (inRange == true)
             {
                 references.animate.SetBool("casting", inRange);
+                references.animate.SetBool("Attack", inRange);
             }
             else
             {
                 references.animate.SetBool("casting", inRange);
+                references.animate.SetBool("Attack", inRange);
                 UpdatePath();
             }
 
-            //          -- Faces target if still in range
+            // Faces target if still in range
             if (references.navMesh.remainingDistance < references.navMesh.stoppingDistance)
             {
                 faceTarget();
@@ -115,8 +117,8 @@ public class enemyAI : MonoBehaviour, IDamage
 
     void faceTarget()
     {
-        //      --  Creates a smoother rotation by using Slerp.
-        //      -- I use Slerp instead of lerp because i don't know what type of rotation the character could make it could be big but if not, it could be juddery using lerp so be safe with Slerp.
+        // Creates a smoother rotation by using Slerp.
+        // I use Slerp instead of lerp because i don't know what type of rotation the character could make it could be big but if not, it could be juddery using lerp so be safe with Slerp.
 
         Vector3 lookPos = target.position - transform.position;
         lookPos.y = 0;
@@ -127,12 +129,12 @@ public class enemyAI : MonoBehaviour, IDamage
 
     void shoot()
     {
-        Instantiate(bullet, shootPos.position, transform.rotation);
+        Instantiate(projectile, shootPos.position, transform.rotation);
     }
 
     private void UpdatePath()
     {
-        //      -- Updates the Path every 0.2 seconds instead of every frame like navMesh.SetDestination(target.postion)
+        // Updates the Path every 0.2 seconds instead of every frame like navMesh.SetDestination(target.postion)
         if (Time.time >= updatePathDeadline)
         {
             Debug.Log("Updating Path");

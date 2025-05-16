@@ -16,7 +16,7 @@ public class enemyEditor : Editor
         SerializedProperty enemyType = serializedObject.FindProperty("enemyType");
        
         SerializedProperty shootPoint = serializedObject.FindProperty("shootPos");
-        SerializedProperty projectile = serializedObject.FindProperty("bullet");
+        SerializedProperty projectile = serializedObject.FindProperty("projectile");
         SerializedProperty fireRate = serializedObject.FindProperty("shootRate");
        
         SerializedProperty attackSpeed = serializedObject.FindProperty("attackSpeed");
@@ -45,6 +45,7 @@ public class enemyEditor : Editor
             EditorGUILayout.PropertyField(model);
             EditorGUILayout.PropertyField(FTS);
             EditorGUILayout.PropertyField(targets);
+           
             EditorGUILayout.PropertyField(shootPoint);
             EditorGUILayout.PropertyField(projectile);
             EditorGUILayout.PropertyField(fireRate);
