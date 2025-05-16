@@ -1,19 +1,19 @@
 using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(EnemyAI))]
+[CustomEditor(typeof(enemyAI))]
 public class enemyEditor : Editor
 {
     public override void OnInspectorGUI()
     {              
-        EnemyAI stats = (EnemyAI)target; // target is the object that will be inspected. Meaning the enemy, And we cast the custom editor to it.
+        enemyAI stats = (enemyAI)target; // target is the object that will be inspected. Meaning the enemy, And we cast the custom editor to it.
 
         // All the fields for the enemy
         SerializedProperty HP = serializedObject.FindProperty("HP");
         SerializedProperty model = serializedObject.FindProperty("model");
         SerializedProperty FTS = serializedObject.FindProperty("faceTargetSpeed");
         SerializedProperty targets = serializedObject.FindProperty("target");
-        SerializedProperty enemyType = serializedObject.FindProperty("EnemyType");
+        SerializedProperty enemyType = serializedObject.FindProperty("enemyType");
        
         SerializedProperty shootPoint = serializedObject.FindProperty("shootPos");
         SerializedProperty projectile = serializedObject.FindProperty("bullet");
@@ -36,10 +36,10 @@ public class enemyEditor : Editor
         serializedObject.Update();
 
         // var to hold the enum
-        var type = (EnemyAI.EnemyTypes)enemyType.enumValueIndex;
+        var type = (enemyAI.EnemyTypes)enemyType.enumValueIndex;
 
         // apply range enemy attributes
-        if (type == EnemyAI.EnemyTypes.Ranged)
+        if (type == enemyAI.EnemyTypes.Range)
         {
             EditorGUILayout.PropertyField(HP);
             EditorGUILayout.PropertyField(model);
@@ -50,7 +50,7 @@ public class enemyEditor : Editor
             EditorGUILayout.PropertyField(fireRate);
         }
         // apply melee enemy attributes
-        else if (type == EnemyAI.EnemyTypes.Melee)
+        else if (type == enemyAI.EnemyTypes.Melee)
         {
             EditorGUILayout.PropertyField(HP);
             EditorGUILayout.PropertyField(model);
