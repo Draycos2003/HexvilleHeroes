@@ -58,6 +58,7 @@ public class Damage : MonoBehaviour
         }
 
         IDamage damage = other.GetComponent<IDamage>();
+        
         if (damage != null && (type == DamageType.ranged || type == DamageType.casting))
         {
                 damage.TakeDamage(damageAmount);
@@ -109,16 +110,5 @@ public class Damage : MonoBehaviour
         damage.TakeDamage(damageAmount);
         yield return new WaitForSeconds(damageRate);
         isDamaging = false;
-    }
-
-    IEnumerator damageMelee(IDamage damage)
-    {
-        playerAttack.isAttacking = true;
-        damage.TakeDamage(damageAmount);
-        gameObject.GetComponent<Collider>().isTrigger = false;
-
-        yield return new WaitForSeconds(damageRate);
-        playerAttack.isAttacking = false;
-        gameObject.GetComponent<Collider>().isTrigger = true;
     }
 }
