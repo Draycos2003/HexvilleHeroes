@@ -19,6 +19,7 @@ public class gamemanager : MonoBehaviour
 
     [Header("Player Objects")]
     public GameObject playerDMGScreen;
+    public GameObject playerShieldDMGScreen;
     public GameObject Player;
     public playerController PlayerScript;
 

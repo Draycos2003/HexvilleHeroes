@@ -20,6 +20,8 @@ public class HealthBarController : MonoBehaviour
     private Vector3 hporigFillScale;
     private Vector3 shieldorigFillScale;
     private float lerpSpeed = 5f;
+    private int currentHP = 0;
+    private int currentShield = 0;
 
     void Awake()
     {
@@ -95,13 +97,11 @@ public class HealthBarController : MonoBehaviour
 
         if (healthBarFill == null || shieldBarFill == null) return;
 
-        int currentHP = 0;
-        int currentShield = 0;
 
         if (gameObject.CompareTag("Player"))
         {
-            currentHP = player.HPOrig;
-            currentShield = player.ShieldOrig;
+            currentHP = player.HP;
+            currentShield = player.Shield;
         }
         else if (gameObject.CompareTag("Enemy"))
         {
@@ -109,9 +109,6 @@ public class HealthBarController : MonoBehaviour
             currentShield = enemy.currentShield;
         }
 
-        // Update shield bar only if shield > 0
-        if (shieldBarFill != null && currentShield > 0)
-        {
             float shieldPct = Mathf.Clamp01((float)currentShield / maxShield);
             Vector3 shieldTargetScale = shieldorigFillScale;
             shieldTargetScale.x *= shieldPct;
@@ -120,17 +117,7 @@ public class HealthBarController : MonoBehaviour
                 shieldTargetScale,
                 Time.deltaTime * lerpSpeed
             );
-        }
-
-        // Only start updating HP bar visually when shield is depleted
-        if (currentShield <= 0)
-        {
-            if (shieldBarFill != null)
-            {
-                Vector3 flat = shieldBarFill.localScale;
-                flat.x = 0f;
-                shieldBarFill.localScale = flat;
-            }
+           
             float hpPct = Mathf.Clamp01((float)currentHP / maxHP);
             Vector3 hpTargetScale = hporigFillScale;
             hpTargetScale.x *= hpPct;
@@ -139,7 +126,7 @@ public class HealthBarController : MonoBehaviour
                 hpTargetScale,
                 Time.deltaTime * lerpSpeed
             );
-        }
+        
 
         // Always update the text so player sees real HP count
         if (hpText != null)

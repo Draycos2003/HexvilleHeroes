@@ -14,15 +14,12 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     [SerializeField] int gravity;
 
     [Header("Player")] // Player
-    [SerializeField] int HP;
-    [SerializeField] int Shield;
+    [SerializeField] public int HP;
+    [SerializeField] public int Shield;
     public int HPOrig => HP;
     private int maxHP;
     public int ShieldOrig => Shield;
     private int maxShield;
-
-    [SerializeField] int DEF;
-    private int maxDEF;
 
     [SerializeField] int speed;
     [SerializeField] int sprintMod;
@@ -49,6 +46,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     {
         animator = GetComponent<Animator>();
         maxHP = HP;
+        maxShield = Shield;
     }
 
     // Update is called once per frame
@@ -112,9 +110,17 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     public void TakeDamage(int amount)
     {
-        HP -= amount;
-        StartCoroutine(flashDamageScreen());
-
+        if(Shield > 0)
+        {
+            Shield -= amount;
+            StartCoroutine(flashShieldDamageScreen());
+        }
+        else
+        {
+            HP -= amount;
+            StartCoroutine(flashDamageScreen());
+        }
+            
         // check for death
         if (HP <= 0)
         {
@@ -127,7 +133,13 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         gamemanager.instance.playerDMGScreen.SetActive(true);
         yield return new WaitForSeconds(0.1f);
         gamemanager.instance.playerDMGScreen.SetActive(false);
+    }
 
+    IEnumerator flashShieldDamageScreen()
+    {
+        gamemanager.instance.playerDMGScreen.SetActive(true);
+        yield return new WaitForSeconds(0.1f);
+        gamemanager.instance.playerDMGScreen.SetActive(false);
     }
 
     public void gainHealth(int amount)
@@ -148,12 +160,15 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     public void gainShield(int amount)
     {
         // check if player needs shield
-        if(DEF < maxDEF)
+        if(Shield < maxShield)
         {
-
+            Shield += amount;
         }
 
         // make sure shield doesn't exceed max
-
+        if(Shield > maxShield)
+        {
+            Shield = maxShield;
+        }
     }
 }
