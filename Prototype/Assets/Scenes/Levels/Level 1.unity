@@ -6596,6 +6596,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e6ce997d0f907224b8d9986ce588aeac, type: 3}
+--- !u!4 &1204456344 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7102026276897674469, guid: 01b56a5e184590a48b04f972db1f0e07, type: 3}
+  m_PrefabInstance: {fileID: 3034990887498670062}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1204547982 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: ff3dd0863e800db45b8c118547376677, type: 3}
@@ -11057,6 +11062,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 2054217453}
   m_SourcePrefab: {fileID: 100100000, guid: 0adf896e908c49e4ead9ec1f8c194b83, type: 3}
+--- !u!4 &2108039673 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2380349442865655239, guid: 06a4d7afda18c9443a19e29f9a9c54f9, type: 3}
+  m_PrefabInstance: {fileID: 1956764575}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2109600664
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11542,9 +11552,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1402859412297038860, guid: 01b56a5e184590a48b04f972db1f0e07, type: 3}
       propertyPath: target
+      value:
+      objectReference: {fileID: 0}
+    - target: {fileID: 1402859412297038860, guid: 01b56a5e184590a48b04f972db1f0e07, type: 3}
+      propertyPath: target
       value: 
-      objectReference: {fileID: 2380349443022224193}
-    - target: {fileID: 7102026276897674469, guid: 01b56a5e184590a48b04f972db1f0e07, type: 3}
+      objectReference: {fileID: 2108039673}
+    - target: {fileID: 4736252399356697294, guid: 01b56a5e184590a48b04f972db1f0e07, type: 3}
+      propertyPath: m_Name
+      value: Mage
+      objectReference: {fileID: 0}
+    - target: {fileID: 9176521110088201726, guid: 01b56a5e184590a48b04f972db1f0e07, type: 3}
       propertyPath: m_LocalPosition.x
       value: 32.02537
       objectReference: {fileID: 0}
@@ -12020,7 +12038,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 705507995}
-  - {fileID: 6001671649685075196}
+  - {fileID: 1956764575}
   - {fileID: 1888755601}
   - {fileID: 888641027}
   - {fileID: 865460487}
