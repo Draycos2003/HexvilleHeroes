@@ -13,30 +13,32 @@ public class enemyAI : MonoBehaviour, IDamage
 
     public EnemyTypes enemyType;
 
-    [Header("Melee Fields")]
-    [SerializeField] int Shield;
+    
 
     [Header("Enemy Fields")]
-    [SerializeField] int HP;
-    [SerializeField] Renderer model;
-    [SerializeField] float faceTargetSpeed;
-
+    public int HP;
+    public int Shield;
+    public Renderer model;
+    public  float faceTargetSpeed;
     public Transform target;
-
-    public int currentHP => HP;
-    public int currentShield => Shield;
-    private float updatePathDeadline;
     Color colorOrig;
 
+
+    public int CurrentHP => HP;
+    public int currentShield => Shield;
+    private float updatePathDeadline;
+
+    [Header("Range Fields")]
     public Transform shootPos;
     public GameObject bullet;
     public float shootRate;
-    bool inRange;
+
+    [Header("Melee")]
     public float attackSpeed;
     public GameObject weapon;
     public Collider hitPos;
 
-
+    private bool inRange;
 
     private EnemyReferences references;
 
