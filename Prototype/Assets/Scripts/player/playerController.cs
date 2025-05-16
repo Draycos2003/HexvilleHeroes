@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class playerController : MonoBehaviour, IDamage, IPickup
 {
@@ -31,7 +32,6 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     [SerializeField] float shootRate;
     [SerializeField] int shootDist;
 
-    public int HPOrig => HP;
     Vector3 moveDir;
     Vector3 playerVel;
     bool isSprinting;
@@ -110,13 +110,21 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     public void TakeDamage(int amount)
     {
         HP -= amount;
+        StartCoroutine(flashDamageScreen());
 
         // check for death
-
         if (HP <= 0)
         {
             gamemanager.instance.youLose(); 
         }
+    }
+
+    IEnumerator flashDamageScreen()
+    {
+        gamemanager.instance.playerDMGScreen.SetActive(true);
+        yield return new WaitForSeconds(0.1f);
+        gamemanager.instance.playerDMGScreen.SetActive(false);
+
     }
 
     public void gainHealth(int amount)
