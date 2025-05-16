@@ -84,8 +84,9 @@ public class HealthBarController : MonoBehaviour
         }
         else if (maxShield <= 0)
         {
-            Debug.LogWarning($"HealthBarController on {name}: maxShield ≤ 0, clamping to 1");
-            maxShield = 1;
+            Debug.LogWarning($"HealthBarController on {name}: maxShield ≤ 0");
+            maxShield = 0;
+            shieldBarFill.gameObject.SetActive(false);
         }
 
         // initial
@@ -109,26 +110,48 @@ public class HealthBarController : MonoBehaviour
             currentShield = enemy.currentShield;
         }
 
+        if (shieldBarFill != null && currentShield > 0 && maxShield > 0)
+        {
             float shieldPct = Mathf.Clamp01((float)currentShield / maxShield);
             Vector3 shieldTargetScale = shieldorigFillScale;
             shieldTargetScale.x *= shieldPct;
+
             shieldBarFill.localScale = Vector3.Lerp(
                 shieldBarFill.localScale,
                 shieldTargetScale,
                 Time.deltaTime * lerpSpeed
             );
-           
-            float hpPct = Mathf.Clamp01((float)currentHP / maxHP);
-            Vector3 hpTargetScale = hporigFillScale;
-            hpTargetScale.x *= hpPct;
-            healthBarFill.localScale = Vector3.Lerp(
-                healthBarFill.localScale,
-                hpTargetScale,
-                Time.deltaTime * lerpSpeed
-            );
-        
+        }
+        else
+        {
+            // Force shield bar to flat since shield is 0 or invalid
+            Vector3 flat = shieldBarFill.localScale;
+            flat.x = 0f;
+            shieldBarFill.localScale = flat;
 
-        // Always update the text so player sees real HP count
+            // HP BAR (only once shield is gone)
+            if (maxHP > 0)
+            {
+                float hpPct = Mathf.Clamp01((float)currentHP / maxHP);
+                Vector3 hpTargetScale = hporigFillScale;
+                hpTargetScale.x *= hpPct;
+
+                healthBarFill.localScale = Vector3.Lerp(
+                    healthBarFill.localScale,
+                    hpTargetScale,
+                    Time.deltaTime * lerpSpeed
+                );
+            }
+            else
+            {
+                // Fallback if maxHP is invalid
+                Vector3 flatHP = healthBarFill.localScale;
+                flatHP.x = 0f;
+                healthBarFill.localScale = flatHP;
+            }
+        }
+
+        // Always update Health/Shield text so you see your real HP
         if (hpText != null)
             hpText.text = $"{currentHP + currentShield}/{maxHP + maxShield}";
     }
