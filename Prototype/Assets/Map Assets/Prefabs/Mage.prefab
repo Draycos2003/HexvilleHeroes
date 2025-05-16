@@ -2192,6 +2192,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a916b528e6f2244ba6ff1ede11ee90f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyType: 0
   HP: 50
   faceTargetSpeed: 10
   target: {fileID: 0}
@@ -2199,6 +2200,9 @@ MonoBehaviour:
   shootPos: {fileID: 6062879582135962456}
   bullet: {fileID: 7491880933644792005, guid: 6cca30d082b92a447acd68472f7e8a07, type: 3}
   shootRate: 1
+  attackSpeed: 0
+  weapon: {fileID: 0}
+  hitPos: {fileID: 0}
 --- !u!114 &8947017652845992863
 MonoBehaviour:
   m_ObjectHideFlags: 0
