@@ -1326,14 +1326,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyType: 0
-  HP: 0
+  HP: 20
   Shield: 0
   model: {fileID: 0}
-  faceTargetSpeed: 0
-  target: {fileID: 0}
-  shootPos: {fileID: 0}
-  bullet: {fileID: 0}
-  shootRate: 0
+  faceTargetSpeed: 500
+  target: {fileID: 2380349442865655239, guid: 06a4d7afda18c9443a19e29f9a9c54f9, type: 3}
+  shootPos: {fileID: 4621154327462265569}
+  bullet: {fileID: 7491880933644792005, guid: 6cca30d082b92a447acd68472f7e8a07, type: 3}
+  shootRate: 10
   attackSpeed: 0
   weapon: {fileID: 0}
   hitPos: {fileID: 0}
@@ -2387,7 +2387,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4208395142930649478
 Transform:
   m_ObjectHideFlags: 0
