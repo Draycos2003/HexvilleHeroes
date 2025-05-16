@@ -12,27 +12,31 @@ public class enemyAI : MonoBehaviour, IDamage
     }
 
     public EnemyTypes enemyType;
-    
+
+    [Header("Melee Fields")]
+    [SerializeField] int Shield;
+
     [Header("Enemy Fields")]
     [SerializeField] int HP;
-    [SerializeField] float faceTargetSpeed;
-    public int currentHP => HP;
-    private float updatePathDeadline;
-    public Transform target;
-    Color colorOrig;
     [SerializeField] Renderer model;
+    [SerializeField] float faceTargetSpeed;
 
+    public Transform target;
 
-    [Header("Range Fields")]
+    public int currentHP => HP;
+    public int currentShield => Shield;
+    private float updatePathDeadline;
+    Color colorOrig;
+
     public Transform shootPos;
     public GameObject bullet;
     public float shootRate;
     bool inRange;
-
-    [Header("Melee Fields")]
     public float attackSpeed;
     public GameObject weapon;
     public Collider hitPos;
+
+
 
     private EnemyReferences references;
 
@@ -90,17 +94,24 @@ public class enemyAI : MonoBehaviour, IDamage
 
     public void TakeDamage(int Amount)
     {
-        HP -= Amount;
-
-        if (HP <= 0)
+        if (currentShield <= 0)
         {
-            Destroy(gameObject);
-            gamemanager.instance.updateGameGoal(-1);
+            HP -= Amount;
 
+            if (HP <= 0)
+            {
+                Destroy(gameObject);
+                gamemanager.instance.updateGameGoal(-1);
+
+            }
+            else
+            {
+                StartCoroutine(flashRed());
+            }
         }
         else
         {
-            StartCoroutine(flashRed());
+            Shield -= Amount;
         }
     }
 
