@@ -9,10 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8634220139657710383}
-  - component: {fileID: 6393213281199618775}
   - component: {fileID: 4542377516566019113}
   - component: {fileID: 493936546376018027}
   - component: {fileID: 8469519570472185729}
+  - component: {fileID: 6393213281199618775}
   - component: {fileID: 8952432250952785682}
   - component: {fileID: 5692802619990220303}
   m_Layer: 6
@@ -37,27 +37,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6393213281199618775
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5313342752221936860}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60e2c037ed6b84142a8069a5b8ea5e1b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  type: 0
-  body: {fileID: 8952432250952785682}
-  playerAttack: {fileID: 0}
-  damageAmount: 20
-  damageRate: 0
-  speed: 50
-  destroyTime: 1
-  damageAOE: 0
-  radiusAOE: 0
 --- !u!33 &4542377516566019113
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -132,6 +111,27 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6393213281199618775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5313342752221936860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60e2c037ed6b84142a8069a5b8ea5e1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 0
+  body: {fileID: 8952432250952785682}
+  playerAttack: {fileID: 0}
+  damageAmount: 20
+  damageRate: 0
+  speed: 50
+  destroyTime: 1
+  damageAOE: 0
+  radiusAOE: 0
 --- !u!54 &8952432250952785682
 Rigidbody:
   m_ObjectHideFlags: 0

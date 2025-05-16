@@ -8,15 +8,15 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 8634220139657710383}
-  - component: {fileID: 6393213281199618775}
-  - component: {fileID: 4542377516566019113}
-  - component: {fileID: 493936546376018027}
-  - component: {fileID: 8469519570472185729}
-  - component: {fileID: 8952432250952785682}
-  - component: {fileID: 5692802619990220303}
+  - component: {fileID: 9000913925902278342}
+  - component: {fileID: 8398921622455410107}
+  - component: {fileID: 7766872069266045166}
+  - component: {fileID: 1385154885869746270}
+  - component: {fileID: 254209579839810770}
+  - component: {fileID: 1687214239478801066}
+  - component: {fileID: 2328174950967161162}
   m_Layer: 6
-  m_Name: FireBall
+  m_Name: Missle
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -52,7 +52,7 @@ MonoBehaviour:
   type: 0
   body: {fileID: 8952432250952785682}
   playerAttack: {fileID: 0}
-  damageAmount: 20
+  damageAmount: 5
   damageRate: 0
   speed: 50
   destroyTime: 1
@@ -132,13 +132,13 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!54 &8952432250952785682
+--- !u!54 &1687214239478801066
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5313342752221936860}
+  m_GameObject: {fileID: 7491880933644792005}
   serializedVersion: 4
   m_Mass: 1
   m_Drag: 0
@@ -159,7 +159,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!96 &5692802619990220303
+--- !u!96 &2328174950967161162
 TrailRenderer:
   serializedVersion: 3
   m_ObjectHideFlags: 0
