@@ -13,16 +13,13 @@ public class enemyAI : MonoBehaviour, IDamage
 
     public EnemyTypes enemyType;
 
-    
 
     [Header("Enemy Fields")]
     public int HP;
     public int Shield;
     public Renderer model;
-    public  float faceTargetSpeed;
+    public float faceTargetSpeed;
     public Transform target;
-    Color colorOrig;
-
 
     public int CurrentHP => HP;
     public int currentShield => Shield;
@@ -32,16 +29,16 @@ public class enemyAI : MonoBehaviour, IDamage
     public Transform shootPos;
     public GameObject bullet;
     public float shootRate;
+    bool inRange;
 
-    [Header("Melee")]
+    [Header("Melee Fields")]
     public float attackSpeed;
     public GameObject weapon;
     public Collider hitPos;
 
-    private bool inRange;
+    Color colorOrig;
 
     private EnemyReferences references;
-
     private void Awake()
     {
         references = GetComponent<EnemyReferences>();
@@ -49,7 +46,7 @@ public class enemyAI : MonoBehaviour, IDamage
 
     void Start()
     {
-        colorOrig = model.material.color; // Starter color
+       colorOrig = model.material.color; // Starter color
         gamemanager.instance.updateGameGoal(1); // total enemy count
     }
 

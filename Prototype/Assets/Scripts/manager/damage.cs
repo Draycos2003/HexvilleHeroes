@@ -47,7 +47,7 @@ public class Damage : MonoBehaviour
             body.linearVelocity = (gamemanager.instance.Player.transform.position - transform.position).normalized * speed * Time.deltaTime;
         }
 
-        rangeAOE = gamemanager.instance.Player.transform.position;
+        //rangeAOE = gamemanager.instance.Player.transform.position;
     }
 
     private void OnTriggerEnter(Collider other)
