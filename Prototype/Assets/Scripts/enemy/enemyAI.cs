@@ -36,7 +36,7 @@ public class enemyAI : MonoBehaviour, IDamage
     public GameObject weapon;
     public Collider hitPos;
 
-    private bool inRange;
+    Color colorOrig;
 
     private EnemyReferences references;
 
@@ -47,7 +47,7 @@ public class enemyAI : MonoBehaviour, IDamage
 
     void Start()
     {
-        colorOrig = model.material.color; // Starter color
+       Color colorOrig = model.material.color; // Starter color
         gamemanager.instance.updateGameGoal(1); // total enemy count
     }
 
