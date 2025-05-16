@@ -2180,6 +2180,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthBarFill: {fileID: 4341805618437198526}
+  shieldBarFill: {fileID: 0}
   hpText: {fileID: 3069554464213236587}
 --- !u!114 &8261589302897798510
 MonoBehaviour:
@@ -2194,10 +2195,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyType: 0
+  Shield: 0
   HP: 50
+  model: {fileID: 5984132666329031490}
   faceTargetSpeed: 10
   target: {fileID: 0}
-  model: {fileID: 5984132666329031490}
   shootPos: {fileID: 6062879582135962456}
   bullet: {fileID: 7491880933644792005, guid: 6cca30d082b92a447acd68472f7e8a07, type: 3}
   shootRate: 1
