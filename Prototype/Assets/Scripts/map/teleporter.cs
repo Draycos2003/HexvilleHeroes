@@ -51,23 +51,25 @@ public class TeleportPad : MonoBehaviour
             Debug.Log("[Loading Scene Index " + sceneIndexToLoad);
             SceneManager.LoadScene(sceneIndexToLoad);
             yield break; // Breaks function
+        } 
+        else
+        {
+            col.enabled = false;
+
+            // Otherwise do normal teleport logic
+            var cc = playerT.GetComponent<CharacterController>();
+            if (cc != null) cc.enabled = false;
+
+            Vector3 dest = targetDestination.position
+                         + targetDestination.forward * forwardOffset
+                         + Vector3.up * upwardOffset;
+            playerT.SetPositionAndRotation(dest, targetDestination.rotation);
+
+            if (cc != null) cc.enabled = true;
+            yield return new WaitForSeconds(teleportCooldown);
+
+            col.enabled = true;
+            isOnCooldown = false;
         }
-
-        col.enabled = false;
-        
-        // Otherwise do normal teleport logic
-        var cc = playerT.GetComponent<CharacterController>();
-        if (cc != null) cc.enabled = false;
-
-        Vector3 dest = targetDestination.position
-                     + targetDestination.forward * forwardOffset
-                     + Vector3.up * upwardOffset;
-        playerT.SetPositionAndRotation(dest, targetDestination.rotation);
-
-        if (cc != null) cc.enabled = true;
-        yield return new WaitForSeconds(teleportCooldown);
-
-        col.enabled = true;
-        isOnCooldown = false;
     }
 }
