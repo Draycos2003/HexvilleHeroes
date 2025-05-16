@@ -129,8 +129,6 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     public void gainHealth(int amount)
     {
-        Debug.Log("HP");
-
         // check if player is damaged
         if (HP < maxHP)
         {
@@ -146,9 +144,11 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     public void gainShield(int amount)
     {
-        Debug.Log("Shield");
-
         // check if player needs shield
+        if(DEF < maxDEF)
+        {
+
+        }
 
         // make sure shield doesn't exceed max
 

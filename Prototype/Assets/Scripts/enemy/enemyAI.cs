@@ -15,6 +15,7 @@ public class enemyAI : MonoBehaviour, IDamage
     
     [Header("Enemy Fields")]
     [SerializeField] int HP;
+    [SerializeField] int Shield;
     [SerializeField] float faceTargetSpeed;
     public int currentHP => HP;
     private float updatePathDeadline;
@@ -23,13 +24,10 @@ public class enemyAI : MonoBehaviour, IDamage
     [SerializeField] Renderer model;
 
 
-    [Header("Range Fields")]
     public Transform shootPos;
     public GameObject bullet;
     public float shootRate;
     bool inRange;
-
-    [Header("Melee Fields")]
     public float attackSpeed;
     public GameObject weapon;
     public Collider hitPos;

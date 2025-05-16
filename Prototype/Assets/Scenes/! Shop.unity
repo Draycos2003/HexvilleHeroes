@@ -1847,7 +1847,7 @@ BoxCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
@@ -4682,7 +4682,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2146985642}
   - component: {fileID: 2146985643}
-  - component: {fileID: 2146985644}
   m_Layer: 3
   m_Name: PickUp
   m_TagString: Untagged
@@ -4726,18 +4725,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &2146985644
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2146985641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1de9e013fae54ca44b54e1840cfe5170, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &64885059706389839
 RectTransform:
   m_ObjectHideFlags: 0
