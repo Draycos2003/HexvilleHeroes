@@ -5,20 +5,36 @@ using UnityEngine.AI;
 
 public class enemyAI : MonoBehaviour, IDamage
 {
+    public enum EnemyTypes
+    {
+        Melee, 
+        Range
+    }
+
+    public EnemyTypes enemyType;
+
     //  -- enemy qualities
-    [SerializeField] int HP;
-    [SerializeField] float faceTargetSpeed;
+    [Header("Enemy Attribrutes")]
+    public int HP;
+    public Renderer model;
+    public float faceTargetSpeed;
     public int currentHP => HP;
     private float updatePathDeadline;
     public Transform target;
     Color colorOrig;
-    [SerializeField] Renderer model;
 
 
-    //  -- shooting fields
-    [SerializeField] Transform shootPos;
-    [SerializeField] GameObject bullet;
-    [SerializeField] float shootRate;
+    [Header("Range enemy Attribrutes")]
+    public Transform shootPos;
+    public GameObject projectile;
+    public float shootRate;
+
+    [Header("Melee Enemy Attribrutes")]
+    public float attackSpeed;
+    public GameObject weapon;
+    public Collider hitPos;
+
+
     bool inRange;
 
     private EnemyReferences references;
@@ -43,15 +59,16 @@ public class enemyAI : MonoBehaviour, IDamage
             if (inRange == true)
             {
                 references.animate.SetBool("casting", inRange);
-
+                references.animate.SetBool("Attack", inRange);
             }
             else
             {
                 references.animate.SetBool("casting", inRange);
+                references.animate.SetBool("Attack", inRange);
                 UpdatePath();
             }
 
-            //          -- Faces target if still in range
+            // Faces target if still in range
             if (references.navMesh.remainingDistance < references.navMesh.stoppingDistance)
             {
                 faceTarget();
@@ -69,7 +86,7 @@ public class enemyAI : MonoBehaviour, IDamage
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.tag ==("Player"))
+        if (other.tag == ("Player"))
         {
             inRange = false;
         }
@@ -100,8 +117,8 @@ public class enemyAI : MonoBehaviour, IDamage
 
     void faceTarget()
     {
-//      --  Creates a smoother rotation by using Slerp.
-//      -- I use Slerp instead of lerp because i don't know what type of rotation the character could make it could be big but if not, it could be juddery using lerp so be safe with Slerp.
+        // Creates a smoother rotation by using Slerp.
+        // I use Slerp instead of lerp because i don't know what type of rotation the character could make it could be big but if not, it could be juddery using lerp so be safe with Slerp.
 
         Vector3 lookPos = target.position - transform.position;
         lookPos.y = 0;
@@ -112,12 +129,12 @@ public class enemyAI : MonoBehaviour, IDamage
 
     void shoot()
     {
-        Instantiate(bullet, shootPos.position, transform.rotation);
+        Instantiate(projectile, shootPos.position, transform.rotation);
     }
 
     private void UpdatePath()
     {
-//      -- Updates the Path every 0.2 seconds instead of every frame like navMesh.SetDestination(target.postion)
+        // Updates the Path every 0.2 seconds instead of every frame like navMesh.SetDestination(target.postion)
         if (Time.time >= updatePathDeadline)
         {
             Debug.Log("Updating Path");
