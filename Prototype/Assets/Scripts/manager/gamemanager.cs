@@ -12,8 +12,14 @@ public class gamemanager : MonoBehaviour
     [SerializeField] GameObject MenuWin;
     [SerializeField] GameObject MenuLose;
 
+    [Header("Match Timer")]
+    [SerializeField] TMP_Text winMessageText;
+    private float matchTime;
+    private bool matchEnded;
+
     [Header("Player Objects")]
     public GameObject playerDMGScreen;
+    public GameObject playerShieldDMGScreen;
     public GameObject Player;
     public playerController PlayerScript;
 
@@ -49,6 +55,10 @@ public class gamemanager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!isPaused && !matchEnded)
+        {
+            matchTime += Time.deltaTime;
+        }
         if (Input.GetButtonDown("Cancel"))
         {
             if (MenuActive == null)
@@ -97,9 +107,27 @@ public class gamemanager : MonoBehaviour
         gameGoalCountText.text = gameGoalCount.ToString("F0");
         if (gameGoalCount <= 0)
         {
+            matchEnded = true;
             statePause();
             MenuActive = MenuWin;
             MenuActive.SetActive(true);
+
+            // update win text
+            if (winMessageText != null)
+            {
+                winMessageText.text = "You successfully beat the level in " + MatchTime() + "!";
+            }
         }
+    }
+
+    // calculate match time for hours minutes and seconds
+    private string MatchTime()
+    {
+        int totalSeconds = Mathf.FloorToInt(matchTime);
+        int hours = totalSeconds / 3600;
+        int minutes = (totalSeconds % 3600) / 60;
+        int seconds = totalSeconds % 60;
+
+        return string.Format("{0}:{1:00}:{2:00}", hours, minutes, seconds);
     }
 }

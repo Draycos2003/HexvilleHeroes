@@ -12,16 +12,18 @@ public class enemyAI : MonoBehaviour, IDamage
     }
 
     public EnemyTypes enemyType;
-    
-    [Header("Enemy Fields")]
-    [SerializeField] int HP;
-    [SerializeField] float faceTargetSpeed;
-    public int currentHP => HP;
-    private float updatePathDeadline;
-    public Transform target;
-    Color colorOrig;
-    [SerializeField] Renderer model;
 
+
+    [Header("Enemy Fields")]
+    public int HP;
+    public int Shield;
+    public Renderer model;
+    public float faceTargetSpeed;
+    public Transform target;
+
+    public int CurrentHP => HP;
+    public int currentShield => Shield;
+    private float updatePathDeadline;
 
     [Header("Range Fields")]
     public Transform shootPos;
@@ -34,8 +36,9 @@ public class enemyAI : MonoBehaviour, IDamage
     public GameObject weapon;
     public Collider hitPos;
 
-    private EnemyReferences references;
+    Color colorOrig;
 
+    private EnemyReferences references;
     private void Awake()
     {
         references = GetComponent<EnemyReferences>();
@@ -43,7 +46,7 @@ public class enemyAI : MonoBehaviour, IDamage
 
     void Start()
     {
-        colorOrig = model.material.color; // Starter color
+       colorOrig = model.material.color; // Starter color
         gamemanager.instance.updateGameGoal(1); // total enemy count
     }
 
@@ -90,17 +93,24 @@ public class enemyAI : MonoBehaviour, IDamage
 
     public void TakeDamage(int Amount)
     {
-        HP -= Amount;
-
-        if (HP <= 0)
+        if (currentShield <= 0)
         {
-            Destroy(gameObject);
-            gamemanager.instance.updateGameGoal(-1);
+            HP -= Amount;
 
+            if (HP <= 0)
+            {
+                Destroy(gameObject);
+                gamemanager.instance.updateGameGoal(-1);
+
+            }
+            else
+            {
+                StartCoroutine(flashRed());
+            }
         }
         else
         {
-            StartCoroutine(flashRed());
+            Shield -= Amount;
         }
     }
 

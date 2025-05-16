@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class pickupItem : MonoBehaviour 
+public class pickupItem : MonoBehaviour
 {
     [SerializeField] Transform respawnPos;
     [SerializeField] GameObject item;
@@ -32,10 +32,12 @@ public class pickupItem : MonoBehaviour
         {
             if (type == boostType.health)
             {
+                Debug.Log("GAIN HP");
                 item.gainHealth(healthAmount);
             }
             if (type == boostType.shield)
             {
+                Debug.Log("GAIN DEF");
                 item.gainShield(shieldAmount);
             }
         }
@@ -49,9 +51,6 @@ public class pickupItem : MonoBehaviour
 
     IEnumerator respawn()
     {
-        Destroy(gameObject);
         yield return new WaitForSeconds(respawnRate);
-        Instantiate(item, respawnPos.position, transform.rotation);
-
     }
 }
