@@ -96,7 +96,7 @@ public class Damage : MonoBehaviour
                 StartCoroutine(damageOverTime(damage));
             }
         }
-        if (damage != null && type == DamageType.melee && playerAttack.isAttacking)
+        if (damage != null && (type == DamageType.melee && playerAttack.isAttacking))
         {
             Debug.Log(other.name);
             other.GetComponent<Animator>().SetTrigger("hit");

@@ -18,23 +18,35 @@ public class playerAttack : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
-    public void OnAttack1(InputValue input)
+    private void Update()
     {
-        if (canAttack)
+        Attack1();
+        Attack2();
+    }
+
+    public void Attack1()
+    {
+        if (Input.GetButton("Fire1"))
         {
-            isAttacking = true;
-            canAttack = false;
-            StartCoroutine(resetCooldown());
+            if (canAttack)
+            {
+                isAttacking = true;
+                canAttack = false;
+                StartCoroutine(resetCooldown());
+            }
         }
     }
 
-    public void OnAttack2(InputValue input)
+    public void Attack2()
     {
-        if (canAttack)
+        if (Input.GetButton("Fire1"))
         {
-            isAttacking = true;
-            canAttack = false;
-            StartCoroutine(resetCooldown());
+            if (canAttack)
+            {
+                isAttacking = true;
+                canAttack = false;
+                StartCoroutine(resetCooldown());
+            }
         }
     }
 
