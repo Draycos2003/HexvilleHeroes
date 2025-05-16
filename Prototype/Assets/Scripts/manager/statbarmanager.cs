@@ -91,7 +91,7 @@ public class HealthBarController : MonoBehaviour
 
         // initial
         if (hpText != null)
-        hpText.text = $"{maxHP + maxShield}/{maxHP + maxShield}";
+            hpText.text = $"{maxHP + maxShield}/{maxHP + maxShield}";
     }
     void LateUpdate()
     {
@@ -125,9 +125,13 @@ public class HealthBarController : MonoBehaviour
         else
         {
             // Force shield bar to flat since shield is 0 or invalid
-            Vector3 flat = shieldBarFill.localScale;
-            flat.x = 0f;
-            shieldBarFill.localScale = flat;
+            Vector3 shieldTargetScale = shieldorigFillScale;
+            shieldTargetScale.x = 0f;
+            shieldBarFill.localScale = Vector3.Lerp(
+                shieldBarFill.localScale,
+                shieldTargetScale,
+                Time.deltaTime * lerpSpeed
+            );
 
             // HP BAR (only once shield is gone)
             if (maxHP > 0)
@@ -145,9 +149,13 @@ public class HealthBarController : MonoBehaviour
             else
             {
                 // Fallback if maxHP is invalid
-                Vector3 flatHP = healthBarFill.localScale;
-                flatHP.x = 0f;
-                healthBarFill.localScale = flatHP;
+                Vector3 hpTargetScale = hporigFillScale;
+                hpTargetScale.x = 0f;
+                healthBarFill.localScale = Vector3.Lerp(
+                    healthBarFill.localScale,
+                    hpTargetScale,
+                    Time.deltaTime * lerpSpeed
+                );
             }
         }
 
