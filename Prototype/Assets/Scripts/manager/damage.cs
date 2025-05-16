@@ -19,8 +19,6 @@ public class Damage : MonoBehaviour
     [SerializeField] int damageAOE;
     [SerializeField] float radiusAOE;
 
-    [SerializeField] playerAttack playerAttack;
-
     Vector2 centerAOE;
     Vector2 rangeAOE;
    
@@ -61,16 +59,7 @@ public class Damage : MonoBehaviour
         IDamage damage = other.GetComponent<IDamage>();
         if (damage != null && (type == DamageType.ranged || type == DamageType.melee || type == DamageType.casting || type == DamageType.casting))
         {
-            if (type == DamageType.melee && playerAttack.isAttacking)
-            {
-                Debug.Log(other.name);
-                other.GetComponent<Animator>().SetTrigger("hit");
                 damage.TakeDamage(damageAmount);
-            }
-            else
-            {
-                damage.TakeDamage(damageAmount);
-            }
         }
 
         if (type == DamageType.ranged || type == DamageType.homing || type == DamageType.casting)
