@@ -28,6 +28,7 @@ public class Damage : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+
         if (type == DamageType.ranged || type == DamageType.homing || type == DamageType.casting)
         {
             Destroy(gameObject, destroyTime);
@@ -115,13 +116,11 @@ public class Damage : MonoBehaviour
     IEnumerator damageMelee(IDamage damage)
     {
         playerAttack.isAttacking = true;
-        damageAmount = gamemanager.instance.DamageUp(damageAmount);
         damage.TakeDamage(damageAmount);
         gameObject.GetComponent<Collider>().isTrigger = false;
 
         yield return new WaitForSeconds(damageRate);
         playerAttack.isAttacking = false;
         gameObject.GetComponent<Collider>().isTrigger = true;
-        damageAmount = gamemanager.instance.DamageUp(damageAmount);
     }
 }

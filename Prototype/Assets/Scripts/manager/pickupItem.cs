@@ -13,14 +13,14 @@ public class pickupItem : MonoBehaviour
     [SerializeField] int healthAmount;
     [SerializeField] int shieldAmount;
 
-    [SerializeField] public int damageMultiplier;
-    [SerializeField] public int speedMultiplier;
+    public int damageMultiplier = 2;
+    public int speedMultiplier = 2;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void start()
     {
         spawn();
-    }
+}
 
     // Update is called once per frame
     void Update()

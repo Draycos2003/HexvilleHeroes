@@ -47,7 +47,6 @@ public class gamemanager : MonoBehaviour
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
         }
-
         
     }
 
@@ -138,9 +137,23 @@ public class gamemanager : MonoBehaviour
 
     public int DamageUp(int amount)
     {
-        if(pickUp.damageMultiplier >= 1)
+        int damageMult = pickUp.damageMultiplier;
+        int speedMult = pickUp.speedMultiplier;
+
+        if (damageMult >= 1)
         {
-            amount *= pickUp.damageMultiplier;
+            amount *= damageMult;
+        }
+        return amount;
+    }
+
+    public int DamageOrig(int amount)
+    {
+        int damageMult = pickUp.damageMultiplier;
+        int speedMult = pickUp.speedMultiplier;
+        if (damageMult >= 1)
+        {
+            amount /= damageMult;
         }
         return amount;
     }
