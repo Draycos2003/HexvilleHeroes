@@ -10,6 +10,7 @@ public class enemyEditor : Editor
 
         // All the fields for the enemy
         SerializedProperty HP = serializedObject.FindProperty("HP");
+        SerializedProperty Shield = serializedObject.FindProperty("Shield");
         SerializedProperty model = serializedObject.FindProperty("model");
         SerializedProperty FTS = serializedObject.FindProperty("faceTargetSpeed");
         SerializedProperty targets = serializedObject.FindProperty("target");
@@ -42,6 +43,7 @@ public class enemyEditor : Editor
         if (type == enemyAI.EnemyTypes.Range)
         {
             EditorGUILayout.PropertyField(HP);
+            EditorGUILayout.PropertyField(Shield);
             EditorGUILayout.PropertyField(model);
             EditorGUILayout.PropertyField(FTS);
             EditorGUILayout.PropertyField(targets);
@@ -53,6 +55,7 @@ public class enemyEditor : Editor
         else if (type == enemyAI.EnemyTypes.Melee)
         {
             EditorGUILayout.PropertyField(HP);
+            EditorGUILayout.PropertyField(Shield);
             EditorGUILayout.PropertyField(model);
             EditorGUILayout.PropertyField(FTS);
             EditorGUILayout.PropertyField(targets);

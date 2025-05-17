@@ -25,6 +25,8 @@ public class gamemanager : MonoBehaviour
 
     public bool isPaused;
 
+    public pickupItem pickUp;
+
     [Header("Enemy Info")]
     [SerializeField] TMP_Text gameGoalCountText;
 
@@ -45,10 +47,12 @@ public class gamemanager : MonoBehaviour
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
         }
+        
     }
 
     void Start()
     {
+        DontDestroyOnLoad(Player);
         PlayerScript = Player.GetComponent<playerController>();
     }
 

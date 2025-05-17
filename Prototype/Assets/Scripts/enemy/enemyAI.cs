@@ -39,14 +39,11 @@ public class enemyAI : MonoBehaviour, IDamage
     Color colorOrig;
 
     private EnemyReferences references;
-    private void Awake()
-    {
-        references = GetComponent<EnemyReferences>();
-    }
 
     void Start()
     {
-       colorOrig = model.material.color; // Starter color
+        references = GetComponent<EnemyReferences>();
+        colorOrig = model.material.color; // Starter color
         gamemanager.instance.updateGameGoal(1); // total enemy count
     }
 

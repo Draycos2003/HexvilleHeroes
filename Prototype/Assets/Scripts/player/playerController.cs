@@ -9,6 +9,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     [Header("Controllers")]
     [SerializeField] CharacterController controller;
     [SerializeField] LayerMask ignoreLayer;
+    [SerializeField] Damage damage;
 
     [Header("World")] // World 
     [SerializeField] int gravity;
@@ -44,6 +45,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        damage = gameObject.GetComponentInChildren<Damage>();
         animator = GetComponent<Animator>();
         maxHP = HP;
         maxShield = Shield;
@@ -170,5 +172,19 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         {
             Shield = maxShield;
         }
+    }
+
+    public void gainDamage(int amount)
+    {
+        if (damage != null)
+        {
+            Debug.Log("HAHAHA");
+            damage.damageAmount += amount;
+        }
+    }
+
+    public void gainSpeed(int amount)
+    {
+        speed += amount;
     }
 }

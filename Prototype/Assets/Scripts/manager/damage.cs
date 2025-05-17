@@ -13,7 +13,7 @@ public class Damage : MonoBehaviour
     [SerializeField] Rigidbody body;
     [SerializeField] playerAttack playerAttack;
 
-    [SerializeField] int damageAmount;
+    [SerializeField] public int damageAmount;
     [SerializeField] int damageRate;
     [SerializeField] int speed;
     [SerializeField] int destroyTime;
@@ -28,6 +28,7 @@ public class Damage : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+
         if (type == DamageType.ranged || type == DamageType.homing || type == DamageType.casting)
         {
             Destroy(gameObject, destroyTime);
@@ -96,7 +97,7 @@ public class Damage : MonoBehaviour
                 StartCoroutine(damageOverTime(damage));
             }
         }
-        if (damage != null && type == DamageType.melee && playerAttack.isAttacking)
+        if (damage != null && (type == DamageType.melee && playerAttack.isAttacking))
         {
             Debug.Log(other.name);
             other.GetComponent<Animator>().SetTrigger("hit");
