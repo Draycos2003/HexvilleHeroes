@@ -25,6 +25,8 @@ public class gamemanager : MonoBehaviour
 
     public bool isPaused;
 
+    public pickupItem pickUp;
+
     [Header("Enemy Info")]
     [SerializeField] TMP_Text gameGoalCountText;
 
@@ -129,5 +131,14 @@ public class gamemanager : MonoBehaviour
         int seconds = totalSeconds % 60;
 
         return string.Format("{0}:{1:00}:{2:00}", hours, minutes, seconds);
+    }
+
+    public int DamageUp(int amount)
+    {
+        if(pickUp.damageMultiplier >= 1)
+        {
+            amount *= pickUp.damageMultiplier;
+        }
+        return amount;
     }
 }
