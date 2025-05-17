@@ -49,6 +49,7 @@ public class gamemanager : MonoBehaviour
 
     void Start()
     {
+        DontDestroyOnLoad(Player);
         PlayerScript = Player.GetComponent<playerController>();
     }
 
