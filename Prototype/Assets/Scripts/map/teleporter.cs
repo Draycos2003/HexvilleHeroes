@@ -1,12 +1,15 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Collider))]
 public class TeleportPad : MonoBehaviour
 {
     [Header("Where to send the player")]
-    [Tooltip("Destination Door")]
+    [Tooltip("Destination (Object)")]
     [SerializeField] private Transform targetDestination;
+    [Tooltip("Destination (Scene)")]
+    [SerializeField] private int sceneIndexToLoad;
 
     [Header("How far out from the door")]
     [Tooltip("Forward offset from the destination")]
@@ -40,20 +43,33 @@ public class TeleportPad : MonoBehaviour
     private IEnumerator TeleportRoutine(Transform playerT)
     {
         isOnCooldown = true;
-        col.enabled = false;
+        
+        // If target is scene tag
 
-        var cc = playerT.GetComponent<CharacterController>();
-        if (cc != null) cc.enabled = false;
+        if (targetDestination != null && targetDestination.CompareTag("SceneLoader"))
+        {
+            Debug.Log("[Loading Scene Index " + sceneIndexToLoad);
+            SceneManager.LoadScene(sceneIndexToLoad);
+            yield break; // Breaks function
+        } 
+        else
+        {
+            col.enabled = false;
 
-        Vector3 dest = targetDestination.position
-                     + targetDestination.forward * forwardOffset
-                     + Vector3.up * upwardOffset;
-        playerT.SetPositionAndRotation(dest, targetDestination.rotation);
+            // Otherwise do normal teleport logic
+            var cc = playerT.GetComponent<CharacterController>();
+            if (cc != null) cc.enabled = false;
 
-        if (cc != null) cc.enabled = true;
-        yield return new WaitForSeconds(teleportCooldown);
+            Vector3 dest = targetDestination.position
+                         + targetDestination.forward * forwardOffset
+                         + Vector3.up * upwardOffset;
+            playerT.SetPositionAndRotation(dest, targetDestination.rotation);
 
-        col.enabled = true;
-        isOnCooldown = false;
+            if (cc != null) cc.enabled = true;
+            yield return new WaitForSeconds(teleportCooldown);
+
+            col.enabled = true;
+            isOnCooldown = false;
+        }
     }
 }

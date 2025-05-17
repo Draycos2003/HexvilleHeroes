@@ -11,6 +11,7 @@ public class Damage : MonoBehaviour
 
     [SerializeField] DamageType type;
     [SerializeField] Rigidbody body;
+    [SerializeField] playerAttack playerAttack;
 
     [SerializeField] public int damageAmount;
     [SerializeField] int damageRate;
@@ -18,8 +19,6 @@ public class Damage : MonoBehaviour
     [SerializeField] int destroyTime;
     [SerializeField] int damageAOE;
     [SerializeField] float radiusAOE;
-
-    [SerializeField] playerAttack playerAttack;
 
     Vector2 centerAOE;
     Vector2 rangeAOE;
@@ -29,6 +28,7 @@ public class Damage : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+
         if (type == DamageType.ranged || type == DamageType.homing || type == DamageType.casting)
         {
             Destroy(gameObject, destroyTime);
@@ -48,7 +48,7 @@ public class Damage : MonoBehaviour
             body.linearVelocity = (gamemanager.instance.Player.transform.position - transform.position).normalized * speed * Time.deltaTime;
         }
 
-        rangeAOE = gamemanager.instance.Player.transform.position;
+        //rangeAOE = gamemanager.instance.Player.transform.position;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -59,18 +59,10 @@ public class Damage : MonoBehaviour
         }
 
         IDamage damage = other.GetComponent<IDamage>();
-        if (damage != null)
+        
+        if (damage != null && (type == DamageType.ranged || type == DamageType.casting))
         {
-            if (type == DamageType.melee && playerAttack.isAttacking)
-            {
-                Debug.Log(other.name);
-                other.GetComponent<Animator>().SetTrigger("hit");
-                StartCoroutine(damageMelee(damage));
-            }
-            else if (type == DamageType.ranged || type == DamageType.casting)
-            {
                 damage.TakeDamage(damageAmount);
-            }
         }
 
         if (type == DamageType.ranged || type == DamageType.homing || type == DamageType.casting)
@@ -102,12 +94,18 @@ public class Damage : MonoBehaviour
         {
             if(!isDamaging)
             {
-                StartCoroutine(damageOther(damage));
+                StartCoroutine(damageOverTime(damage));
             }
+        }
+        if (damage != null && (type == DamageType.melee && playerAttack.isAttacking))
+        {
+            Debug.Log(other.name);
+            other.GetComponent<Animator>().SetTrigger("hit");
+            StartCoroutine(damageMelee(damage));
         }
     }
 
-    IEnumerator damageOther(IDamage damage)
+    IEnumerator damageOverTime(IDamage damage)
     {
         isDamaging = true;
         damage.TakeDamage(damageAmount);

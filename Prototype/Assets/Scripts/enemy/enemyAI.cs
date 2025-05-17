@@ -5,52 +5,66 @@ using UnityEngine.AI;
 
 public class enemyAI : MonoBehaviour, IDamage
 {
-    //  -- enemy qualities
-    [SerializeField] int HP;
-    [SerializeField] float faceTargetSpeed;
-    public int currentHP => HP;
-    private float updatePathDeadline;
+    public enum EnemyTypes
+    {
+        Range, 
+        Melee,
+    }
+
+    public EnemyTypes enemyType;
+
+
+    [Header("Enemy Fields")]
+    public int HP;
+    public int Shield;
+    public Renderer model;
+    public float faceTargetSpeed;
     public Transform target;
-    Color colorOrig;
-    [SerializeField] Renderer model;
 
+    public int CurrentHP => HP;
+    public int currentShield => Shield;
+    private float updatePathDeadline;
 
-    //  -- shooting fields
-    [SerializeField] Transform shootPos;
-    [SerializeField] GameObject bullet;
-    [SerializeField] protected float shootRate;
+    [Header("Range Fields")]
+    public Transform shootPos;
+    public GameObject bullet;
+    public float shootRate;
     bool inRange;
+
+    [Header("Melee Fields")]
+    public float attackSpeed;
+    public GameObject weapon;
+    public Collider hitPos;
+
+    Color colorOrig;
 
     private EnemyReferences references;
 
-    private void Awake()
+    void Start()
     {
         references = GetComponent<EnemyReferences>();
-    }
-
-    protected virtual void Start()
-    {
         colorOrig = model.material.color; // Starter color
         gamemanager.instance.updateGameGoal(1); // total enemy count
     }
 
     // Update is called once per frame
-    protected virtual void Update()
+    void Update()
     {
         if (target != null)
         {
 
-            if (inRange == true)
+            if (LOS() == true)
             {
-                references.animate.SetBool("casting", inRange);   
+                references.animate.SetBool("casting", LOS());
+
             }
             else
             {
-                references.animate.SetBool("casting", inRange);
+                references.animate.SetBool("casting", LOS());
                 UpdatePath();
             }
 
-//          -- Faces target if still in range
+            //          -- Faces target if still in range
             if (references.navMesh.remainingDistance < references.navMesh.stoppingDistance)
             {
                 faceTarget();
@@ -58,7 +72,7 @@ public class enemyAI : MonoBehaviour, IDamage
         }
     }
 
-    protected virtual void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.tag == ("Player"))
         {
@@ -66,7 +80,7 @@ public class enemyAI : MonoBehaviour, IDamage
         }
 
     }
-    protected virtual void OnTriggerExit(Collider other)
+    private void OnTriggerExit(Collider other)
     {
         if (other.tag ==("Player"))
         {
@@ -76,17 +90,24 @@ public class enemyAI : MonoBehaviour, IDamage
 
     public void TakeDamage(int Amount)
     {
-        HP -= Amount;
-
-        if (HP <= 0)
+        if (currentShield <= 0)
         {
-            Destroy(gameObject);
-            gamemanager.instance.updateGameGoal(-1);
+            HP -= Amount;
+           
+            if (HP <= 0)
+            {
+                Destroy(gameObject);
+                gamemanager.instance.updateGameGoal(-1);
 
+            }
+            else
+            {
+                StartCoroutine(flashRed());
+            }
         }
         else
         {
-            StartCoroutine(flashRed());
+            Shield -= Amount;
         }
     }
 
@@ -123,5 +144,22 @@ public class enemyAI : MonoBehaviour, IDamage
             updatePathDeadline = Time.time + references.pathUpdateDely;
             references.navMesh.SetDestination(target.position);
         }
+    }
+
+    bool LOS()
+    {
+        LayerMask mask = LayerMask.GetMask("Enemy");
+
+        RaycastHit hit;
+
+        if (Physics.Raycast(transform.position, target.position, out hit, 200, mask))
+        {
+            Debug.DrawRay(transform.position, target.position * hit.distance, Color.red);
+            Debug.Log("Hit");
+            return true;
+        }
+        return false;
+
+
     }
 }
