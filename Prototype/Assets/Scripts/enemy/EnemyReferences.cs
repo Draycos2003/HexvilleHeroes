@@ -7,6 +7,7 @@ public class EnemyReferences : MonoBehaviour
 {
     public NavMeshAgent navMesh;
     public Animator animate;
+    enemyAI enemy;
 
     public float pathUpdateDely = 0.2f;
 

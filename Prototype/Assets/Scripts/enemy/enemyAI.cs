@@ -56,14 +56,14 @@ public class enemyAI : MonoBehaviour, IDamage
         if (target != null)
         {
 
-            if (inRange == true)
+            if (LOS() == true)
             {
-                references.animate.SetBool("casting", inRange);
+                references.animate.SetBool("casting", LOS());
 
             }
             else
             {
-                references.animate.SetBool("casting", inRange);
+                references.animate.SetBool("casting", LOS());
                 UpdatePath();
             }
 
@@ -96,7 +96,7 @@ public class enemyAI : MonoBehaviour, IDamage
         if (currentShield <= 0)
         {
             HP -= Amount;
-
+           
             if (HP <= 0)
             {
                 Destroy(gameObject);
@@ -147,5 +147,22 @@ public class enemyAI : MonoBehaviour, IDamage
             updatePathDeadline = Time.time + references.pathUpdateDely;
             references.navMesh.SetDestination(target.position);
         }
+    }
+
+    bool LOS()
+    {
+        LayerMask mask = LayerMask.GetMask("Enemy");
+
+        RaycastHit hit;
+
+        if (Physics.Raycast(transform.position, target.position, out hit, 200, mask))
+        {
+            Debug.DrawRay(transform.position, target.position * hit.distance, Color.red);
+            Debug.Log("Hit");
+            return true;
+        }
+        return false;
+
+
     }
 }
