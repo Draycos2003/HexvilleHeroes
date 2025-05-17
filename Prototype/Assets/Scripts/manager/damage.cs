@@ -13,7 +13,7 @@ public class Damage : MonoBehaviour
     [SerializeField] Rigidbody body;
     [SerializeField] playerAttack playerAttack;
 
-    [SerializeField] int damageAmount;
+    [SerializeField] public int damageAmount;
     [SerializeField] int damageRate;
     [SerializeField] int speed;
     [SerializeField] int destroyTime;

@@ -134,27 +134,4 @@ public class gamemanager : MonoBehaviour
 
         return string.Format("{0}:{1:00}:{2:00}", hours, minutes, seconds);
     }
-
-    public int DamageUp(int amount)
-    {
-        int damageMult = pickUp.damageMultiplier;
-        int speedMult = pickUp.speedMultiplier;
-
-        if (damageMult >= 1)
-        {
-            amount *= damageMult;
-        }
-        return amount;
-    }
-
-    public int DamageOrig(int amount)
-    {
-        int damageMult = pickUp.damageMultiplier;
-        int speedMult = pickUp.speedMultiplier;
-        if (damageMult >= 1)
-        {
-            amount /= damageMult;
-        }
-        return amount;
-    }
 }

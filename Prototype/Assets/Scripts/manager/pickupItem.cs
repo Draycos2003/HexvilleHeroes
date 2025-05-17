@@ -12,12 +12,11 @@ public class pickupItem : MonoBehaviour
     [SerializeField] boostType type;
     [SerializeField] int healthAmount;
     [SerializeField] int shieldAmount;
-
-    public int damageMultiplier = 2;
-    public int speedMultiplier = 2;
+    [SerializeField] int damageAmount;
+    [SerializeField] int speedAmount;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void start()
+    void Start()
     {
         spawn();
 }
@@ -46,10 +45,12 @@ public class pickupItem : MonoBehaviour
             if (type == boostType.damage)
             {
                 Debug.Log("DAMAGE UP");
+                item.gainDamage(damageAmount);
             }
             if (type == boostType.speed)
             {
-                // boost speed
+                Debug.Log("SPEED UP");
+                item.gainSpeed(speedAmount);
             }
 
         }
