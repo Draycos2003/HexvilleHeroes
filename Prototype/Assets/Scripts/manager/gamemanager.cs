@@ -45,10 +45,13 @@ public class gamemanager : MonoBehaviour
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
         }
+
+        
     }
 
     void Start()
     {
+        DontDestroyOnLoad(Player);
         PlayerScript = Player.GetComponent<playerController>();
     }
 
