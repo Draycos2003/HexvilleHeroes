@@ -115,13 +115,11 @@ public class Damage : MonoBehaviour
     IEnumerator damageMelee(IDamage damage)
     {
         playerAttack.isAttacking = true;
-        damageAmount = gamemanager.instance.DamageUp(damageAmount);
         damage.TakeDamage(damageAmount);
         gameObject.GetComponent<Collider>().isTrigger = false;
 
         yield return new WaitForSeconds(damageRate);
         playerAttack.isAttacking = false;
         gameObject.GetComponent<Collider>().isTrigger = true;
-        damageAmount = gamemanager.instance.DamageUp(damageAmount);
     }
 }
