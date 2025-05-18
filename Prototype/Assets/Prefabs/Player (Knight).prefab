@@ -30,8 +30,7 @@ Transform:
   m_LocalPosition: {x: 0.6331323, y: 1.4242599, z: 1.2498155}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 3059670489241554613}
+  m_Children: []
   m_Father: {fileID: 2156854249679363542}
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 330}
 --- !u!33 &1076240741162594178
@@ -114,12 +113,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3820836137449971620}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.00000039488077, y: 0.00000014901161, z: -0.5000004, w: 0.8660252}
-  m_LocalPosition: {x: 0.55194575, y: 0.3189437, z: 0.63701254}
-  m_LocalScale: {x: 1, y: 2.8806, z: 1}
+  m_LocalRotation: {x: 0.50000036, y: -0.49999937, z: -0.5000012, w: 0.49999905}
+  m_LocalPosition: {x: -0.00387913, y: 1.4244995, z: 1.8872886}
+  m_LocalScale: {x: 1, y: 2.8806007, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2389640543542024337}
+  m_Father: {fileID: 2156854249679363542}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -60}
 --- !u!114 &7443653094891653951
 MonoBehaviour:
@@ -388,6 +387,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 3059670489241554613}
   - {fileID: 2389640543542024337}
   - {fileID: 442511936164313193}
   - {fileID: 3699946564734819141}
@@ -425,6 +425,7 @@ MonoBehaviour:
   ignoreLayer:
     serializedVersion: 2
     m_Bits: 8
+  damage: {fileID: 0}
   gravity: 35
   HP: 100
   Shield: 20
