@@ -119,6 +119,16 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!224 &147606636 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 6691541954878251425, guid: 273e745b549a90645bb1b2cea2be28c1, type: 3}
+  m_PrefabInstance: {fileID: 1808737059}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &317572418 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 3996828769850454695, guid: 273e745b549a90645bb1b2cea2be28c1, type: 3}
+  m_PrefabInstance: {fileID: 1808737059}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &347777618
 GameObject:
   m_ObjectHideFlags: 0
@@ -654,11 +664,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 273e745b549a90645bb1b2cea2be28c1, type: 3}
---- !u!224 &1808737060 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5260203925760774852, guid: 273e745b549a90645bb1b2cea2be28c1, type: 3}
-  m_PrefabInstance: {fileID: 1808737059}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2023371136
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -667,26 +672,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1682826218076982507, guid: 46a3d8f0dd61f02418b386074998b6e1, type: 3}
-      propertyPath: m_fontSize
-      value: 47
-      objectReference: {fileID: 0}
-    - target: {fileID: 1682826218076982507, guid: 46a3d8f0dd61f02418b386074998b6e1, type: 3}
-      propertyPath: m_fontAsset
-      value: 
-      objectReference: {fileID: 11400000, guid: 125cb55b44b24c4393181402bc6200e6, type: 2}
-    - target: {fileID: 1682826218076982507, guid: 46a3d8f0dd61f02418b386074998b6e1, type: 3}
-      propertyPath: m_sharedMaterial
-      value: 
-      objectReference: {fileID: 2100000, guid: 125cb55b44b24c4393181402bc6200e6, type: 2}
-    - target: {fileID: 1682826218076982507, guid: 46a3d8f0dd61f02418b386074998b6e1, type: 3}
-      propertyPath: m_enableAutoSizing
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1682826218076982507, guid: 46a3d8f0dd61f02418b386074998b6e1, type: 3}
-      propertyPath: m_hasFontAssetChanged
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3074052659620325993, guid: 46a3d8f0dd61f02418b386074998b6e1, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -813,7 +798,7 @@ MonoBehaviour:
   Shield: 10
   model: {fileID: 347777622}
   faceTargetSpeed: 10
-  target: {fileID: 0}
+  target: {fileID: 1756923040}
   shootPos: {fileID: 347777619}
   bullet: {fileID: 7491880933644792005, guid: 6cca30d082b92a447acd68472f7e8a07, type: 3}
   shootRate: 1
@@ -1089,8 +1074,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1422372084}
   - {fileID: 347777619}
-  - {fileID: 1808737060}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &8322677360840068783
