@@ -6,6 +6,8 @@ using TMPro;
 [RequireComponent(typeof(Collider))]
 public class ProximityPrompt : MonoBehaviour
 {
+    public Item item;
+
     [Header("UI References")]
     [SerializeField] CanvasGroup promptCanvasGroup;
     [SerializeField] TextMeshProUGUI primaryPromptTextLabel;
@@ -121,6 +123,7 @@ public class ProximityPrompt : MonoBehaviour
             {
                 Debug.Log("Pressed primary key");
                 onPrimaryPressed?.Invoke();
+                inventorymanager.instance.AddItem(item);
             }
 
             if (secondaryKey != KeyCode.None && Input.GetKeyDown(secondaryKey))
