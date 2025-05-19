@@ -21,6 +21,7 @@ public class enemyAI : MonoBehaviour, IDamage
     public Renderer model;
     public float faceTargetSpeed;
     public Transform target;
+    public float attackRange;
 
     public int CurrentHP => HP;
     public int currentShield => Shield;
@@ -28,9 +29,10 @@ public class enemyAI : MonoBehaviour, IDamage
 
     [Header("Range Fields")]
     public Transform shootPos;
-    public GameObject bullet;
+    public GameObject projectile;
     public float shootRate;
-    bool inRange;
+
+    
 
     [Header("Melee Fields")]
     public float attackSpeed;
@@ -38,6 +40,9 @@ public class enemyAI : MonoBehaviour, IDamage
     public Collider hitPos;
 
     Color colorOrig;
+
+    public bool inRange;
+
 
     private EnemyReferences references;
 
@@ -54,16 +59,16 @@ public class enemyAI : MonoBehaviour, IDamage
         if (target != null)
         {
 
-            if (LOS() == true)
-            {
-                references.animate.SetBool("casting", LOS());
+            //if (LOS() == true)
+            //{
+            //    references.animate.SetBool("casting", LOS());
 
-            }
-            else
-            {
-                references.animate.SetBool("casting", LOS());
-                UpdatePath();
-            }
+            //}
+            //else
+            //{
+            //    references.animate.SetBool("casting", LOS());
+            //    UpdatePath();
+            //}
 
             //          -- Faces target if still in range
             if (references.navMesh.remainingDistance < references.navMesh.stoppingDistance)
@@ -83,7 +88,7 @@ public class enemyAI : MonoBehaviour, IDamage
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.tag ==("Player"))
+        if (other.tag == ("Player"))
         {
             inRange = false;
         }
@@ -121,9 +126,7 @@ public class enemyAI : MonoBehaviour, IDamage
 
     void faceTarget()
     {
-//      --  Creates a smoother rotation by using Slerp.
-//      -- I use Slerp instead of lerp because i don't know what type of rotation the character could make it could be big but if not, it could be juddery using lerp so be safe with Slerp.
-
+        //Creates a smoother rotation by using Slerp.
         Vector3 lookPos = target.position - transform.position;
         lookPos.y = 0;
         Quaternion rotation = Quaternion.LookRotation(lookPos);
@@ -131,14 +134,17 @@ public class enemyAI : MonoBehaviour, IDamage
 
     }
 
-    void shoot()
+    public void shoot()
     {
-        Instantiate(bullet, shootPos.position, transform.rotation);
+        if (projectile == null)
+            Debug.LogWarning("No projectile set");
+
+        Instantiate(projectile, shootPos.position, transform.rotation);
     }
 
-    private void UpdatePath()
+    public void UpdatePath()
     {
-//      -- Updates the Path every 0.2 seconds instead of every frame like navMesh.SetDestination(target.postion)
+        //Updates the Path every 0.2 seconds instead of every frame
         if (Time.time >= updatePathDeadline)
         {
             Debug.Log("Updating Path");
@@ -147,20 +153,28 @@ public class enemyAI : MonoBehaviour, IDamage
         }
     }
 
-    bool LOS()
+    public bool LOS()
     {
-        LayerMask mask = LayerMask.GetMask("Enemy");
+        LayerMask mask = LayerMask.GetMask("Player");
+        RaycastHit hitInfo;
 
-        RaycastHit hit;
 
-        if (Physics.Raycast(transform.position, target.position, out hit, 200, mask))
+        if (Physics.Raycast(transform.forward, target.position, out hitInfo, attackRange, mask))
         {
-            Debug.DrawRay(transform.position, target.position * hit.distance, Color.red);
+            if (attackRange == 0f)
+                Debug.LogWarning("No attack range set");
+            
+            if (hitInfo.transform.CompareTag("Player"))
+            {
+                return true;
+            }
+            Debug.DrawRay(transform.position, target.position * hitInfo.distance, Color.red);
             Debug.Log("Hit");
-            return true;
         }
         return false;
 
 
     }
+
+
 }

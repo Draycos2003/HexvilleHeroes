@@ -3,10 +3,21 @@ using UnityEngine;
 
 public class AttackState : StateMachine
 {
+    enemyAI enemy;
+    public ChaseState chaseState;
+
     public override StateMachine RunCurrentState()
     {
-        Debug.Log("Attacking");
-        return this;
+        while(enemy.LOS() == true)
+        {
+            enemy.shoot();        
+
+            if(enemy.LOS() == false)
+            {
+                break;
+            }
+        }
+        return chaseState;
     }
 
 }
