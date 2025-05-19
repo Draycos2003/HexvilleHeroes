@@ -2,9 +2,10 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
+using System.Runtime.CompilerServices;
 
 [RequireComponent(typeof(Collider))]
-public class ProximityPrompt : MonoBehaviour
+public class ItemPickup : MonoBehaviour
 {
     public Item item;
 
@@ -18,17 +19,13 @@ public class ProximityPrompt : MonoBehaviour
 
     [Header("Prompt Settings")]
     [SerializeField] KeyCode primaryKey = KeyCode.E;
-    [SerializeField] string primaryPromptMessage = "Interact";
-    [SerializeField] KeyCode secondaryKey = KeyCode.None;
-    [SerializeField] string secondaryPromptMessage = "Equip";
+    [SerializeField] string primaryPromptMessage;
+    [SerializeField] KeyCode secondaryKey = KeyCode.F;
+    [SerializeField] string secondaryPromptMessage;
 
     [Header("Item Info Settings")]
     [SerializeField] TextMeshProUGUI promptItemNameLabel;
     [SerializeField] TextMeshProUGUI promptItemDescLabel;
-    [SerializeField] TextMeshProUGUI promptItemAmountLabel;
-    [SerializeField] string promptItemName = "Apple";
-    [SerializeField] string promptDesc = "Gives +10 HP";
-    [SerializeField] string promptAmount = "x";
 
     [Header("Fade Settings")]
     [SerializeField] float fadeDuration = 0.2f;
@@ -67,11 +64,9 @@ public class ProximityPrompt : MonoBehaviour
 
         // item info blocks
         if (promptItemNameLabel != null)
-            promptItemNameLabel.text = promptItemName;
+            promptItemNameLabel.text = item.name;
         if (promptItemDescLabel != null)
-            promptItemDescLabel.text = promptDesc;
-        if (promptItemAmountLabel != null)
-            promptItemAmountLabel.text = promptAmount;
+            promptItemDescLabel.text = item.description;
 
         if (primarykeyTextLabel != null)
             primarykeyTextLabel.text = primaryKey.ToString();
@@ -86,6 +81,8 @@ public class ProximityPrompt : MonoBehaviour
 
         if (sightRenderer == null)
             Debug.LogWarning($"[ProximityPrompt] No Renderer found for frustum check on '{name}'");
+
+        Item access = item;
     }
 
     void OnTriggerEnter(Collider other)
@@ -123,6 +120,7 @@ public class ProximityPrompt : MonoBehaviour
             {
                 Debug.Log("Pressed primary key");
                 onPrimaryPressed?.Invoke();
+                inventorymanager.instance.AddItem(item);
             }
 
             if (secondaryKey != KeyCode.None && Input.GetKeyDown(secondaryKey))
