@@ -1,16 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TMPro;
 
 public class inventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    public Item item;
 
     [Header("UI")]
     public Image image;
+    public TMP_Text countText;
 
+    [HideInInspector] public Item item;
+    [HideInInspector] public int count = 1;
     [HideInInspector] public Transform parentAfterDrag;
 
     private void Start()
@@ -20,9 +24,28 @@ public class inventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void InitializeItem(Item newItem)
     {
+        item = newItem;
         if (newItem != null)
         {
             image.sprite = newItem.sprite;
+        }
+        RefreshCount();
+    }
+
+    public void RefreshCount()
+    {
+        if(countText != null)
+        {
+            if(count < 10)
+            {
+                countText.text = " " + count.ToString();
+            }
+            else
+            {
+                countText.text = count.ToString();
+            }
+            bool textActive = count > 1;
+            countText.gameObject.SetActive(textActive);
         }
     }
 
