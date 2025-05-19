@@ -17,4 +17,22 @@ public class demo : MonoBehaviour
             Debug.Log(itemsToPickup[id].name + " WAS NOT ADDED");
         }
     }
+
+    public void GetSelectedItem()
+    {
+        Item recivedItem = iManager.GetSelectedItem(false);
+        if (recivedItem != null)
+            Debug.Log("Recieved Item");
+        else
+            Debug.Log("No Item Recieved");
+    }
+
+    public void UseSelectedItem()
+    {
+        Item recivedItem = iManager.GetSelectedItem(true);
+        if (recivedItem != null)
+            Debug.Log("Recieved Item");
+        else
+            Debug.Log("No Item Used");
+    }
 }

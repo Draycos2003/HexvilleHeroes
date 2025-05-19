@@ -98,8 +98,11 @@ public class gamemanager : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
-        MenuActive.SetActive(false);
-        MenuActive = null;
+        if(MenuActive != null)
+        {
+            MenuActive.SetActive(false);
+            MenuActive = null;
+        }
     }
 
     public void youLose()
