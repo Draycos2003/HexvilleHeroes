@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Unity.VisualScripting;
 
 public class gamemanager : MonoBehaviour
 {
@@ -12,7 +11,6 @@ public class gamemanager : MonoBehaviour
     [SerializeField] GameObject MenuPaused;
     [SerializeField] GameObject MenuWin;
     [SerializeField] GameObject MenuLose;
-    [SerializeField] GameObject InventoryMenu;
 
     [Header("Match Timer")]
     [SerializeField] TMP_Text winMessageText;
@@ -78,8 +76,6 @@ public class gamemanager : MonoBehaviour
                 stateUnpause();
             }
         }
-
-        InventoryMenuActive();
     }
 
     public void statePause()
@@ -98,11 +94,8 @@ public class gamemanager : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
-        if(MenuActive != null)
-        {
-            MenuActive.SetActive(false);
-            MenuActive = null;
-        }
+        MenuActive.SetActive(false);
+        MenuActive = null;
     }
 
     public void youLose()
@@ -127,25 +120,6 @@ public class gamemanager : MonoBehaviour
             if (winMessageText != null)
             {
                 winMessageText.text = "You successfully beat the level in " + MatchTime() + "!";
-            }
-        }
-    }
-
-    void InventoryMenuActive()
-    {
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            if (MenuActive == null)
-            {
-                statePause();
-                Cursor.visible = true;
-                Cursor.lockState = CursorLockMode.None;
-                MenuActive = InventoryMenu;
-                MenuActive.SetActive(isPaused);
-            }
-            else if (MenuActive == InventoryMenu)
-            {
-                stateUnpause();
             }
         }
     }
