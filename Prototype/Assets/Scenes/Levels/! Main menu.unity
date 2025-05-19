@@ -826,6 +826,63 @@ Skybox:
   m_GameObject: {fileID: 963194225}
   m_Enabled: 1
   m_CustomSkybox: {fileID: 15303, guid: 0000000000000000f000000000000000, type: 0}
+--- !u!1001 &1312630430
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2156854249679363542, guid: 06a4d7afda18c9443a19e29f9a9c54f9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.038041
+      objectReference: {fileID: 0}
+    - target: {fileID: 2156854249679363542, guid: 06a4d7afda18c9443a19e29f9a9c54f9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.0000005
+      objectReference: {fileID: 0}
+    - target: {fileID: 2156854249679363542, guid: 06a4d7afda18c9443a19e29f9a9c54f9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2.5758586
+      objectReference: {fileID: 0}
+    - target: {fileID: 2156854249679363542, guid: 06a4d7afda18c9443a19e29f9a9c54f9, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.37839514
+      objectReference: {fileID: 0}
+    - target: {fileID: 2156854249679363542, guid: 06a4d7afda18c9443a19e29f9a9c54f9, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2156854249679363542, guid: 06a4d7afda18c9443a19e29f9a9c54f9, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.9256442
+      objectReference: {fileID: 0}
+    - target: {fileID: 2156854249679363542, guid: 06a4d7afda18c9443a19e29f9a9c54f9, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2156854249679363542, guid: 06a4d7afda18c9443a19e29f9a9c54f9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2156854249679363542, guid: 06a4d7afda18c9443a19e29f9a9c54f9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 88.876
+      objectReference: {fileID: 0}
+    - target: {fileID: 2156854249679363542, guid: 06a4d7afda18c9443a19e29f9a9c54f9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812930042528432734, guid: 06a4d7afda18c9443a19e29f9a9c54f9, type: 3}
+      propertyPath: m_Name
+      value: Player (Knight)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 06a4d7afda18c9443a19e29f9a9c54f9, type: 3}
 --- !u!1 &1403405018
 GameObject:
   m_ObjectHideFlags: 0
@@ -1224,6 +1281,22 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 10670f14addc7f442a2488f24166efa1, type: 3}
+--- !u!1 &2076686097 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7812930042528432734, guid: 06a4d7afda18c9443a19e29f9a9c54f9, type: 3}
+  m_PrefabInstance: {fileID: 1312630430}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2076686103 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6905663218801049245, guid: 06a4d7afda18c9443a19e29f9a9c54f9, type: 3}
+  m_PrefabInstance: {fileID: 1312630430}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2076686097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f271d74ac18a444da2853e0704fe4f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &126740230550878440
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1800,11 +1873,12 @@ MonoBehaviour:
   MenuPaused: {fileID: 0}
   MenuWin: {fileID: 8260121033823835422}
   MenuLose: {fileID: 2976613474554186009}
+  InventoryMenu: {fileID: 0}
   winMessageText: {fileID: 0}
   playerDMGScreen: {fileID: 2233618750903594507}
   playerShieldDMGScreen: {fileID: 0}
-  Player: {fileID: 0}
-  PlayerScript: {fileID: 0}
+  Player: {fileID: 2076686097}
+  PlayerScript: {fileID: 2076686103}
   isPaused: 0
   pickUp: {fileID: 0}
   gameGoalCountText: {fileID: 0}
@@ -4404,3 +4478,4 @@ SceneRoots:
   - {fileID: 142515926}
   - {fileID: 808647320}
   - {fileID: 1914936126}
+  - {fileID: 1312630430}
