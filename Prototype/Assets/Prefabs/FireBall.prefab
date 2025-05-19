@@ -8,15 +8,15 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 9000913925902278342}
-  - component: {fileID: 8398921622455410107}
-  - component: {fileID: 7766872069266045166}
-  - component: {fileID: 1385154885869746270}
-  - component: {fileID: 254209579839810770}
-  - component: {fileID: 1687214239478801066}
-  - component: {fileID: 2328174950967161162}
+  - component: {fileID: 8634220139657710383}
+  - component: {fileID: 4542377516566019113}
+  - component: {fileID: 493936546376018027}
+  - component: {fileID: 8469519570472185729}
+  - component: {fileID: 6393213281199618775}
+  - component: {fileID: 8952432250952785682}
+  - component: {fileID: 5692802619990220303}
   m_Layer: 6
-  m_Name: Missle
+  m_Name: FireBall
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -37,27 +37,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6393213281199618775
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5313342752221936860}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60e2c037ed6b84142a8069a5b8ea5e1b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  type: 0
-  body: {fileID: 8952432250952785682}
-  playerAttack: {fileID: 0}
-  damageAmount: 5
-  damageRate: 0
-  speed: 10
-  destroyTime: 3
-  damageAOE: 0
-  radiusAOE: 0
 --- !u!33 &4542377516566019113
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -132,19 +111,36 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!54 &1687214239478801066
+--- !u!114 &6393213281199618775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5313342752221936860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60e2c037ed6b84142a8069a5b8ea5e1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 0
+  body: {fileID: 8952432250952785682}
+  playerAttack: {fileID: 0}
+  damageAmount: 20
+  damageRate: 0
+  speed: 50
+  destroyTime: 1
+  damageAOE: 0
+  radiusAOE: 0
+--- !u!54 &8952432250952785682
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7491880933644792005}
+  m_GameObject: {fileID: 5313342752221936860}
   serializedVersion: 4
-<<<<<<< Updated upstream:Prototype/Assets/Prefabs/Enemy Prefabs/Enemy Projectiles/Missle.prefab
-  m_Mass: 0.5
-=======
   m_Mass: 1
->>>>>>> Stashed changes:Prototype/Assets/Map Assets/Prefabs/Missle.prefab
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -163,14 +159,14 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!96 &2328174950967161162
+--- !u!96 &5692802619990220303
 TrailRenderer:
   serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7491880933644792005}
+  m_GameObject: {fileID: 5313342752221936860}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -187,7 +183,7 @@ TrailRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 70e2facf083ab7846be7320c620aa913, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -208,11 +204,11 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Time: 0.5
+  m_Time: 5
   m_PreviewTimeScale: 1
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.1
+    widthMultiplier: 1
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -230,7 +226,7 @@ TrailRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.05700427, g: 0.1403983, b: 0.5754717, a: 1}
+      key0: {r: 1, g: 1, b: 1, a: 1}
       key1: {r: 1, g: 1, b: 1, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
@@ -255,7 +251,7 @@ TrailRenderer:
       atime6: 0
       atime7: 0
       m_Mode: 0
-      m_ColorSpace: 0
+      m_ColorSpace: -1
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     numCornerVertices: 0
