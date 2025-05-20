@@ -1,22 +1,30 @@
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class IdleState : StateMachine
 {
     public ChaseState chaseState;
     public bool inChasingRange;
-    enemyAI enemy;
 
     public override StateMachine RunCurrentState()
     {
-        if (enemy.inRange == true)
+        if (inChasingRange)
         {
             inChasingRange = true;
             return chaseState;
         }
         else
         {
+            Debug.Log("Still idle");
             return this;
         }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == ("Player"))
+        {
+            inChasingRange = true;
+        }
+
     }
 }

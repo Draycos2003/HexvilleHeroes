@@ -1,11 +1,10 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class StateManager : MonoBehaviour
 {
-
     public StateMachine currentState;
 
-    // Update is called once per frame
     void Update()
     {
         RunStateMachine();
@@ -19,6 +18,11 @@ public class StateManager : MonoBehaviour
         {
             SwitchToNextState(nextState);
         }
+        else
+        {
+            Debug.Log("State is null");
+        }
+
     }
     private void SwitchToNextState(StateMachine nextState)
     {

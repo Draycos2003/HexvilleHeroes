@@ -41,6 +41,7 @@ public class enemyAI : MonoBehaviour, IDamage
 
     Color colorOrig;
 
+
     public bool inRange;
 
 
@@ -56,36 +57,32 @@ public class enemyAI : MonoBehaviour, IDamage
     // Update is called once per frame
     void Update()
     {
-        if (target != null)
-        {
+        //if (target != null)
+        //{
+        //    if (inRange)
+        //    {
+        //        UpdatePath();
 
-            //if (LOS() == true)
-            //{
-            //    references.animate.SetBool("casting", LOS());
+        //        if (LOS() == true)
+        //            shoot();
+        //    }
+            
 
-            //}
-            //else
-            //{
-            //    references.animate.SetBool("casting", LOS());
-            //    UpdatePath();
-            //}
-
-            //          -- Faces target if still in range
-            if (references.navMesh.remainingDistance < references.navMesh.stoppingDistance)
-            {
-                faceTarget();
-            }
-        }
+        //    if (references.navMesh.remainingDistance < references.navMesh.stoppingDistance)
+        //    {
+        //        faceTarget();
+        //    }
+        //}
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.tag == ("Player"))
-        {
-            inRange = true;
-        }
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    if (other.tag == ("Player"))
+    //    {
+    //        inRange = true;
+    //    }
 
-    }
+    //}
     private void OnTriggerExit(Collider other)
     {
         if (other.tag == ("Player"))
@@ -147,7 +144,6 @@ public class enemyAI : MonoBehaviour, IDamage
         //Updates the Path every 0.2 seconds instead of every frame
         if (Time.time >= updatePathDeadline)
         {
-            Debug.Log("Updating Path");
             updatePathDeadline = Time.time + references.pathUpdateDely;
             references.navMesh.SetDestination(target.position);
         }
