@@ -17,6 +17,11 @@ public class InventorySlot : MonoBehaviour, IDropHandler
     public void Select()
     {
         image.color = selectedColor;
+        inventoryItem itemInSlot = gameObject.GetComponentInChildren<inventoryItem>();
+        if(itemInSlot != null )
+        {
+
+        }
     }
 
     public void Deselect()

@@ -29,6 +29,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     [SerializeField] int jumpForce;
 
     [Header("Weapon")] // Weapon
+    [SerializeField] Transform equipPos;
     [SerializeField] int shootDamage;
     [SerializeField] float shootRate;
     [SerializeField] int shootDist;
@@ -186,5 +187,10 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     public void gainSpeed(int amount)
     {
         speed += amount;
+    }
+
+    public Transform GetEquipPos()
+    {
+        return equipPos;
     }
 }

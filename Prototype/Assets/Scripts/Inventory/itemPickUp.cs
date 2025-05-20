@@ -121,6 +121,8 @@ public class ItemPickup : MonoBehaviour
                 Debug.Log("Pressed primary key");
                 onPrimaryPressed?.Invoke();
                 inventorymanager.instance.AddItem(item);
+                Destroy(gameObject);
+
             }
 
             if (secondaryKey != KeyCode.None && Input.GetKeyDown(secondaryKey))
