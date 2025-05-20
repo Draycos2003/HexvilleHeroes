@@ -34,6 +34,8 @@ public class gamemanager : MonoBehaviour
     float timeScaleOrig;
     int gameGoalCount;
 
+    public int GameGoalCount => gameGoalCount;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
@@ -64,6 +66,7 @@ public class gamemanager : MonoBehaviour
         {
             matchTime += Time.deltaTime;
         }
+
         if (Input.GetButtonDown("Cancel"))
         {
             if (MenuActive == null)
@@ -90,6 +93,12 @@ public class gamemanager : MonoBehaviour
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
     }
+
+    public void SetMatchTime(int time)
+    {
+        matchTime = time;
+    }
+
     public void stateUnpause()
     {
         isPaused = !isPaused;
@@ -126,7 +135,7 @@ public class gamemanager : MonoBehaviour
             // update win text
             if (winMessageText != null)
             {
-                winMessageText.text = "You successfully beat the level in " + MatchTime() + "!";
+                winMessageText.text = "You have clear this room in " + MatchTime() + "!\n\nPlease proceed to the next room";
             }
         }
     }
