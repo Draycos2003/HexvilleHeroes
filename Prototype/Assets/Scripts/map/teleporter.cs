@@ -46,6 +46,7 @@ public class TeleportPad : MonoBehaviour
                 return;
             }
 
+            gm.SetMatchTime(0); // Reset the match timer before teleport
             StartCoroutine(TeleportRoutine(gm.Player.transform));
         }
     }
