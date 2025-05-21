@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Unity.VisualScripting;
 
 public class gamemanager : MonoBehaviour
 {
@@ -12,7 +11,7 @@ public class gamemanager : MonoBehaviour
     [SerializeField] GameObject MenuPaused;
     [SerializeField] GameObject MenuWin;
     [SerializeField] GameObject MenuLose;
-    [SerializeField] GameObject InventoryMenu;
+    [SerializeField] GameObject MenuInventory;
 
     [Header("Match Timer")]
     [SerializeField] TMP_Text winMessageText;
@@ -34,6 +33,8 @@ public class gamemanager : MonoBehaviour
 
     float timeScaleOrig;
     int gameGoalCount;
+
+    public int GameGoalCount => gameGoalCount;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -65,6 +66,7 @@ public class gamemanager : MonoBehaviour
         {
             matchTime += Time.deltaTime;
         }
+
         if (Input.GetButtonDown("Cancel"))
         {
             if (MenuActive == null)
@@ -73,13 +75,14 @@ public class gamemanager : MonoBehaviour
                 MenuActive = MenuPaused;
                 MenuActive.SetActive(isPaused);
             }
-            else if (MenuActive == MenuPaused)
+            else if (MenuActive == MenuPaused || MenuActive == MenuInventory)
             {
                 stateUnpause();
             }
         }
 
-        InventoryMenuActive();
+        openInventory();
+
     }
 
     public void statePause()
@@ -90,6 +93,12 @@ public class gamemanager : MonoBehaviour
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
     }
+
+    public void SetMatchTime(int time)
+    {
+        matchTime = time;
+    }
+
     public void stateUnpause()
     {
         isPaused = !isPaused;
@@ -98,11 +107,8 @@ public class gamemanager : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
-        if(MenuActive != null)
-        {
-            MenuActive.SetActive(false);
-            MenuActive = null;
-        }
+        MenuActive.SetActive(false);
+        MenuActive = null;
     }
 
     public void youLose()
@@ -126,26 +132,7 @@ public class gamemanager : MonoBehaviour
             // update win text
             if (winMessageText != null)
             {
-                winMessageText.text = "You successfully beat the level in " + MatchTime() + "!";
-            }
-        }
-    }
-
-    void InventoryMenuActive()
-    {
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            if (MenuActive == null)
-            {
-                statePause();
-                Cursor.visible = true;
-                Cursor.lockState = CursorLockMode.None;
-                MenuActive = InventoryMenu;
-                MenuActive.SetActive(isPaused);
-            }
-            else if (MenuActive == InventoryMenu)
-            {
-                stateUnpause();
+                winMessageText.text = "You have clear this room in " + MatchTime() + "!\n\nPlease proceed to the next room";
             }
         }
     }
@@ -159,5 +146,22 @@ public class gamemanager : MonoBehaviour
         int seconds = totalSeconds % 60;
 
         return string.Format("{0}:{1:00}:{2:00}", hours, minutes, seconds);
+    }
+
+    public void openInventory()
+    {
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            if (MenuActive == null)
+            {
+                statePause();
+                MenuActive = MenuInventory;
+                MenuActive.SetActive(isPaused);
+            }
+            else if (MenuActive == MenuInventory)
+            {
+                stateUnpause();
+            }
+        }
     }
 }
