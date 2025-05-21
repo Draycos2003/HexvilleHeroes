@@ -1,30 +1,23 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.AI;
-using Unity.VisualScripting;
+using UnityEngine.Rendering;
 
 
 public class enemyAI : MonoBehaviour, IDamage
 {
-<<<<<<< Updated upstream
-    public enum EnemyTypes
-    {
-        Range, 
-        Melee,
-    }
 
-    public EnemyTypes enemyType;
-=======
+    private Vector3 playerDir;
+    private float angleToPlayer;
+    private float shootTimer;
+    private float stoppingDistOrig;
+
     [SerializeField] private Transform headPos;
     [SerializeField] private int FOV;
     [SerializeField] private NavMeshAgent agent;
 
     private Vector3 targetPos;
-    private float angleToPlayer;
-    private float shootTimer;
-    private float stoppingDistOrig;
     public int attackRange;
->>>>>>> Stashed changes
 
 
     [Header("Enemy Fields")]
@@ -44,61 +37,35 @@ public class enemyAI : MonoBehaviour, IDamage
     public GameObject projectile;
     public float shootRate;
 
-    
-
     [Header("Melee Fields")]
     public float attackSpeed;
     public GameObject weapon;
     public Collider hitPos;
 
     Color colorOrig;
+    bool inRange;
+    
+    EnemyReferences references;
 
-
-    public bool inRange;
-
-
-    private EnemyReferences references;
-
-    void Start()
+    private void Start()
     {
         references = GetComponent<EnemyReferences>();
         colorOrig = model.material.color; // Starter color
         gamemanager.instance.updateGameGoal(1); // total enemy count
+        stoppingDistOrig = agent.stoppingDistance;
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        //if (target != null)
-        //{
-        //    if (inRange)
-        //    {
-        //        UpdatePath();
-
-<<<<<<< Updated upstream
-        //        if (LOS() == true)
-        //            shoot();
-        //    }
-            
-
-        //    if (references.navMesh.remainingDistance < references.navMesh.stoppingDistance)
-        //    {
-        //        faceTarget();
-        //    }
-        //}
-    }
-
-    //private void OnTriggerEnter(Collider other)
-    //{
-    //    if (other.tag == ("Player"))
-    //    {
-    //        inRange = true;
-    //    }
-=======
             if (inRange)
             {
-                CanSeePlayer();
+               CanSeePlayer();
                 float dist = Vector3.Distance(transform.position,target.position);
+                if (CanSeePlayer())
+                {
+                    references.animate.SetBool("casting", inRange);
+                }
 
                 if (dist > attackRange)
                 {
@@ -127,9 +94,8 @@ public class enemyAI : MonoBehaviour, IDamage
         {
             inRange = true;
         }
->>>>>>> Stashed changes
+    }
 
-    //}
     private void OnTriggerExit(Collider other)
     {
         if (other.tag == ("Player"))
@@ -138,8 +104,6 @@ public class enemyAI : MonoBehaviour, IDamage
         }
     }
 
-<<<<<<< Updated upstream
-=======
     bool CanSeePlayer()
     {
         targetPos = (target.transform.position - headPos.position);
@@ -153,7 +117,6 @@ public class enemyAI : MonoBehaviour, IDamage
             {
                 UpdatePath();
                 Debug.Log(hit.collider);
-               
 
                 if (shootTimer >= shootRate)
                 {
@@ -173,7 +136,7 @@ public class enemyAI : MonoBehaviour, IDamage
         return false;
     }
 
->>>>>>> Stashed changes
+
     public void TakeDamage(int Amount)
     {
         if (currentShield <= 0)
@@ -197,34 +160,22 @@ public class enemyAI : MonoBehaviour, IDamage
         }
     }
 
-    IEnumerator flashRed()
+    private IEnumerator flashRed()
     {
         model.material.color = Color.red;
         yield return new WaitForSeconds(0.05f);
         model.material.color = colorOrig;
     }
 
-    void faceTarget()
+    private void faceTarget()
     {
-<<<<<<< Updated upstream
-        //Creates a smoother rotation by using Slerp.
-        Vector3 lookPos = target.position - transform.position;
+        Vector3 lookPos = targetPos.transform.position - transform.position;
         lookPos.y = 0;
         Quaternion rotation = Quaternion.LookRotation(lookPos);
         transform.rotation = Quaternion.Slerp(transform.rotation, rotation, faceTargetSpeed * Time.deltaTime);
-=======
-        //      --  Creates a smoother rotation by using Slerp.
-        //      -- I use Slerp instead of lerp because i don't know what type of rotation the character could make it could be big but if not, it could be juddery using lerp so be safe with Slerp.
-
-        //Vector3 lookPos = target.position - transform.position;
-        //lookPos.y = 0;
-        Quaternion rotation = Quaternion.LookRotation(new Vector3(targetPos.x, transform.position.y, targetPos.z));
-        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * faceTargetSpeed);
->>>>>>> Stashed changes
-
     }
 
-    public void shoot()
+    private void shoot()
     {
         if (projectile == null)
             Debug.LogWarning("No projectile set");
@@ -234,36 +185,10 @@ public class enemyAI : MonoBehaviour, IDamage
 
     public void UpdatePath()
     {
-        //Updates the Path every 0.2 seconds instead of every frame
         if (Time.time >= updatePathDeadline)
         {
             updatePathDeadline = Time.time + references.pathUpdateDely;
             references.navMesh.SetDestination(target.position);
         }
     }
-
-    public bool LOS()
-    {
-        LayerMask mask = LayerMask.GetMask("Player");
-        RaycastHit hitInfo;
-
-
-        if (Physics.Raycast(transform.forward, target.position, out hitInfo, attackRange, mask))
-        {
-            if (attackRange == 0f)
-                Debug.LogWarning("No attack range set");
-            
-            if (hitInfo.transform.CompareTag("Player"))
-            {
-                return true;
-            }
-            Debug.DrawRay(transform.position, target.position * hitInfo.distance, Color.red);
-            Debug.Log("Hit");
-        }
-        return false;
-
-
-    }
-
-
 }
