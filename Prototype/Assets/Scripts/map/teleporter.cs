@@ -54,19 +54,23 @@ public class TeleportPad : MonoBehaviour
     private IEnumerator TeleportRoutine(Transform playerT)
     {
         isOnCooldown = true;
-        
-        // If target is scene tag
+
         if (targetDestination != null && targetDestination.CompareTag("SceneLoader"))
         {
-            Debug.Log("[Loading Scene Index " + sceneIndexToLoad);
+            var pc = playerT.GetComponent<playerController>();
+            if (pc != null)
+            {
+                pc.SetSceneIndex(sceneIndexToLoad);
+            }
+
+            //Debug.Log("[TeleportPad] Loading Scene Index " + sceneIndexToLoad);
             SceneManager.LoadScene(sceneIndexToLoad);
-            yield break; // Breaks function
-        } 
+            yield break;
+        }
         else
         {
             col.enabled = false;
 
-            // Otherwise do normal teleport logic
             var cc = playerT.GetComponent<CharacterController>();
             if (cc != null) cc.enabled = false;
 
