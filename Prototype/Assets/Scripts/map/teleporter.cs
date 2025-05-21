@@ -36,27 +36,41 @@ public class TeleportPad : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         var gm = gamemanager.instance;
-        if (isOnCooldown || gm == null || other.gameObject != gm.Player) return;
-        StartCoroutine(TeleportRoutine(gm.Player.transform));
+
+        // Only allow if the collider is a Player AND GameManager is valid
+        if (gm != null && other.CompareTag("Player"))
+        {
+            if (gm.GameGoalCount > 0)
+            {
+                Debug.Log("[TeleportPad] You have not killed all enemies in this room!");
+                return;
+            }
+
+            gm.SetMatchTime(0); // Reset the match timer before teleport
+            StartCoroutine(TeleportRoutine(gm.Player.transform));
+        }
     }
 
     private IEnumerator TeleportRoutine(Transform playerT)
     {
         isOnCooldown = true;
-        
-        // If target is scene tag
 
         if (targetDestination != null && targetDestination.CompareTag("SceneLoader"))
         {
-            Debug.Log("[Loading Scene Index " + sceneIndexToLoad);
+            var pc = playerT.GetComponent<playerController>();
+            if (pc != null)
+            {
+                pc.SetSceneIndex(sceneIndexToLoad);
+            }
+
+            //Debug.Log("[TeleportPad] Loading Scene Index " + sceneIndexToLoad);
             SceneManager.LoadScene(sceneIndexToLoad);
-            yield break; // Breaks function
-        } 
+            yield break;
+        }
         else
         {
             col.enabled = false;
 
-            // Otherwise do normal teleport logic
             var cc = playerT.GetComponent<CharacterController>();
             if (cc != null) cc.enabled = false;
 
