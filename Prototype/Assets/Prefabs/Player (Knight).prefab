@@ -1836,6 +1836,7 @@ MonoBehaviour:
   - {fileID: 3919551153412673767}
   inventoryItemPrefab: {fileID: 6560360427309133825, guid: 0c932775d9d0dd644a3c084ffd88219b, type: 3}
   inventoryMenu: {fileID: 250132976598319668}
+  hotBarSize: 0
 --- !u!1 &3083016576361624746
 GameObject:
   m_ObjectHideFlags: 0
@@ -3706,7 +3707,8 @@ Transform:
   m_LocalPosition: {x: -0.0010000034, y: 2.102, z: 0.16200005}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 4175693576834890176}
   m_Father: {fileID: 2156854249679363542}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3004068751993517068
@@ -4233,13 +4235,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6522486881962089443}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.0000004459439, y: -0.7071069, z: -0.00000085842026, w: 0.70710677}
-  m_LocalPosition: {x: 0.6331319, y: 0.4912486, z: 0.49981338}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: 0.0219368, y: -0.70676655, z: -0.021937216, w: 0.7067664}
+  m_LocalPosition: {x: 0.3170662, y: -0.8143003, z: 0.118636146}
+  m_LocalScale: {x: 0.49999997, y: 0.5, z: 0.4999999}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5178555207391533837}
-  m_Father: {fileID: 2156854249679363542}
+  m_Father: {fileID: 442511936164313193}
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
 --- !u!33 &6761551616565300461
 MeshFilter:
@@ -5062,7 +5064,6 @@ Transform:
   - {fileID: 1316538180883586903}
   - {fileID: 3699946564734819141}
   - {fileID: 8056027968774731251}
-  - {fileID: 4175693576834890176}
   - {fileID: 5834925819438488252}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 88.876, z: 0}
@@ -5078,12 +5079,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f271d74ac18a444da2853e0704fe4f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  items: []
+  itemModel: {fileID: 0}
   controller: {fileID: 3564787457791181546}
   ignoreLayer:
     serializedVersion: 2
     m_Bits: 8
   damage: {fileID: 0}
   gravity: 35
+  switchWeaponSoundSource: {fileID: 0}
   HP: 100
   Shield: 20
   speed: 5
@@ -5092,9 +5096,10 @@ MonoBehaviour:
   jumpForce: 12
   buffStatAmount: 0
   equipPos: {fileID: 5178555207391533837}
-  shootDamage: 0
+  damageAmount: 0
   shootRate: 0
   shootDist: 0
+  itemListPos: 0
 --- !u!114 &587136062105357945
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -25,7 +25,7 @@ public class gamemanager : MonoBehaviour
 
     public bool isPaused;
 
-    public pickupItem pickUp;
+    public collectiblePickup pickUp;
 
     [Header("Enemy Info")]
     [SerializeField] TMP_Text gameGoalCountText;

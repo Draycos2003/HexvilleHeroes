@@ -232,6 +232,9 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         damageAmount = items[itemListPos].damgageAmount;
         shootDist = items[itemListPos].shootRange;
         shootRate = items[itemListPos].shootRate;
+        buffStatAmount = items[itemListPos].buffAmount;
+
+
 
         itemModel.GetComponent<MeshFilter>().sharedMesh = items[itemListPos].model.GetComponent<MeshFilter>().sharedMesh;
         itemModel.GetComponent<MeshRenderer>().sharedMaterial = items[itemListPos].model.GetComponent<MeshRenderer>().sharedMaterial;

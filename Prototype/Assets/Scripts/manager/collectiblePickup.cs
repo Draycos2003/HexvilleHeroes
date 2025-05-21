@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class pickupItem : MonoBehaviour
+public class collectiblePickup : MonoBehaviour
 {
     [Header("For Buffs")]
     [SerializeField] Transform respawnPos;
