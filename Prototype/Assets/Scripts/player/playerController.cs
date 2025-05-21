@@ -1,10 +1,14 @@
 using UnityEngine;
 using System.Collections;
+using NUnit.Framework;
+using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class playerController : MonoBehaviour, IDamage, IPickup
 {
     // Player
-
+    [SerializeField] List<pickupItemStats> items = new List<pickupItemStats>();
+    [SerializeField] GameObject itemModel;
 
     [Header("Controllers")]
     [SerializeField] CharacterController controller;
@@ -13,6 +17,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     [Header("World")] // World 
     [SerializeField] int gravity;
+    [SerializeField] AudioSource switchWeaponSoundSource;
 
     [Header("Player")] // Player
     [SerializeField] public int HP;
@@ -28,17 +33,22 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     [SerializeField] int jumpMax;
     [SerializeField] int jumpForce;
 
+    [Header("Buffs")]
+    [SerializeField] int buffStatAmount;
+
     [Header("Weapon")] // Weapon
     [SerializeField] Transform equipPos;
-    [SerializeField] int shootDamage;
+    [SerializeField] int damageAmount;
     [SerializeField] float shootRate;
     [SerializeField] int shootDist;
+
+    inventorymanager inventory;
 
     Vector3 moveDir;
     Vector3 playerVel;
     bool isSprinting;
     int jumpCount;
-
+    public int itemListPos;
     float shootTimer;
 
     private Animator animator;
@@ -46,6 +56,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        inventory = inventorymanager.instance;
         damage = gameObject.GetComponentInChildren<Damage>();
         animator = GetComponent<Animator>();
         maxHP = HP;
@@ -77,7 +88,8 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
         controller.Move(playerVel * Time.deltaTime);
         playerVel.y -= gravity * Time.deltaTime;
-   
+
+        selectItem();
     }
 
     void Sprint()
@@ -145,7 +157,12 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         gamemanager.instance.playerDMGScreen.SetActive(false);
     }
 
-    public void gainHealth(int amount)
+    public void buffPlayer()
+    {
+
+    }
+
+    void gainHealth(int amount)
     {
         // check if player is damaged
         if (HP < maxHP)
@@ -160,7 +177,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         }
     }
 
-    public void gainShield(int amount)
+    void gainShield(int amount)
     {
         // check if player needs shield
         if(Shield < maxShield)
@@ -175,7 +192,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         }
     }
 
-    public void gainDamage(int amount)
+    void gainDamage(int amount)
     {
         if (damage != null)
         {
@@ -184,13 +201,51 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         }
     }
 
-    public void gainSpeed(int amount)
+    void gainSpeed(int amount)
     {
         speed += amount;
     }
 
-    public Transform GetEquipPos()
+    void selectItem()
     {
-        return equipPos;
+        if(Input.GetAxis("Mouse ScrollWheel") > 0 && itemListPos > 0)
+        {
+                itemListPos--;
+                changeItem();
+                inventory.ChangeSelectedSlot(itemListPos);
+                switchWeaponSoundSource.Play();
+        }
+        else if(Input.GetAxis("Mouse ScrollWheel") < 0 && itemListPos<items.Count - 1)
+        {
+            if (itemListPos < inventory.hotBarSize - 1)
+            {
+                itemListPos++;
+                changeItem();
+                inventory.ChangeSelectedSlot(itemListPos);
+                switchWeaponSoundSource.Play();
+            }
+        }
+    }
+
+    void changeItem()
+    {
+        damageAmount = items[itemListPos].damgageAmount;
+        shootDist = items[itemListPos].shootRange;
+        shootRate = items[itemListPos].shootRate;
+
+        itemModel.GetComponent<MeshFilter>().sharedMesh = items[itemListPos].model.GetComponent<MeshFilter>().sharedMesh;
+        itemModel.GetComponent<MeshRenderer>().sharedMaterial = items[itemListPos].model.GetComponent<MeshRenderer>().sharedMaterial;
+    }
+
+    public void getItemStats(pickupItemStats weapon)
+    {
+        items.Add(weapon);
+        itemListPos = items.Count - 1;
+
+       if(itemListPos < inventory.hotBarSize)
+        {
+            inventory.ChangeSelectedSlot(itemListPos);
+            changeItem();
+        }       
     }
 }

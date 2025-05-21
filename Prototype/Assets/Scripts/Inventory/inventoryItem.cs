@@ -13,7 +13,7 @@ public class inventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public Image image;
     public TMP_Text countText;
 
-    [HideInInspector] public Item item;
+    [HideInInspector] public pickupItemStats item;
     [HideInInspector] public int count = 1;
     [HideInInspector] public Transform parentAfterDrag;
 
@@ -22,12 +22,12 @@ public class inventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         InitializeItem(item);
     }
 
-    public void InitializeItem(Item newItem)
+    public void InitializeItem(pickupItemStats newItem)
     {
         item = newItem;
         if (newItem != null)
         {
-            image.sprite = newItem.sprite;
+            image.sprite = newItem.icon;
         }
         RefreshCount();
     }

@@ -4,10 +4,12 @@ public class inventorymanager : MonoBehaviour
 {
     public static inventorymanager instance;
 
-    public Item[] startItems;
+    public pickupItemStats[] startItems;
 
     public InventorySlot[] inventorySlots;
     public GameObject inventoryItemPrefab;
+    public GameObject inventoryMenu;
+    [Range(1, 5)] public int hotBarSize;
 
     int selectedSlot = -1;
 
@@ -31,14 +33,15 @@ public class inventorymanager : MonoBehaviour
         if(Input.inputString != null)
         {
             bool isNumber = int.TryParse(Input.inputString, out int number);
-            if(isNumber && (number > 0 && number <= 5))
+            if(isNumber && (number > 0 && number <= hotBarSize))
             {
                 ChangeSelectedSlot(number - 1);
             }
         }
+        gamemanager.instance.openInventory(inventoryMenu);
     }
 
-    void ChangeSelectedSlot(int newValue)
+    public void ChangeSelectedSlot(int newValue)
     {
         if(selectedSlot >= 0) 
             inventorySlots[selectedSlot].Deselect();
@@ -47,7 +50,7 @@ public class inventorymanager : MonoBehaviour
         selectedSlot = newValue;
     }
 
-    public bool AddItem(Item item)
+    public bool AddItem(pickupItemStats item)
     {
         // check if any slot has the same item with count lower than maximum
         for (int i = 0; i < inventorySlots.Length; i++)
@@ -77,20 +80,20 @@ public class inventorymanager : MonoBehaviour
         return false;
     }
 
-    void SpawnNewItem(Item item, InventorySlot slot)
+    void SpawnNewItem(pickupItemStats item, InventorySlot slot)
     {
         GameObject newItem = Instantiate(inventoryItemPrefab, slot.transform);
         inventoryItem invItem = newItem.GetComponent<inventoryItem>();
         invItem.InitializeItem(item);
     }
 
-    public Item GetSelectedItem(bool use)
+    public pickupItemStats GetSelectedItem(bool use)
     {
         InventorySlot slot = inventorySlots[selectedSlot];
         inventoryItem itemInSlot = slot.GetComponentInChildren<inventoryItem>();
         if (itemInSlot != null)
         {
-            Item item = itemInSlot.item;
+            pickupItemStats item = itemInSlot.item;
 
             if (use)
             {

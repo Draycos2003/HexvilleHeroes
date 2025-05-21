@@ -11,7 +11,6 @@ public class gamemanager : MonoBehaviour
     [SerializeField] GameObject MenuPaused;
     [SerializeField] GameObject MenuWin;
     [SerializeField] GameObject MenuLose;
-    [SerializeField] GameObject MenuInventory;
 
     [Header("Match Timer")]
     [SerializeField] TMP_Text winMessageText;
@@ -75,14 +74,11 @@ public class gamemanager : MonoBehaviour
                 MenuActive = MenuPaused;
                 MenuActive.SetActive(isPaused);
             }
-            else if (MenuActive == MenuPaused || MenuActive == MenuInventory)
+            else if (MenuActive == MenuPaused)
             {
                 stateUnpause();
             }
         }
-
-        openInventory();
-
     }
 
     public void statePause()
@@ -151,17 +147,17 @@ public class gamemanager : MonoBehaviour
         return string.Format("{0}:{1:00}:{2:00}", hours, minutes, seconds);
     }
 
-    public void openInventory()
+    public void openInventory(GameObject inventoryMenu)
     {
         if (Input.GetKeyDown(KeyCode.I))
         {
             if (MenuActive == null)
             {
                 statePause();
-                MenuActive = MenuInventory;
+                MenuActive = inventoryMenu;
                 MenuActive.SetActive(isPaused);
             }
-            else if (MenuActive == MenuInventory)
+            else if (MenuActive == inventoryMenu)
             {
                 stateUnpause();
             }

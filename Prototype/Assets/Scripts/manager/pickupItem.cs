@@ -3,17 +3,13 @@ using UnityEngine;
 
 public class pickupItem : MonoBehaviour
 {
+    [Header("For Buffs")]
     [SerializeField] Transform respawnPos;
     [SerializeField] GameObject item;
+
+    [Header("For Weapons")]
+    [SerializeField] pickupItemStats weapon;
     [SerializeField] float respawnRate;
-
-    enum boostType { health, shield, damage, speed }
-
-    [SerializeField] boostType type;
-    [SerializeField] int healthAmount;
-    [SerializeField] int shieldAmount;
-    [SerializeField] int damageAmount;
-    [SerializeField] int speedAmount;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -29,32 +25,13 @@ public class pickupItem : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        IPickup item = other.GetComponent<IPickup>();
-        if (item != null)
+        IPickup pickup = other.GetComponent<IPickup>();
+        if (pickup != null)
         {
-            if (type == boostType.health)
-            {
-                Debug.Log("GAIN HP");
-                item.gainHealth(healthAmount);
-            }
-            if (type == boostType.shield)
-            {
-                Debug.Log("GAIN DEF");
-                item.gainShield(shieldAmount);
-            }
-            if (type == boostType.damage)
-            {
-                Debug.Log("DAMAGE UP");
-                item.gainDamage(damageAmount);
-            }
-            if (type == boostType.speed)
-            {
-                Debug.Log("SPEED UP");
-                item.gainSpeed(speedAmount);
-            }
+            pickup.getItemStats(weapon);
 
+            Destroy(gameObject);
         }
-        StartCoroutine(respawn());
     }
 
     void spawn()
@@ -64,6 +41,8 @@ public class pickupItem : MonoBehaviour
 
     IEnumerator respawn()
     {
+        Destroy(gameObject);
         yield return new WaitForSeconds(respawnRate);
+        spawn();
     }
 }

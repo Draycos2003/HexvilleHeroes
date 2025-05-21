@@ -3,7 +3,7 @@ using UnityEngine;
 public class demo : MonoBehaviour
 {
    public inventorymanager iManager;
-    public Item[] itemsToPickup;
+    public pickupItemStats[] itemsToPickup;
 
     public void PickUpItem(int id)
     {
@@ -20,7 +20,7 @@ public class demo : MonoBehaviour
 
     public void GetSelectedItem()
     {
-        Item recivedItem = iManager.GetSelectedItem(false);
+        pickupItemStats recivedItem = iManager.GetSelectedItem(false);
         if (recivedItem != null)
             Debug.Log("Recieved Item");
         else
@@ -29,7 +29,7 @@ public class demo : MonoBehaviour
 
     public void UseSelectedItem()
     {
-        Item recivedItem = iManager.GetSelectedItem(true);
+        pickupItemStats recivedItem = iManager.GetSelectedItem(true);
         if (recivedItem != null)
             Debug.Log("Recieved Item");
         else
