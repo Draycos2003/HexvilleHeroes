@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class gamemanager : MonoBehaviour
 {
@@ -61,22 +62,25 @@ public class gamemanager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!isPaused && !matchEnded)
+        if (SceneManager.GetActiveScene().buildIndex != 0)
         {
-            matchTime += Time.deltaTime;
-        }
-
-        if (Input.GetButtonDown("Cancel"))
-        {
-            if (MenuActive == null)
+            if (!isPaused && !matchEnded)
             {
-                statePause();
-                MenuActive = MenuPaused;
-                MenuActive.SetActive(isPaused);
+                matchTime += Time.deltaTime;
             }
-            else if (MenuActive == MenuPaused)
+
+            if (Input.GetButtonDown("Cancel"))
             {
-                stateUnpause();
+                if (MenuActive == null)
+                {
+                    statePause();
+                    MenuActive = MenuPaused;
+                    MenuActive.SetActive(isPaused);
+                }
+                else if (MenuActive == MenuPaused)
+                {
+                    stateUnpause();
+                }
             }
         }
     }
