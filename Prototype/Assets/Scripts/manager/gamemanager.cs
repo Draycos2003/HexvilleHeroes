@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class gamemanager : MonoBehaviour
 {
@@ -35,6 +36,40 @@ public class gamemanager : MonoBehaviour
 
     public int GameGoalCount => gameGoalCount;
 
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        GameObject player = gamemanager.instance.Player;
+
+        if (player == null)
+        {
+            Debug.LogWarning("[SceneEnemyBinder] Player not found.");
+            return;
+        }
+
+        Transform playerTransform = player.transform;
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+        foreach (GameObject enemy in enemies)
+        {
+            enemyAI ai = enemy.GetComponent<enemyAI>();
+            if (ai != null)
+            {
+                ai.target = playerTransform;
+                Debug.Log($"[SceneEnemyBinder] Set target for {enemy.name}");
+            }
+        }
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
@@ -61,22 +96,25 @@ public class gamemanager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!isPaused && !matchEnded)
+        if (SceneManager.GetActiveScene().buildIndex != 0)
         {
-            matchTime += Time.deltaTime;
-        }
-
-        if (Input.GetButtonDown("Cancel"))
-        {
-            if (MenuActive == null)
+            if (!isPaused && !matchEnded)
             {
-                statePause();
-                MenuActive = MenuPaused;
-                MenuActive.SetActive(isPaused);
+                matchTime += Time.deltaTime;
             }
-            else if (MenuActive == MenuPaused)
+
+            if (Input.GetButtonDown("Cancel"))
             {
-                stateUnpause();
+                if (MenuActive == null)
+                {
+                    statePause();
+                    MenuActive = MenuPaused;
+                    MenuActive.SetActive(isPaused);
+                }
+                else if (MenuActive == MenuPaused)
+                {
+                    stateUnpause();
+                }
             }
         }
     }
