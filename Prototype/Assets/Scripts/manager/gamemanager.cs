@@ -36,6 +36,40 @@ public class gamemanager : MonoBehaviour
 
     public int GameGoalCount => gameGoalCount;
 
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        GameObject player = gamemanager.instance.Player;
+
+        if (player == null)
+        {
+            Debug.LogWarning("[SceneEnemyBinder] Player not found.");
+            return;
+        }
+
+        Transform playerTransform = player.transform;
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+        foreach (GameObject enemy in enemies)
+        {
+            enemyAI ai = enemy.GetComponent<enemyAI>();
+            if (ai != null)
+            {
+                ai.target = playerTransform;
+                Debug.Log($"[SceneEnemyBinder] Set target for {enemy.name}");
+            }
+        }
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
