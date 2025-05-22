@@ -12,9 +12,11 @@ public class enemyAI : MonoBehaviour, IDamage
     private float shootTimer;
     private float stoppingDistOrig;
 
-    [SerializeField] private Transform headPos;
-    [SerializeField] private int FOV;
-    [SerializeField] private NavMeshAgent agent;
+    [SerializeField] Transform headPos;
+    [SerializeField] int FOV;
+    [SerializeField] NavMeshAgent agent;
+    [SerializeField] Animator anim;
+    [SerializeField] float animTransSpeed;
 
     private Vector3 targetPos;
     public int attackRange;
@@ -48,7 +50,10 @@ public class enemyAI : MonoBehaviour, IDamage
 
     private void Start()
     {
+        setAnimPara();
         references = GetComponent<EnemyReferences>();
+        agent = GetComponent<NavMeshAgent>();
+        anim = GetComponent<Animator>();
         colorOrig = model.material.color; // Starter color
         gamemanager.instance.updateGameGoal(1); // total enemy count
         stoppingDistOrig = agent.stoppingDistance;
@@ -60,12 +65,14 @@ public class enemyAI : MonoBehaviour, IDamage
         if (inRange)
         {
             CanSeePlayer();
-                
+            setAnimPara();
             float dist = Vector3.Distance(transform.position,target.position);
                
             if (dist > attackRange)
             {
                 UpdatePath();
+
+                
                 if (dist == attackRange)
                 {
                     agent.isStopped = true;
@@ -85,7 +92,10 @@ public class enemyAI : MonoBehaviour, IDamage
 
     void setAnimPara()
     {
+        float agentSpeedCur = agent.velocity.normalized.magnitude;
+        float animSpeedCur = anim.GetFloat("Speed");
 
+        anim.SetFloat("Speed", Mathf.Lerp(animSpeedCur, agentSpeedCur, Time.deltaTime * animTransSpeed));
     }
 
     bool CanSeePlayer()
