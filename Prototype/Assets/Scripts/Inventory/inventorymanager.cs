@@ -12,6 +12,7 @@ public class inventorymanager : MonoBehaviour
     [Range(1, 5)] public int hotBarSize;
 
     int selectedSlot = -1;
+    [HideInInspector] public int inventorySize;
 
     private void Awake()
     {
@@ -21,6 +22,7 @@ public class inventorymanager : MonoBehaviour
     private void Start()
     {
         ChangeSelectedSlot(0);  
+        inventorySize = inventorySlots.Length;
 
         foreach(var item in startItems)
         {

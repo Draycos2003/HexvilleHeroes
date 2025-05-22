@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 
 
 [CreateAssetMenu(menuName = "Scriptable object/item")]
@@ -14,12 +16,14 @@ public class pickupItemStats : ScriptableObject
 
     public TileBase tile;
     public GameObject model;
+    [SerializeField] Image image;
 
     [Header("UI")]
     public string description;
     public bool stackable = true;
     [Range(10, 24)] public int maxStack;
     public Sprite icon;
+    public TMP_Text countText;
 
     [Header("Other")]
     public ParticleSystem hitFX;

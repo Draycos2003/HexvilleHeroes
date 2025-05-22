@@ -43,7 +43,6 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     private int originalSceneIndex;
 
     [Header("Weapon")] // Weapon
-    [SerializeField] Transform equipPos;
     [SerializeField] int damageAmount;
     [SerializeField] float shootRate;
     [SerializeField] int shootDist;
