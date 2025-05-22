@@ -6,22 +6,18 @@ using UnityEngine.Rendering;
 
 public class enemyAI : MonoBehaviour, IDamage
 {
-    [SerializeField] private Transform headPos;
-    [SerializeField] private int FOV;
-    [SerializeField] private NavMeshAgent agent;
 
     private Vector3 playerDir;
     private float angleToPlayer;
     private float shootTimer;
     private float stoppingDistOrig;
 
-    public enum EnemyTypes
-    {
-        Range,
-        Melee,
-    }
+    [SerializeField] private Transform headPos;
+    [SerializeField] private int FOV;
+    [SerializeField] private NavMeshAgent agent;
 
-    public EnemyTypes enemyType;
+    private Vector3 targetPos;
+    public int attackRange;
 
 
     [Header("Enemy Fields")]
@@ -37,18 +33,18 @@ public class enemyAI : MonoBehaviour, IDamage
 
     [Header("Range Fields")]
     public Transform shootPos;
-    public GameObject bullet;
+    public GameObject projectile;
     public float shootRate;
-    private bool inRange;
 
     [Header("Melee Fields")]
     public float attackSpeed;
     public GameObject weapon;
     public Collider hitPos;
 
-    private Color colorOrig;
-
-    private EnemyReferences references;
+    Color colorOrig;
+    bool inRange;
+    
+    EnemyReferences references;
 
     private void Start()
     {
@@ -61,64 +57,50 @@ public class enemyAI : MonoBehaviour, IDamage
     // Update is called once per frame
     private void Update()
     {
-        if (target != null)
+        if (inRange)
         {
-
-            if (inRange == true)
+            CanSeePlayer();
+                
+            float dist = Vector3.Distance(transform.position,target.position);
+               
+            if (dist > attackRange)
             {
-                if (CanSeePlayer())
-                {
-                    references.animate.SetBool("casting", inRange);
-                }
-
-            }
-            else
-            {
-                references.animate.SetBool("casting", inRange);
                 UpdatePath();
+                if (dist == attackRange)
+                {
+                    agent.isStopped = true;
+                }
             }
-
-            //          -- Faces target if still in range
-            if (references.navMesh.remainingDistance < references.navMesh.stoppingDistance)
+            else 
             {
-                faceTarget();
+                if (shootTimer <= shootRate)
+                    shoot();
             }
         }
+        else if (!inRange)
+        {
+            UpdatePath();
+        }
     }
 
-    private void OnTriggerEnter(Collider other)
+    void setAnimPara()
     {
-        if (other.tag == ("Player"))
-        {
-            inRange = true;
-        }
 
-    }
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.tag == ("Player"))
-        {
-            inRange = false;
-        }
     }
 
     bool CanSeePlayer()
     {
-        playerDir = (gamemanager.instance.Player.transform.position - headPos.position);
-        angleToPlayer = Vector3.Angle(new Vector3(playerDir.x, 0, playerDir.z), transform.forward);
-        Debug.DrawRay(headPos.position, new Vector3(playerDir.x, 0, playerDir.z));
+        targetPos = (target.transform.position - headPos.position);
+        angleToPlayer = Vector3.Angle(new Vector3(targetPos.x, 0, targetPos.z), transform.forward);
+        Debug.DrawRay(headPos.position, new Vector3(targetPos.x, 0, targetPos.z));
 
         RaycastHit hit;
-        if (Physics.Raycast(headPos.position, playerDir, out hit))
+        if (Physics.Raycast(headPos.position, targetPos, out hit, attackRange))
         {
             if (angleToPlayer <= FOV && hit.collider.CompareTag("Player"))
             {
-                agent.SetDestination(gamemanager.instance.Player.transform.position);
-
-                if (shootTimer >= shootRate)
-                {
-                    shoot();
-                }
+                UpdatePath();
+                Debug.Log(hit.collider);
 
                 if (agent.remainingDistance <= agent.stoppingDistance)
                 {
@@ -133,12 +115,13 @@ public class enemyAI : MonoBehaviour, IDamage
         return false;
     }
 
+
     public void TakeDamage(int Amount)
     {
         if (currentShield <= 0)
         {
             HP -= Amount;
-
+           
             if (HP <= 0)
             {
                 Destroy(gameObject);
@@ -165,29 +148,42 @@ public class enemyAI : MonoBehaviour, IDamage
 
     private void faceTarget()
     {
-        //      --  Creates a smoother rotation by using Slerp.
-        //      -- I use Slerp instead of lerp because i don't know what type of rotation the character could make it could be big but if not, it could be juddery using lerp so be safe with Slerp.
-
-        //Vector3 lookPos = target.position - transform.position;
-        //lookPos.y = 0;
-        Quaternion rotation = Quaternion.LookRotation(new Vector3(playerDir.x, transform.position.y, playerDir.z));
-        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * faceTargetSpeed);
-
+        Vector3 lookPos = target.transform.position - transform.position;
+        lookPos.y = 0;
+        Quaternion rotation = Quaternion.LookRotation(lookPos);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, faceTargetSpeed * Time.deltaTime);
     }
 
     private void shoot()
     {
-        Instantiate(bullet, shootPos.position, transform.rotation);
+        if (projectile == null)
+            Debug.LogWarning("No projectile set");
+
+        Instantiate(projectile, shootPos.position, transform.rotation);
     }
 
-    private void UpdatePath()
+    public void UpdatePath()
     {
-        //      -- Updates the Path every 0.2 seconds instead of every frame like navMesh.SetDestination(target.postion)
         if (Time.time >= updatePathDeadline)
         {
-            Debug.Log("Updating Path");
             updatePathDeadline = Time.time + references.pathUpdateDely;
             references.navMesh.SetDestination(target.position);
         }
     }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == ("Player"))
+        {
+            inRange = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == ("Player"))
+        {
+            inRange = false;
+        }
+    }
 }
+
