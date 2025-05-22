@@ -1,17 +1,23 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.AI;
+using UnityEngine.Rendering;
 
 
 public class enemyAI : MonoBehaviour, IDamage
 {
-    public enum EnemyTypes
-    {
-        Range, 
-        Melee,
-    }
 
-    public EnemyTypes enemyType;
+    private Vector3 playerDir;
+    private float angleToPlayer;
+    private float shootTimer;
+    private float stoppingDistOrig;
+
+    [SerializeField] private Transform headPos;
+    [SerializeField] private int FOV;
+    [SerializeField] private NavMeshAgent agent;
+
+    private Vector3 targetPos;
+    public int attackRange;
 
 
     [Header("Enemy Fields")]
@@ -27,9 +33,8 @@ public class enemyAI : MonoBehaviour, IDamage
 
     [Header("Range Fields")]
     public Transform shootPos;
-    public GameObject bullet;
+    public GameObject projectile;
     public float shootRate;
-    bool inRange;
 
     [Header("Melee Fields")]
     public float attackSpeed;
@@ -37,63 +42,86 @@ public class enemyAI : MonoBehaviour, IDamage
     public Collider hitPos;
 
     Color colorOrig;
+    bool inRange;
+    
+    EnemyReferences references;
 
-    private EnemyReferences references;
-
-    void Start()
+    private void Start()
     {
         references = GetComponent<EnemyReferences>();
         colorOrig = model.material.color; // Starter color
         gamemanager.instance.updateGameGoal(1); // total enemy count
+        stoppingDistOrig = agent.stoppingDistance;
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        if (target != null)
+        if (inRange)
         {
-
-            if (inRange == true)
+            CanSeePlayer();
+                
+            float dist = Vector3.Distance(transform.position,target.position);
+               
+            if (dist > attackRange)
             {
-                references.animate.SetBool("casting", inRange);
-
-            }
-            else
-            {
-                references.animate.SetBool("casting", inRange);
                 UpdatePath();
+                if (dist == attackRange)
+                {
+                    agent.isStopped = true;
+                }
             }
-
-            //          -- Faces target if still in range
-            if (references.navMesh.remainingDistance < references.navMesh.stoppingDistance)
+            else 
             {
-                faceTarget();
+                if (shootTimer <= shootRate)
+                    shoot();
             }
         }
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.tag == ("Player"))
+        else if (!inRange)
         {
-            inRange = true;
-        }
-
-    }
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.tag ==("Player"))
-        {
-            inRange = false;
+            UpdatePath();
         }
     }
+
+    void setAnimPara()
+    {
+
+    }
+
+    bool CanSeePlayer()
+    {
+        targetPos = (target.transform.position - headPos.position);
+        angleToPlayer = Vector3.Angle(new Vector3(targetPos.x, 0, targetPos.z), transform.forward);
+        Debug.DrawRay(headPos.position, new Vector3(targetPos.x, 0, targetPos.z));
+
+        RaycastHit hit;
+        if (Physics.Raycast(headPos.position, targetPos, out hit, attackRange))
+        {
+            if (angleToPlayer <= FOV && hit.collider.CompareTag("Player"))
+            {
+                UpdatePath();
+                Debug.Log(hit.collider);
+
+                if (agent.remainingDistance <= agent.stoppingDistance)
+                {
+                    faceTarget();
+                }
+
+                agent.stoppingDistance = stoppingDistOrig;
+                return true;
+            }       
+        }
+        agent.stoppingDistance = 0;
+        return false;
+    }
+
 
     public void TakeDamage(int Amount)
     {
         if (currentShield <= 0)
         {
             HP -= Amount;
-
+           
             if (HP <= 0)
             {
                 Destroy(gameObject);
@@ -111,38 +139,51 @@ public class enemyAI : MonoBehaviour, IDamage
         }
     }
 
-    IEnumerator flashRed()
+    private IEnumerator flashRed()
     {
         model.material.color = Color.red;
         yield return new WaitForSeconds(0.05f);
         model.material.color = colorOrig;
     }
 
-    void faceTarget()
+    private void faceTarget()
     {
-//      --  Creates a smoother rotation by using Slerp.
-//      -- I use Slerp instead of lerp because i don't know what type of rotation the character could make it could be big but if not, it could be juddery using lerp so be safe with Slerp.
-
-        Vector3 lookPos = target.position - transform.position;
+        Vector3 lookPos = target.transform.position - transform.position;
         lookPos.y = 0;
         Quaternion rotation = Quaternion.LookRotation(lookPos);
         transform.rotation = Quaternion.Slerp(transform.rotation, rotation, faceTargetSpeed * Time.deltaTime);
-
     }
 
-    void shoot()
+    private void shoot()
     {
-        Instantiate(bullet, shootPos.position, transform.rotation);
+        if (projectile == null)
+            Debug.LogWarning("No projectile set");
+
+        Instantiate(projectile, shootPos.position, transform.rotation);
     }
 
-    private void UpdatePath()
+    public void UpdatePath()
     {
-//      -- Updates the Path every 0.2 seconds instead of every frame like navMesh.SetDestination(target.postion)
         if (Time.time >= updatePathDeadline)
         {
-            Debug.Log("Updating Path");
             updatePathDeadline = Time.time + references.pathUpdateDely;
             references.navMesh.SetDestination(target.position);
         }
     }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == ("Player"))
+        {
+            inRange = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == ("Player"))
+        {
+            inRange = false;
+        }
+    }
 }
+

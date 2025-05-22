@@ -90,11 +90,6 @@ public class gamemanager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
     }
 
-    public void SetMatchTime(int time)
-    {
-        matchTime = time;
-    }
-
     public void stateUnpause()
     {
         isPaused = !isPaused;
@@ -134,6 +129,11 @@ public class gamemanager : MonoBehaviour
                 winMessageText.text = "You have clear this room in " + MatchTime() + "!\n\nPlease proceed to the next room";
             }
         }
+    }
+
+    public void SetMatchTime(int time)
+    {
+        matchTime = time;
     }
 
     // calculate match time for hours minutes and seconds
