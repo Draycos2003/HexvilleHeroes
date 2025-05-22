@@ -62,6 +62,8 @@ public class enemyAI : MonoBehaviour, IDamage
     // Update is called once per frame
     private void Update()
     {
+        shootTimer += Time.deltaTime;
+
         if (inRange)
         {
             CanSeePlayer();
@@ -80,7 +82,7 @@ public class enemyAI : MonoBehaviour, IDamage
             }
             else 
             {
-                if (shootTimer <= shootRate)
+                if (shootTimer >= shootRate)
                     shoot();
             }
         }
@@ -169,7 +171,10 @@ public class enemyAI : MonoBehaviour, IDamage
         if (projectile == null)
             Debug.LogWarning("No projectile set");
 
+        
+
         Instantiate(projectile, shootPos.position, transform.rotation);
+        shootTimer = 0;
     }
 
     public void UpdatePath()
