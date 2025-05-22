@@ -51,7 +51,11 @@ public class enemyAI : MonoBehaviour, IDamage
         references = GetComponent<EnemyReferences>();
         colorOrig = model.material.color; // Starter color
         gamemanager.instance.updateGameGoal(1); // total enemy count
-        stoppingDistOrig = agent.stoppingDistance;
+
+        if (agent != null)
+        {
+            stoppingDistOrig = agent.stoppingDistance;
+        }
     }
 
     // Update is called once per frame
@@ -111,7 +115,12 @@ public class enemyAI : MonoBehaviour, IDamage
                 return true;
             }       
         }
-        agent.stoppingDistance = 0;
+
+        if (agent != null)
+        {
+            agent.stoppingDistance = 0;
+        }
+        
         return false;
     }
 

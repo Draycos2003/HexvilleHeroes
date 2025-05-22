@@ -2,11 +2,7 @@ using UnityEngine;
 
 public interface IPickup
 {
-    void gainHealth(int amount);
+    public void buffPlayer();
 
-    void gainShield(int amount);
-
-    void gainDamage(int amount);
-
-    void gainSpeed(int amount);
+    public void getItemStats(pickupItemStats weapon);
 }

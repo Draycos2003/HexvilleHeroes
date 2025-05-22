@@ -6,6 +6,8 @@ using TMPro;
 [RequireComponent(typeof(Collider))]
 public class ProximityPrompt : MonoBehaviour
 {
+    public pickupItemStats item;
+
     [Header("UI References")]
     [SerializeField] CanvasGroup promptCanvasGroup;
     [SerializeField] TextMeshProUGUI primaryPromptTextLabel;

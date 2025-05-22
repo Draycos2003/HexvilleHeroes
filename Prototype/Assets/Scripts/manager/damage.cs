@@ -11,7 +11,6 @@ public class Damage : MonoBehaviour
 
     [SerializeField] DamageType type;
     [SerializeField] Rigidbody body;
-    [SerializeField] playerAttack playerAttack;
 
     [SerializeField] public int damageAmount;
     [SerializeField] int damageRate;
@@ -97,7 +96,7 @@ public class Damage : MonoBehaviour
                 StartCoroutine(damageOverTime(damage));
             }
         }
-        if (damage != null && (type == DamageType.melee && playerAttack.isAttacking))
+        if (damage != null && type == DamageType.melee)
         {
             Debug.Log(other.name);
             other.GetComponent<Animator>().SetTrigger("hit");
@@ -115,12 +114,10 @@ public class Damage : MonoBehaviour
 
     IEnumerator damageMelee(IDamage damage)
     {
-        playerAttack.isAttacking = true;
         damage.TakeDamage(damageAmount);
         gameObject.GetComponent<Collider>().isTrigger = false;
 
         yield return new WaitForSeconds(damageRate);
-        playerAttack.isAttacking = false;
         gameObject.GetComponent<Collider>().isTrigger = true;
     }
 }

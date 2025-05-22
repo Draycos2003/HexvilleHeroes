@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class gamemanager : MonoBehaviour
 {
@@ -11,7 +12,6 @@ public class gamemanager : MonoBehaviour
     [SerializeField] GameObject MenuPaused;
     [SerializeField] GameObject MenuWin;
     [SerializeField] GameObject MenuLose;
-    [SerializeField] GameObject MenuInventory;
 
     [Header("Match Timer")]
     [SerializeField] TMP_Text winMessageText;
@@ -26,7 +26,7 @@ public class gamemanager : MonoBehaviour
 
     public bool isPaused;
 
-    public pickupItem pickUp;
+    public collectiblePickup pickUp;
 
     [Header("Enemy Info")]
     [SerializeField] TMP_Text gameGoalCountText;
@@ -35,6 +35,40 @@ public class gamemanager : MonoBehaviour
     int gameGoalCount;
 
     public int GameGoalCount => gameGoalCount;
+
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        GameObject player = gamemanager.instance.Player;
+
+        if (player == null)
+        {
+            Debug.LogWarning("[SceneEnemyBinder] Player not found.");
+            return;
+        }
+
+        Transform playerTransform = player.transform;
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+        foreach (GameObject enemy in enemies)
+        {
+            enemyAI ai = enemy.GetComponent<enemyAI>();
+            if (ai != null)
+            {
+                ai.target = playerTransform;
+                Debug.Log($"[SceneEnemyBinder] Set target for {enemy.name}");
+            }
+        }
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -62,27 +96,27 @@ public class gamemanager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!isPaused && !matchEnded)
+        if (SceneManager.GetActiveScene().buildIndex != 0)
         {
-            matchTime += Time.deltaTime;
-        }
-
-        if (Input.GetButtonDown("Cancel"))
-        {
-            if (MenuActive == null)
+            if (!isPaused && !matchEnded)
             {
-                statePause();
-                MenuActive = MenuPaused;
-                MenuActive.SetActive(isPaused);
+                matchTime += Time.deltaTime;
             }
-            else if (MenuActive == MenuPaused || MenuActive == MenuInventory)
+
+            if (Input.GetButtonDown("Cancel"))
             {
-                stateUnpause();
+                if (MenuActive == null)
+                {
+                    statePause();
+                    MenuActive = MenuPaused;
+                    MenuActive.SetActive(isPaused);
+                }
+                else if (MenuActive == MenuPaused)
+                {
+                    stateUnpause();
+                }
             }
         }
-
-        openInventory();
-
     }
 
     public void statePause()
@@ -102,8 +136,11 @@ public class gamemanager : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
-        MenuActive.SetActive(false);
-        MenuActive = null;
+        if(MenuActive != null)
+        {
+            MenuActive.SetActive(false);
+            MenuActive = null;
+        }
     }
 
     public void youLose()
@@ -148,17 +185,17 @@ public class gamemanager : MonoBehaviour
         return string.Format("{0}:{1:00}:{2:00}", hours, minutes, seconds);
     }
 
-    public void openInventory()
+    public void openInventory(GameObject inventoryMenu)
     {
         if (Input.GetKeyDown(KeyCode.I))
         {
             if (MenuActive == null)
             {
                 statePause();
-                MenuActive = MenuInventory;
+                MenuActive = inventoryMenu;
                 MenuActive.SetActive(isPaused);
             }
-            else if (MenuActive == MenuInventory)
+            else if (MenuActive == inventoryMenu)
             {
                 stateUnpause();
             }

@@ -6,6 +6,8 @@ public class buttonfunctions : MonoBehaviour
 
     private static readonly string teleportTargetName = "SpawnPoint";
 
+    private playerController playerControl;
+
     void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -77,6 +79,17 @@ public class buttonfunctions : MonoBehaviour
         {
             Debug.Log("[ButtonFunctions] Loading scene: " + Lvl);
             SceneManager.LoadScene(Lvl);
+        }
+
+        playerControl = gamemanager.instance.PlayerScript;
+        if(playerControl.inventoryCanvas != null)
+        {
+            playerControl.inventoryCanvas.SetActive(true);
+        }
+
+        if (playerControl.playerMenu != null)
+        {
+            playerControl.playerMenu.SetActive(true);
         }
 
         gm.stateUnpause();
