@@ -10,11 +10,12 @@ public class Spawner : MonoBehaviour
     int spawnCount;
     float spawnTimer;
     bool startSpawning;
+    bool spawnTriggered = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -24,29 +25,34 @@ public class Spawner : MonoBehaviour
         {
             spawnTimer += Time.deltaTime;
 
-            if(spawnTimer >= spawnRate && spawnCount < spawnAmount)
+            if (spawnTimer >= spawnRate && spawnCount < spawnAmount)
             {
                 Spawn();
             }
         }
-        
+
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (spawnTriggered == false)
         {
-            startSpawning = true;
-            gamemanager.instance.updateGameGoal(spawnAmount);
+            if (other.CompareTag("Player"))
+            {
+                startSpawning = true;
+                gamemanager.instance.updateGameGoal(spawnAmount);
+                spawnTriggered = true;
+            }
         }
     }
 
     void Spawn()
     {
-        int arrayPos = Random.Range(1, spawnPos.Length);
-
-        Instantiate(spawnObject, spawnPos[arrayPos].position, spawnPos[arrayPos].rotation);
-        spawnCount++;
-        spawnTimer = 0;
+        for (int arrayPos = 0; arrayPos < spawnPos.Length && arrayPos < spawnAmount; arrayPos++)
+        {
+            Instantiate(spawnObject, spawnPos[arrayPos].position, spawnPos[arrayPos].rotation);
+            spawnCount++;
+            spawnTimer = 0;
+        }
     }
 }
