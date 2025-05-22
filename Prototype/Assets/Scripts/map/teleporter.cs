@@ -54,7 +54,6 @@ public class TeleportPad : MonoBehaviour
     private IEnumerator TeleportRoutine(Transform playerT)
     {
         isOnCooldown = true;
-
         if (targetDestination != null && targetDestination.CompareTag("SceneLoader"))
         {
             var pc = playerT.GetComponent<playerController>();

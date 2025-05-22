@@ -2556,14 +2556,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a916b528e6f2244ba6ff1ede11ee90f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyType: 0
+  headPos: {fileID: 1217432626442383158}
+  FOV: 0
+  agent: {fileID: 0}
+  attackRange: 0
   HP: 20
   Shield: 0
   model: {fileID: 575146262698126400}
   faceTargetSpeed: 500
   target: {fileID: 3541719040939019059, guid: 06a4d7afda18c9443a19e29f9a9c54f9, type: 3}
   shootPos: {fileID: 7357865037738214253}
-  bullet: {fileID: 7491880933644792005, guid: 6cca30d082b92a447acd68472f7e8a07, type: 3}
+  projectile: {fileID: 0}
   shootRate: 10
   attackSpeed: 0
   weapon: {fileID: 0}
@@ -2614,7 +2617,7 @@ NavMeshAgent:
   m_AngularSpeed: 300
   m_StoppingDistance: 10
   m_AutoTraverseOffMeshLink: 0
-  m_AutoBraking: 1
+  m_AutoBraking: 0
   m_AutoRepath: 0
   m_Height: 2
   m_BaseOffset: 0
