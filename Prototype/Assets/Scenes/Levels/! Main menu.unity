@@ -221,7 +221,7 @@ Transform:
   m_GameObject: {fileID: 267294948}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 6.8269978, y: -1.3511682, z: -0.9352749}
+  m_LocalPosition: {x: 4.484312, y: -1.3511682, z: -0.9352749}
   m_LocalScale: {x: 2.25, y: 0.25, z: 2.25}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1037,7 +1037,7 @@ Transform:
   m_GameObject: {fileID: 908940349}
   serializedVersion: 2
   m_LocalRotation: {x: -0.70710677, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 6.827, y: -3.5111682, z: -1.9252748}
+  m_LocalPosition: {x: 4.484312, y: -3.5111682, z: -1.9252748}
   m_LocalScale: {x: 2.25, y: 0.25, z: 2.25}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1107,7 +1107,7 @@ Camera:
   field of view: 62.3
   orthographic: 0
   orthographic size: 5
-  m_Depth: 99
+  m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -1264,7 +1264,7 @@ Transform:
   m_GameObject: {fileID: 976269261}
   serializedVersion: 2
   m_LocalRotation: {x: -0.50000006, y: -0.49999997, z: -0.49999997, w: 0.5000001}
-  m_LocalPosition: {x: 5.746998, y: -3.5111682, z: -0.9352747}
+  m_LocalPosition: {x: 3.4043121, y: -3.5111682, z: -0.9352747}
   m_LocalScale: {x: 2.25, y: 0.25, z: 2.25}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1409,7 +1409,7 @@ Transform:
   m_GameObject: {fileID: 1428120608}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 6.918, y: -4.5011683, z: -0.9352749}
+  m_LocalPosition: {x: 4.484312, y: -4.5011683, z: -0.9352749}
   m_LocalScale: {x: 2.25, y: 0.25, z: 2.25}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1732,7 +1732,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1699379370}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
@@ -1876,7 +1876,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Options
+  m_text: Restart
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 125cb55b44b24c4393181402bc6200e6, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 125cb55b44b24c4393181402bc6200e6, type: 2}
@@ -2190,7 +2190,7 @@ Transform:
   m_GameObject: {fileID: 1794044023}
   serializedVersion: 2
   m_LocalRotation: {x: -0.70710677, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 6.8269978, y: -3.5111682, z: 0.05472523}
+  m_LocalPosition: {x: 4.484312, y: -3.5111682, z: 0.05472523}
   m_LocalScale: {x: 2.25, y: 0.25, z: 2.25}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2408,7 +2408,7 @@ Transform:
   m_GameObject: {fileID: 1898266769}
   serializedVersion: 2
   m_LocalRotation: {x: -0.50000006, y: -0.49999997, z: -0.49999997, w: 0.5000001}
-  m_LocalPosition: {x: 7.996998, y: -3.5111682, z: -0.93527526}
+  m_LocalPosition: {x: 5.654312, y: -3.5111682, z: -0.93527526}
   m_LocalScale: {x: 2.25, y: 0.25, z: 2.25}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9370,14 +9370,13 @@ MonoBehaviour:
   MenuPaused: {fileID: 0}
   MenuWin: {fileID: 8260121033823835422}
   MenuLose: {fileID: 2976613474554186009}
-  MenuInventory: {fileID: 0}
+  InventoryMenu: {fileID: 0}
   winMessageText: {fileID: 0}
   playerDMGScreen: {fileID: 2233618750903594507}
   playerShieldDMGScreen: {fileID: 0}
-  Player: {fileID: 0}
-  PlayerScript: {fileID: 0}
+  Player: {fileID: 2076686097}
+  PlayerScript: {fileID: 2076686103}
   isPaused: 0
-  pickUp: {fileID: 0}
   gameGoalCountText: {fileID: 0}
 --- !u!4 &2677809607828990748
 Transform:

@@ -17,7 +17,6 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     [Header("Player")] // Player
     [SerializeField] public int HP;
     [SerializeField] public int Shield;
-
     public int HPOrig => HP;
     private int maxHP;
     public int ShieldOrig => Shield;
@@ -28,9 +27,6 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     [SerializeField] int jumpMax;
     [SerializeField] int jumpForce;
-
-    private int currentSceneIndex;
-    private int originalSceneIndex;
 
     [Header("Weapon")] // Weapon
     [SerializeField] int shootDamage;
@@ -60,24 +56,6 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     {
         Movement();
         Sprint();
-    }
-
-    public void SetSceneIndex(int newSceneIndex)
-    {
-        originalSceneIndex = currentSceneIndex;
-        currentSceneIndex = newSceneIndex;
-
-        Debug.Log($"[Player] Scene changed: from {originalSceneIndex} to {currentSceneIndex}");
-    }
-
-    public int GetCurrentSceneIndex()
-    {
-        return currentSceneIndex;
-    }
-
-    public int GetOriginalSceneIndex()
-    {
-        return originalSceneIndex;
     }
 
     void Movement()
