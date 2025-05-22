@@ -63,11 +63,6 @@ public class enemyAI : MonoBehaviour, IDamage
                 
             float dist = Vector3.Distance(transform.position,target.position);
                
-            if (CanSeePlayer())
-            {
-                references.animate.SetBool("casting", inRange);
-            }
-
             if (dist > attackRange)
             {
                 UpdatePath();
@@ -106,11 +101,6 @@ public class enemyAI : MonoBehaviour, IDamage
             {
                 UpdatePath();
                 Debug.Log(hit.collider);
-
-                if (shootTimer >= shootRate)
-                {
-                    shoot();
-                }
 
                 if (agent.remainingDistance <= agent.stoppingDistance)
                 {
