@@ -45,7 +45,6 @@ public class enemyAI : MonoBehaviour, IDamage
     Color colorOrig;
     bool inRange;
     float pathUpdateDely;
-    bool inAttackingRange;
 
     private void Start()
     {
@@ -63,9 +62,8 @@ public class enemyAI : MonoBehaviour, IDamage
         
         setAnimPara();
 
-        if (inRange)
+        if (inRange && CanSeePlayer())
         {
-            CanSeePlayer();
 
             float dist = Vector3.Distance(transform.position, target.position);
 
@@ -73,7 +71,7 @@ public class enemyAI : MonoBehaviour, IDamage
             {
                 UpdatePath();
             }
-            else if (dist == attackRange)
+            else if (dist <= attackRange)
             {
                 if(shootTimer >= shootRate)
                 {
@@ -86,7 +84,7 @@ public class enemyAI : MonoBehaviour, IDamage
             UpdatePath();
         }
        
-        
+  
     }
 
     void setAnimPara()
@@ -97,7 +95,7 @@ public class enemyAI : MonoBehaviour, IDamage
         anim.SetFloat("Speed", Mathf.Lerp(animSpeedCur, agentSpeedCur, Time.deltaTime * animTransSpeed));
     }
 
-    void CanSeePlayer()
+    bool CanSeePlayer()
     {
         targetPos = (target.transform.position - headPos.position);
         
@@ -117,23 +115,12 @@ public class enemyAI : MonoBehaviour, IDamage
                 {
                     faceTarget();
                 }
-                
-                //float dist = Vector3.Distance(transform.position,target.position);
-               
-                //if (dist > attackRange)
-                //{
-                //    UpdatePath();
-                //}
-                //else
-                //{
-                //     shoot();
-                //}
-              
+
+                return true;
             }       
         }
-
+        return false;
     }
-
 
     public void TakeDamage(int Amount)
     {
@@ -149,7 +136,7 @@ public class enemyAI : MonoBehaviour, IDamage
             }
             else
             {
-                StartCoroutine(flashRed());
+                StartCoroutine(flashRed()); 
             }
         }
         else
@@ -201,6 +188,14 @@ public class enemyAI : MonoBehaviour, IDamage
         }
     }
     private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == ("Player"))
+        {
+            inRange = true;
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
     {
         if (other.tag == ("Player"))
         {
