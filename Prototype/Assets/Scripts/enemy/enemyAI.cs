@@ -169,12 +169,19 @@ public class enemyAI : MonoBehaviour, IDamage
     private void shoot()
     {
         if (projectile == null)
+        {
             Debug.LogWarning("No projectile set");
+            return;
+        }
 
-        
 
-        Instantiate(projectile, shootPos.position, transform.rotation);
+        anim.SetTrigger("shoot");
         shootTimer = 0;
+    }
+
+    public void createProjectile()
+    {
+        Instantiate(projectile, shootPos.position, transform.rotation);
     }
 
     public void UpdatePath()
