@@ -26,7 +26,7 @@ public class enemyAI : MonoBehaviour, IDamage
     public int Shield;
     public Renderer model;
     public float faceTargetSpeed;
-    public Transform target;
+    Transform target;
 
     public int CurrentHP => HP;
     public int currentShield => Shield;
@@ -64,7 +64,7 @@ public class enemyAI : MonoBehaviour, IDamage
 
         if (inRange && CanSeePlayer())
         {
-
+           
             float dist = Vector3.Distance(transform.position, target.position);
 
             if (dist > attackRange)
@@ -78,6 +78,7 @@ public class enemyAI : MonoBehaviour, IDamage
                     shoot();
                 }
             }
+
         }
         else
         { 
@@ -97,30 +98,40 @@ public class enemyAI : MonoBehaviour, IDamage
 
     bool CanSeePlayer()
     {
-        targetPos = (target.transform.position - headPos.position);
-        
-        angleToPlayer = Vector3.Angle(new Vector3(targetPos.x, 0, targetPos.z), transform.forward);
-        
-        Debug.DrawRay(headPos.position, new Vector3(targetPos.x, 0, targetPos.z));
-
-        RaycastHit hit;
-        
-        if (Physics.Raycast(headPos.position, targetPos, out hit, attackRange))
+        if (target == null)
         {
-            if (angleToPlayer <= FOV && hit.collider.CompareTag("Player"))
-            {
-                Debug.Log(hit.collider);
-                
-                if (agent.remainingDistance <= agent.stoppingDistance)
-                {
-                    faceTarget();
-                }
-
-                return true;
-            }       
+            return false;
         }
-        return false;
+        else
+        {
+            targetPos = (target.transform.position - headPos.position);
+        
+           angleToPlayer = Vector3.Angle(new Vector3(targetPos.x, 0, targetPos.z), transform.forward);
+        
+            Debug.DrawRay(headPos.position, new Vector3(targetPos.x, 0, targetPos.z));
+
+            RaycastHit hit;
+        
+            if (Physics.Raycast(headPos.position, targetPos, out hit, attackRange))
+            {
+                if (angleToPlayer <= FOV && hit.collider.CompareTag("Player"))
+                {
+                    Debug.Log(hit.collider);
+
+
+                    if (agent.remainingDistance <= agent.stoppingDistance)
+                    {
+                        faceTarget();
+                    }
+
+                    return true;
+                }       
+            }
+            return false;
+
+        }
     }
+
 
     public void TakeDamage(int Amount)
     {
@@ -157,7 +168,7 @@ public class enemyAI : MonoBehaviour, IDamage
         Vector3 lookPos = target.transform.position - transform.position;
         lookPos.y = 0;
         Quaternion rotation = Quaternion.LookRotation(lookPos);
-        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, faceTargetSpeed * Time.deltaTime);
+        transform.rotation = Quaternion.Lerp(transform.rotation, rotation, faceTargetSpeed * Time.deltaTime);
     }
 
     private void shoot()
@@ -191,6 +202,7 @@ public class enemyAI : MonoBehaviour, IDamage
     {
         if (other.tag == ("Player"))
         {
+            target = other.transform;
             inRange = true;
         }
     }
