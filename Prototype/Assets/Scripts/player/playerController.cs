@@ -20,8 +20,10 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     [SerializeField] AudioSource switchWeaponSoundSource;
 
     [Header("Player")] // Player
-    [SerializeField] public int HP;
-    [SerializeField] public int Shield;
+    public int HP;
+    public int Shield;
+    public GameObject playerMenu;
+    public GameObject inventoryCanvas;
 
     public int HPOrig => HP;
     private int maxHP;
