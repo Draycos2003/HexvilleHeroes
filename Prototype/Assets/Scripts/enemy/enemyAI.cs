@@ -4,13 +4,13 @@ using UnityEngine.AI;
 using UnityEngine.Rendering;
 
 
+
 public class enemyAI : MonoBehaviour, IDamage
 {
 
     private Vector3 playerDir;
     private float angleToPlayer;
     private float shootTimer;
-    private float stoppingDistOrig;
 
     [SerializeField] Transform headPos;
     [SerializeField] int FOV;
@@ -20,7 +20,6 @@ public class enemyAI : MonoBehaviour, IDamage
 
     private Vector3 targetPos;
     public int attackRange;
-
 
     [Header("Enemy Fields")]
     public int HP;
@@ -45,51 +44,49 @@ public class enemyAI : MonoBehaviour, IDamage
 
     Color colorOrig;
     bool inRange;
-    
-    EnemyReferences references;
+    float pathUpdateDely;
+    bool inAttackingRange;
 
     private void Start()
     {
         setAnimPara();
-        references = GetComponent<EnemyReferences>();
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
         colorOrig = model.material.color; // Starter color
         gamemanager.instance.updateGameGoal(1); // total enemy count
-        stoppingDistOrig = agent.stoppingDistance;
     }
 
     // Update is called once per frame
     private void Update()
     {
         shootTimer += Time.deltaTime;
+        
+        setAnimPara();
 
         if (inRange)
         {
             CanSeePlayer();
-            setAnimPara();
-            float dist = Vector3.Distance(transform.position,target.position);
-               
+
+            float dist = Vector3.Distance(transform.position, target.position);
+
             if (dist > attackRange)
             {
                 UpdatePath();
-
-                
-                if (dist == attackRange)
+            }
+            else if (dist == attackRange)
+            {
+                if(shootTimer >= shootRate)
                 {
-                    agent.isStopped = true;
+                    shoot();
                 }
             }
-            else 
-            {
-                if (shootTimer >= shootRate)
-                    shoot();
-            }
         }
-        else if (!inRange)
-        {
+        else
+        { 
             UpdatePath();
         }
+       
+        
     }
 
     void setAnimPara()
@@ -100,31 +97,41 @@ public class enemyAI : MonoBehaviour, IDamage
         anim.SetFloat("Speed", Mathf.Lerp(animSpeedCur, agentSpeedCur, Time.deltaTime * animTransSpeed));
     }
 
-    bool CanSeePlayer()
+    void CanSeePlayer()
     {
         targetPos = (target.transform.position - headPos.position);
+        
         angleToPlayer = Vector3.Angle(new Vector3(targetPos.x, 0, targetPos.z), transform.forward);
+        
         Debug.DrawRay(headPos.position, new Vector3(targetPos.x, 0, targetPos.z));
 
         RaycastHit hit;
+        
         if (Physics.Raycast(headPos.position, targetPos, out hit, attackRange))
         {
             if (angleToPlayer <= FOV && hit.collider.CompareTag("Player"))
             {
-                UpdatePath();
                 Debug.Log(hit.collider);
-
+                
                 if (agent.remainingDistance <= agent.stoppingDistance)
                 {
                     faceTarget();
                 }
-
-                agent.stoppingDistance = stoppingDistOrig;
-                return true;
+                
+                //float dist = Vector3.Distance(transform.position,target.position);
+               
+                //if (dist > attackRange)
+                //{
+                //    UpdatePath();
+                //}
+                //else
+                //{
+                //     shoot();
+                //}
+              
             }       
         }
-        agent.stoppingDistance = 0;
-        return false;
+
     }
 
 
@@ -168,19 +175,18 @@ public class enemyAI : MonoBehaviour, IDamage
 
     private void shoot()
     {
-        if (projectile == null)
-        {
-            Debug.LogWarning("No projectile set");
-            return;
-        }
-
-
         anim.SetTrigger("shoot");
         shootTimer = 0;
     }
 
     public void createProjectile()
     {
+        if (projectile == null)
+        {
+            Debug.LogWarning("No projectile set");
+            return;
+        }
+
         Instantiate(projectile, shootPos.position, transform.rotation);
     }
 
@@ -188,8 +194,10 @@ public class enemyAI : MonoBehaviour, IDamage
     {
         if (Time.time >= updatePathDeadline)
         {
-            updatePathDeadline = Time.time + references.pathUpdateDely;
-            references.navMesh.SetDestination(target.position);
+            pathUpdateDely = 0.2f;
+            updatePathDeadline = Time.time + pathUpdateDely;
+            agent.SetDestination(target.transform.position);
+            Debug.Log("Updating Path");
         }
     }
     private void OnTriggerEnter(Collider other)
