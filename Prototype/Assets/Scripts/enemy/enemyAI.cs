@@ -26,7 +26,6 @@ public class enemyAI : MonoBehaviour, IDamage
     public Renderer model;
     public float faceTargetSpeed;
     public Transform target;
-    public float attackRange;
 
     public int CurrentHP => HP;
     public int currentShield => Shield;
@@ -58,50 +57,40 @@ public class enemyAI : MonoBehaviour, IDamage
     // Update is called once per frame
     private void Update()
     {
-            if (inRange)
+        if (inRange)
+        {
+            CanSeePlayer();
+                
+            float dist = Vector3.Distance(transform.position,target.position);
+               
+            if (CanSeePlayer())
             {
-               CanSeePlayer();
-                float dist = Vector3.Distance(transform.position,target.position);
-                if (CanSeePlayer())
-                {
-                    references.animate.SetBool("casting", inRange);
-                }
-
-                if (dist > attackRange)
-                {
-                    UpdatePath();
-                    if (dist == attackRange)
-                    {
-                        agent.isStopped = true;
-                    }
-                }
-                else 
-                {
-                    if (shootTimer <= shootRate)
-                        shoot();
-                }
+                references.animate.SetBool("casting", inRange);
             }
-            else if (!inRange)
+
+            if (dist > attackRange)
             {
                 UpdatePath();
+                if (dist == attackRange)
+                {
+                    agent.isStopped = true;
+                }
+            }
+            else 
+            {
+                if (shootTimer <= shootRate)
+                    shoot();
             }
         }
-    }
- 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.tag == ("Player"))
+        else if (!inRange)
         {
-            inRange = true;
+            UpdatePath();
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    void setAnimPara()
     {
-        if (other.tag == ("Player"))
-        {
-            inRange = false;
-        }
+
     }
 
     bool CanSeePlayer()
@@ -169,7 +158,7 @@ public class enemyAI : MonoBehaviour, IDamage
 
     private void faceTarget()
     {
-        Vector3 lookPos = targetPos.transform.position - transform.position;
+        Vector3 lookPos = target.transform.position - transform.position;
         lookPos.y = 0;
         Quaternion rotation = Quaternion.LookRotation(lookPos);
         transform.rotation = Quaternion.Slerp(transform.rotation, rotation, faceTargetSpeed * Time.deltaTime);
@@ -191,4 +180,20 @@ public class enemyAI : MonoBehaviour, IDamage
             references.navMesh.SetDestination(target.position);
         }
     }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == ("Player"))
+        {
+            inRange = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == ("Player"))
+        {
+            inRange = false;
+        }
+    }
 }
+
