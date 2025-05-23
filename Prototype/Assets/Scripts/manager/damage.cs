@@ -61,7 +61,7 @@ public class Damage : MonoBehaviour
         
         if (damage != null && (type == DamageType.ranged || type == DamageType.casting))
         {
-                damage.TakeDamage(damageAmount);
+            damage.TakeDamage(damageAmount);
         }
 
         if (type == DamageType.ranged || type == DamageType.homing || type == DamageType.casting)

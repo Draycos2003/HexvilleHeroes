@@ -573,7 +573,7 @@ GameObject:
   - component: {fileID: 4131588264166440193}
   m_Layer: 6
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -607,13 +607,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a916b528e6f2244ba6ff1ede11ee90f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  model: {fileID: 1446108844673453709}
+  headPos: {fileID: 0}
+  FOV: 0
   agent: {fileID: 7634246050115131204}
+  anim: {fileID: 0}
+  animTransSpeed: 0
+  attackRange: 0
   HP: 3
+  Shield: 0
+  model: {fileID: 1446108844673453709}
   faceTargetSpeed: 8
   shootPos: {fileID: 5479580584653053533}
-  bullet: {fileID: 5819260963497546416, guid: b506a7635a1dacc4eb739a9aa671211f, type: 3}
+  projectile: {fileID: 5313342752221936860, guid: a4b6539581182aa4a8d37e6a64d8c48b, type: 3}
   shootRate: 0.5
+  attackSpeed: 0
+  weapon: {fileID: 0}
+  hitPos: {fileID: 0}
 --- !u!195 &7634246050115131204
 NavMeshAgent:
   m_ObjectHideFlags: 0
