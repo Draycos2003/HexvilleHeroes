@@ -47,8 +47,6 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     [SerializeField] float shootRate;
     [SerializeField] int shootDist;
 
-    inventorymanager inventory;
-
     Vector3 moveDir;
     Vector3 playerVel;
     bool isSprinting;
@@ -61,7 +59,6 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        inventory = inventorymanager.instance;
         damage = gameObject.GetComponentInChildren<Damage>();
         animator = GetComponent<Animator>();
         maxHP = HP;
@@ -235,18 +232,11 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         {
                 itemListPos--;
                 changeItem();
-                inventory.ChangeSelectedSlot(itemListPos);
-                switchWeaponSoundSource.Play();
         }
         else if(Input.GetAxis("Mouse ScrollWheel") < 0 && itemListPos<items.Count - 1)
         {
-            if (itemListPos < inventory.hotBarSize - 1)
-            {
                 itemListPos++;
                 changeItem();
-                inventory.ChangeSelectedSlot(itemListPos);
-                switchWeaponSoundSource.Play();
-            }
         }
     }
 
@@ -267,11 +257,6 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     {
         items.Add(weapon);
         itemListPos = items.Count - 1;
-
-       if(itemListPos < inventory.hotBarSize)
-        {
-            inventory.ChangeSelectedSlot(itemListPos);
-            changeItem();
-        }       
+        changeItem();
     }
 }

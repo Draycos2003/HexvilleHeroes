@@ -131,7 +131,6 @@ public class pickupInfo : MonoBehaviour
                     Debug.Log("Pressed primary key");
                     onPrimaryPressed?.Invoke();
                     gamemanager.instance.PlayerScript.getItemStats(item);
-                    inventorymanager.instance.AddItem(item);
                 }
 
                 if (secondaryKey != KeyCode.None && Input.GetKeyDown(secondaryKey))
