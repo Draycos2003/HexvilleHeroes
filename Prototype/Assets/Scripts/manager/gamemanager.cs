@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 public class gamemanager : MonoBehaviour
 {
     public static gamemanager instance;
+    public GameObject textPopup;
+    public TMP_Text textPopupDesc;
 
     [Header("Menues")]
     [SerializeField] GameObject MenuActive;
