@@ -2,13 +2,13 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.AI;
 using UnityEngine.Rendering;
+using Unity.VisualScripting;
 
 
 
 public class enemyAI : MonoBehaviour, IDamage
 {
 
-    private Vector3 playerDir;
     private float angleToPlayer;
     private float shootTimer;
 
@@ -19,7 +19,7 @@ public class enemyAI : MonoBehaviour, IDamage
     [SerializeField] float animTransSpeed;
 
     private Vector3 targetPos;
-    public int attackRange;
+    [SerializeField] float attackRange;
 
     [Header("Enemy Fields")]
     public int HP;
@@ -45,6 +45,8 @@ public class enemyAI : MonoBehaviour, IDamage
     Color colorOrig;
     bool inRange;
     float pathUpdateDely;
+    private float dist;
+    
 
     private void Start()
     {
@@ -61,31 +63,15 @@ public class enemyAI : MonoBehaviour, IDamage
         shootTimer += Time.deltaTime;
         
         setAnimPara();
-
-        if (inRange && CanSeePlayer())
+        
+        if (inRange)//player is in the collider
         {
-           
-            float dist = Vector3.Distance(transform.position, target.position);
-
-            if (dist > attackRange)
-            {
-                UpdatePath();
-            }
-            else if (dist <= attackRange)
-            {
-                if(shootTimer >= shootRate)
-                {
-                    shoot();
-                }
-            }
-
+            CanSeePlayer(); // can we see the player?
         }
         else
-        { 
-            UpdatePath();
+        {
+            UpdatePath(); // get back in range of the player
         }
-       
-  
     }
 
     void setAnimPara()
@@ -98,38 +84,33 @@ public class enemyAI : MonoBehaviour, IDamage
 
     bool CanSeePlayer()
     {
-        if (target == null)
-        {
-            return false;
-        }
-        else
-        {
-            targetPos = (target.transform.position - headPos.position);
-        
-           angleToPlayer = Vector3.Angle(new Vector3(targetPos.x, 0, targetPos.z), transform.forward);
-        
-            Debug.DrawRay(headPos.position, new Vector3(targetPos.x, 0, targetPos.z));
 
-            RaycastHit hit;
+        targetPos = (target.transform.position - headPos.position);
         
-            if (Physics.Raycast(headPos.position, targetPos, out hit, attackRange))
+        angleToPlayer = Vector3.Angle(new Vector3(targetPos.x, 0, targetPos.z), transform.forward);
+        
+        Debug.DrawRay(headPos.position, new Vector3(targetPos.x, 0, targetPos.z));
+
+        dist = Vector3.Distance(target.position,headPos.position);
+
+        if (Physics.Raycast(headPos.position, targetPos, dist))
+        {
+            if (angleToPlayer <= FOV)
             {
-                if (angleToPlayer <= FOV && hit.collider.CompareTag("Player"))
+                if(dist > attackRange) // dist check. If not in attacking range. Get in attacking range.
                 {
-                    Debug.Log(hit.collider);
-
-
-                    if (agent.remainingDistance <= agent.stoppingDistance)
-                    {
+                    UpdatePath();
+                }
+                else
+                {
                         faceTarget();
-                    }
-
-                    return true;
-                }       
-            }
-            return false;
-
+                    if (shootTimer >= shootRate)
+                        shoot();
+                }
+                return true;
+            }       
         }
+        return false;   
     }
 
 
@@ -168,7 +149,7 @@ public class enemyAI : MonoBehaviour, IDamage
         Vector3 lookPos = target.transform.position - transform.position;
         lookPos.y = 0;
         Quaternion rotation = Quaternion.LookRotation(lookPos);
-        transform.rotation = Quaternion.Lerp(transform.rotation, rotation, faceTargetSpeed * Time.deltaTime);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, faceTargetSpeed * Time.deltaTime);
     }
 
     private void shoot()
@@ -202,15 +183,7 @@ public class enemyAI : MonoBehaviour, IDamage
     {
         if (other.tag == ("Player"))
         {
-            target = other.transform;
-            inRange = true;
-        }
-    }
-
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.tag == ("Player"))
-        {
+            target = other.transform; // grabs the targets transform once inside the collider
             inRange = true;
         }
     }
