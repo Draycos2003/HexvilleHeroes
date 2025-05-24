@@ -25,6 +25,9 @@ public class gamemanager : MonoBehaviour
     public playerController PlayerScript;
     public inventorySO playerInventroy;
 
+    public GameObject TextPopup;
+    public TMP_Text PopupText;
+
     public bool isPaused;
 
     public collectiblePickup pickUp;
@@ -62,17 +65,6 @@ public class gamemanager : MonoBehaviour
         }
 
         Transform playerTransform = player.transform;
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-
-        foreach (GameObject enemy in enemies)
-        {
-            enemyAI ai = enemy.GetComponent<enemyAI>();
-            if (ai != null)
-            {
-                ai.target = playerTransform;
-                Debug.Log($"[SceneEnemyBinder] Set target for {enemy.name}");
-            }
-        }
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

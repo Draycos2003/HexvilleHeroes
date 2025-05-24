@@ -2179,16 +2179,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   headPos: {fileID: 6950099372492892922}
-  FOV: 60
+  FOV: 180
   agent: {fileID: 3429634135691362835}
-  HP: 50
-  Shield: 50
+  anim: {fileID: 8278446102394531361}
+  animTransSpeed: 1
+  attackRange: 10
+  HP: 20
+  Shield: 0
   model: {fileID: 5984132666329031490}
   faceTargetSpeed: 500
-  target: {fileID: 0}
   shootPos: {fileID: 6062879582135962456}
-  bullet: {fileID: 7491880933644792005, guid: 41c87ef8263594d43b3576c52c22006a, type: 3}
-  shootRate: 10
+  projectile: {fileID: 7491880933644792005, guid: 41c87ef8263594d43b3576c52c22006a, type: 3}
+  shootRate: 3
   attackSpeed: 0
   weapon: {fileID: 0}
   hitPos: {fileID: 0}
@@ -2286,7 +2288,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 10
+  m_Radius: 15
   m_Center: {x: 0, y: 1, z: 0}
 --- !u!95 &8278446102394531361
 Animator:

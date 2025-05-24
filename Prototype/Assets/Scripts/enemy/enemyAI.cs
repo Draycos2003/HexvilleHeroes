@@ -2,30 +2,31 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.AI;
 using UnityEngine.Rendering;
+using Unity.VisualScripting;
+
 
 
 public class enemyAI : MonoBehaviour, IDamage
 {
 
-    private Vector3 playerDir;
     private float angleToPlayer;
     private float shootTimer;
-    private float stoppingDistOrig;
 
-    [SerializeField] private Transform headPos;
-    [SerializeField] private int FOV;
-    [SerializeField] private NavMeshAgent agent;
+    [SerializeField] Transform headPos;
+    [SerializeField] int FOV;
+    [SerializeField] NavMeshAgent agent;
+    [SerializeField] Animator anim;
+    [SerializeField] float animTransSpeed;
 
     private Vector3 targetPos;
-    public int attackRange;
-
+    [SerializeField] float attackRange;
 
     [Header("Enemy Fields")]
     public int HP;
     public int Shield;
     public Renderer model;
     public float faceTargetSpeed;
-    public Transform target;
+    Transform target;
 
     public int CurrentHP => HP;
     public int currentShield => Shield;
@@ -43,85 +44,73 @@ public class enemyAI : MonoBehaviour, IDamage
 
     Color colorOrig;
     bool inRange;
+    float pathUpdateDely;
+    private float dist;
     
-    EnemyReferences references;
 
     private void Start()
     {
-        references = GetComponent<EnemyReferences>();
+        setAnimPara();
+        agent = GetComponent<NavMeshAgent>();
+        anim = GetComponent<Animator>();
         colorOrig = model.material.color; // Starter color
-        gamemanager.instance.updateGameGoal(1); // total enemy count
-
-        if (agent != null)
-        {
-            stoppingDistOrig = agent.stoppingDistance;
-        }
+        //gamemanager.instance.updateGameGoal(1); // total enemy count
     }
 
     // Update is called once per frame
     private void Update()
     {
-        if (inRange)
+        shootTimer += Time.deltaTime;
+        
+        setAnimPara();
+        
+        if (inRange)//player is in the collider
         {
-            CanSeePlayer();
-                
-            float dist = Vector3.Distance(transform.position,target.position);
-               
-            if (dist > attackRange)
-            {
-                UpdatePath();
-                if (dist == attackRange)
-                {
-                    agent.isStopped = true;
-                }
-            }
-            else 
-            {
-                if (shootTimer <= shootRate)
-                    shoot();
-            }
+            CanSeePlayer(); // can we see the player?
         }
-        else if (!inRange)
+        else
         {
-            UpdatePath();
+            UpdatePath(); // get back in range of the player
         }
     }
 
     void setAnimPara()
     {
+        float agentSpeedCur = agent.velocity.normalized.magnitude;
+        float animSpeedCur = anim.GetFloat("Speed");
 
+        anim.SetFloat("Speed", Mathf.Lerp(animSpeedCur, agentSpeedCur, Time.deltaTime * animTransSpeed));
     }
 
     bool CanSeePlayer()
     {
+
         targetPos = (target.transform.position - headPos.position);
+        
         angleToPlayer = Vector3.Angle(new Vector3(targetPos.x, 0, targetPos.z), transform.forward);
+        
         Debug.DrawRay(headPos.position, new Vector3(targetPos.x, 0, targetPos.z));
 
-        RaycastHit hit;
-        if (Physics.Raycast(headPos.position, targetPos, out hit, attackRange))
+        dist = Vector3.Distance(target.position,headPos.position);
+
+        if (Physics.Raycast(headPos.position, targetPos, dist))
         {
-            if (angleToPlayer <= FOV && hit.collider.CompareTag("Player"))
+            if (angleToPlayer <= FOV)
             {
-                UpdatePath();
-                Debug.Log(hit.collider);
-
-                if (agent.remainingDistance <= agent.stoppingDistance)
+                if(dist > attackRange) // dist check. If not in attacking range. Get in attacking range.
                 {
-                    faceTarget();
+                    UpdatePath();
                 }
-
-                agent.stoppingDistance = stoppingDistOrig;
+                else
+                {
+                        faceTarget();
+                    if (shootTimer >= shootRate)
+                        shoot();
+                }
                 return true;
             }       
         }
-
-        if (agent != null)
-        {
-            agent.stoppingDistance = 0;
-        }
-        
-        return false;
+        return false;   
     }
 
 
@@ -139,7 +128,7 @@ public class enemyAI : MonoBehaviour, IDamage
             }
             else
             {
-                StartCoroutine(flashRed());
+                StartCoroutine(flashRed()); 
             }
         }
         else
@@ -165,8 +154,17 @@ public class enemyAI : MonoBehaviour, IDamage
 
     private void shoot()
     {
+        anim.SetTrigger("shoot");
+        shootTimer = 0;
+    }
+
+    public void createProjectile()
+    {
         if (projectile == null)
+        {
             Debug.LogWarning("No projectile set");
+            return;
+        }
 
         Instantiate(projectile, shootPos.position, transform.rotation);
     }
@@ -175,14 +173,17 @@ public class enemyAI : MonoBehaviour, IDamage
     {
         if (Time.time >= updatePathDeadline)
         {
-            updatePathDeadline = Time.time + references.pathUpdateDely;
-            references.navMesh.SetDestination(target.position);
+            pathUpdateDely = 0.2f;
+            updatePathDeadline = Time.time + pathUpdateDely;
+            agent.SetDestination(target.transform.position);
+            Debug.Log("Updating Path");
         }
     }
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == ("Player"))
         {
+            target = other.transform; // grabs the targets transform once inside the collider
             inRange = true;
         }
     }
