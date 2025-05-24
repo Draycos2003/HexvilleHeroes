@@ -84,7 +84,6 @@ public class enemyAI : MonoBehaviour, IDamage
 
     bool CanSeePlayer()
     {
-
         targetPos = (target.transform.position - headPos.position);
         
         angleToPlayer = Vector3.Angle(new Vector3(targetPos.x, 0, targetPos.z), transform.forward);
