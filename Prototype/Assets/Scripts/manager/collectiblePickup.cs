@@ -8,7 +8,7 @@ public class collectiblePickup : MonoBehaviour
     [SerializeField] GameObject item;
 
     [Header("For Weapons")]
-    [SerializeField] pickupItemStats weapon;
+    [SerializeField] pickupItemSO weapon;
     [SerializeField] float respawnRate;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

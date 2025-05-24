@@ -15,14 +15,16 @@ MonoBehaviour:
   IType: 0
   tile: {fileID: 0}
   model: {fileID: 493618286875878133, guid: c58afb621fdfd594f87a5cd69f6d8ee1, type: 3}
-  description: Melee \n 20 Damage
-  stackable: 1
-  maxStack: 0
-  icon: {fileID: 21300000, guid: 556def944fd02f54c98ac89a1fd817a7, type: 3}
+  description: '20 Melee Damage
+
+'
+  isStackable: 1
+  maxStack: 10
+  itemIcon: {fileID: 21300000, guid: 556def944fd02f54c98ac89a1fd817a7, type: 3}
   hitFX: {fileID: 0}
   hitSound: []
   volume: 0
   damgageAmount: 20
-  shootRange: 0
+  shootRange: 5
   shootRate: 0
-  buffAmount: 0
+  buffAmount: 10

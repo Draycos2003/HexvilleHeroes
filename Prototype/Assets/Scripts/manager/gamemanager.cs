@@ -31,6 +31,10 @@ public class gamemanager : MonoBehaviour
     [Header("Enemy Info")]
     [SerializeField] TMP_Text gameGoalCountText;
 
+    [Header("InventoryUI")]
+    [SerializeField] inventoryUI invUI;
+    [SerializeField] inventoryUIController invController;
+
     float timeScaleOrig;
     int gameGoalCount;
 
@@ -187,8 +191,6 @@ public class gamemanager : MonoBehaviour
 
     public void openInventory(GameObject inventoryMenu)
     {
-        if (Input.GetKeyDown(KeyCode.I))
-        {
             if (MenuActive == null)
             {
                 statePause();
@@ -197,8 +199,8 @@ public class gamemanager : MonoBehaviour
             }
             else if (MenuActive == inventoryMenu)
             {
+                invUI.ResetDraggedItem();
                 stateUnpause();
             }
-        }
     }
 }

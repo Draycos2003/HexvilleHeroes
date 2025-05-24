@@ -8,22 +8,21 @@ using UnityEngine.UI;
 
 
 [CreateAssetMenu(menuName = "Scriptable object/item")]
-public class pickupItemStats : ScriptableObject
+public class pickupItemSO : ScriptableObject
 {
     public enum ItemType { melee, ranged, shield, consumable }
 
     public ItemType IType;
+    public int ID => GetInstanceID();
 
     public TileBase tile;
     public GameObject model;
-    [SerializeField] Image image;
 
     [Header("UI")]
-    public string description;
-    public bool stackable = true;
+    [TextArea] public string description;
+    public bool isStackable;
     [Range(10, 24)] public int maxStack;
-    public Sprite icon;
-    public TMP_Text countText;
+    public Sprite itemIcon;
 
     [Header("Other")]
     public ParticleSystem hitFX;

@@ -1200,6 +1200,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemPrefab: {fileID: -8491741835841838743, guid: c267c696c99bb38419a80648ee1c3993, type: 3}
   contentPanel: {fileID: 3515858567785842103}
+  description: {fileID: 2197679789647015667}
 --- !u!222 &7491669690033835980
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1349,6 +1350,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6830118505729841398}
   - component: {fileID: 8161832099472312069}
+  - component: {fileID: 2197679789647015667}
   - component: {fileID: 582413453112300271}
   - component: {fileID: 9007872190420783362}
   - component: {fileID: 3295816653597513018}
@@ -1388,6 +1390,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8965766794377638731}
   m_CullTransparentMesh: 1
+--- !u!114 &2197679789647015667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8965766794377638731}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53fd551ba791fca47865b33ec2263eb5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemImage: {fileID: 582413453112300271}
+  title: {fileID: 2993810527804694093}
+  description: {fileID: 2647357598820456928}
 --- !u!114 &582413453112300271
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1584,8 +1601,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2043210290643096122}
   m_HandleRect: {fileID: 1777609761840239770}
   m_Direction: 2
-  m_Value: 0
-  m_Size: 1
+  m_Value: 1
+  m_Size: 0
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

@@ -7,7 +7,7 @@ using Unity.VisualScripting;
 public class playerController : MonoBehaviour, IDamage, IPickup
 {
     // Player
-    [SerializeField] List<pickupItemStats> items = new List<pickupItemStats>();
+    [SerializeField] List<pickupItemSO> items = new List<pickupItemSO>();
     [SerializeField] GameObject itemModel;
 
     [Header("Controllers")]
@@ -253,7 +253,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         itemModel.GetComponent<MeshRenderer>().sharedMaterial = items[itemListPos].model.GetComponent<MeshRenderer>().sharedMaterial;
     }
 
-    public void getItemStats(pickupItemStats weapon)
+    public void getItemStats(pickupItemSO weapon)
     {
         items.Add(weapon);
         itemListPos = items.Count - 1;

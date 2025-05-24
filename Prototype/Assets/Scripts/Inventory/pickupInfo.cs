@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 [RequireComponent(typeof(Collider))]
 public class pickupInfo : MonoBehaviour
 {
-    public pickupItemStats item;
+    public pickupItemSO item;
 
     [Header("UI References")]
     [SerializeField] CanvasGroup promptCanvasGroup;
@@ -83,7 +83,7 @@ public class pickupInfo : MonoBehaviour
         if (sightRenderer == null)
             Debug.LogWarning($"[ProximityPrompt] No Renderer found for frustum check on '{name}'");
 
-        pickupItemStats access = item;
+        pickupItemSO access = item;
     }
 
     void OnTriggerEnter(Collider other)
