@@ -23,6 +23,7 @@ public class gamemanager : MonoBehaviour
     public GameObject playerShieldDMGScreen;
     public GameObject Player;
     public playerController PlayerScript;
+    public inventorySO playerInventroy;
 
     public bool isPaused;
 
@@ -33,7 +34,7 @@ public class gamemanager : MonoBehaviour
 
     [Header("InventoryUI")]
     [SerializeField] inventoryUI invUI;
-    [SerializeField] inventoryUIController invController;
+    [SerializeField] inventoryController invController;
 
     float timeScaleOrig;
     int gameGoalCount;

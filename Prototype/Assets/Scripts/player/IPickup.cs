@@ -4,5 +4,5 @@ public interface IPickup
 {
     public void buffPlayer();
 
-    public void getItemStats(pickupItemSO weapon);
+    public void getItemStats(ItemSO weapon);
 }

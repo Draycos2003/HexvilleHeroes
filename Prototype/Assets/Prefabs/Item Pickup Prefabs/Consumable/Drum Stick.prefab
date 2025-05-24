@@ -1152,6 +1152,7 @@ GameObject:
   - component: {fileID: 7081850073878878489}
   - component: {fileID: 8193481203713059703}
   - component: {fileID: 3565462175414014162}
+  - component: {fileID: -1888861596011077424}
   - component: {fileID: 6986552791211365445}
   m_Layer: 0
   m_Name: Drum Stick
@@ -1252,6 +1253,22 @@ CapsuleCollider:
   m_Height: 25
   m_Direction: 1
   m_Center: {x: 0, y: 0.000000074505806, z: 0}
+--- !u!114 &-1888861596011077424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8461884230166128799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87f14a02d47fdd4408ee9c4642a04a82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <InventoryItem>k__BackingField: {fileID: 11400000, guid: 47935bd8712beab49994ee9a9028abab, type: 2}
+  <quantity>k__BackingField: 1
+  audio: {fileID: 0}
+  volume: 0
 --- !u!114 &6986552791211365445
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1265,6 +1282,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: 47935bd8712beab49994ee9a9028abab, type: 2}
+  inventory: {fileID: 11400000, guid: b6eae350c45abe74fac0fe70c4018117, type: 2}
   promptCanvasGroup: {fileID: 2128477533453240822}
   primaryPromptTextLabel: {fileID: 1394071289757286348}
   primarykeyTextLabel: {fileID: 1155683691027907409}
@@ -1276,6 +1294,7 @@ MonoBehaviour:
   secondaryPromptMessage: Consume
   promptItemNameLabel: {fileID: 4299654551203229713}
   promptItemDescLabel: {fileID: 1478394683002656968}
+  promptItemCountLabel: {fileID: 0}
   fadeDuration: 0.2
   sightRenderer: {fileID: 0}
   onPrimaryPressed:
@@ -1284,6 +1303,7 @@ MonoBehaviour:
   onSecondaryPressed:
     m_PersistentCalls:
       m_Calls: []
+  canPickup: 0
 --- !u!1 &8980985068309840395
 GameObject:
   m_ObjectHideFlags: 0

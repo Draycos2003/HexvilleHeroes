@@ -3,11 +3,13 @@ using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
 using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 
 [RequireComponent(typeof(Collider))]
 public class pickupInfo : MonoBehaviour
 {
-    public pickupItemSO item;
+    public ItemSO item;
+    public inventorySO inventory;
 
     [Header("UI References")]
     [SerializeField] CanvasGroup promptCanvasGroup;
@@ -26,6 +28,7 @@ public class pickupInfo : MonoBehaviour
     [Header("Item Info Settings")]
     [SerializeField] TextMeshProUGUI promptItemNameLabel;
     [SerializeField] TextMeshProUGUI promptItemDescLabel;
+    [SerializeField] TextMeshProUGUI promptItemCountLabel;
 
     [Header("Fade Settings")]
     [SerializeField] float fadeDuration = 0.2f;
@@ -68,6 +71,8 @@ public class pickupInfo : MonoBehaviour
             promptItemNameLabel.text = item.name;
         if (promptItemDescLabel != null)
             promptItemDescLabel.text = item.description;
+        if (promptItemCountLabel != null)
+            promptItemCountLabel.text = "x" + item.quantity.ToString();
 
         if (primarykeyTextLabel != null)
             primarykeyTextLabel.text = primaryKey.ToString();
@@ -82,8 +87,6 @@ public class pickupInfo : MonoBehaviour
 
         if (sightRenderer == null)
             Debug.LogWarning($"[ProximityPrompt] No Renderer found for frustum check on '{name}'");
-
-        pickupItemSO access = item;
     }
 
     void OnTriggerEnter(Collider other)
@@ -92,11 +95,6 @@ public class pickupInfo : MonoBehaviour
         {
             playerInRange = true;
             TryShowOrHide();
-        }
-        IPickup pickup = other.GetComponent<IPickup>();
-        if (pickup != null)
-        {
-            canPickup = true;
         }
     }
 
@@ -121,26 +119,24 @@ public class pickupInfo : MonoBehaviour
             TryShowOrHide();
         }
 
-        if (canPickup)
+        // handle input only when both conditions true
+        if (playerInRange && isVisible)
         {
-            // handle input only when both conditions true
-            if (playerInRange && isVisible)
+            if (Input.GetKeyDown(primaryKey))
             {
-                if (Input.GetKeyDown(primaryKey))
-                {
-                    Debug.Log("Pressed primary key");
-                    onPrimaryPressed?.Invoke();
-                    gamemanager.instance.PlayerScript.getItemStats(item);
-                }
+                Debug.Log("Pressed primary key");
+                onPrimaryPressed?.Invoke();
+                inventory.AddItem(item, item.quantity);
+                UpdateInfo();
+            }
 
-                if (secondaryKey != KeyCode.None && Input.GetKeyDown(secondaryKey))
-                {
-                    Debug.Log("Pressed secondary key");
-                    onSecondaryPressed?.Invoke();
-                }
+            if (secondaryKey != KeyCode.None && Input.GetKeyDown(secondaryKey))
+            {
+                Debug.Log("Pressed secondary key");
+                onSecondaryPressed?.Invoke();
             }
         }
-           
+
     }
 
     private void TryShowOrHide()
@@ -179,5 +175,11 @@ public class pickupInfo : MonoBehaviour
         }
         promptCanvasGroup.alpha = target;
         fadeRoutine = null;
+    }
+
+    void UpdateInfo()
+    {
+        if (promptItemCountLabel != null)
+            promptItemCountLabel.text = "x" + item.quantity.ToString();
     }
 }

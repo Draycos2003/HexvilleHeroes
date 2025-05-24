@@ -67,6 +67,7 @@ public class inventoryUI : MonoBehaviour
             return;
     
         OnSwapItems?.Invoke(currentlyDraggedItmeIndex, index);
+        HandleItemSelection(item);
     }
 
     public void ResetDraggedItem()
@@ -89,7 +90,10 @@ public class inventoryUI : MonoBehaviour
 
     private void HandleShowItemActions(inventoryItemUI item)
     {
-
+        int index = listOfUIItems.IndexOf(item);
+        if (index == -1)
+            return;
+        OnItemActionRequested?.Invoke(index);
     }
 
     public void ResetSelection()
@@ -111,5 +115,14 @@ public class inventoryUI : MonoBehaviour
         description.SetDescription(_itemIcon, _name, _description);
         DeselectAllItems();
         listOfUIItems[_itemIndex].Select();
+    }
+
+    internal void ResetAllItems()
+    {
+       foreach(var item in listOfUIItems)
+        {
+            item.ResetData();
+            item.Deselect();
+        }
     }
 }

@@ -4,10 +4,10 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 
-public class playerController : MonoBehaviour, IDamage, IPickup
+public class playerController : MonoBehaviour, IDamage
 {
     // Player
-    [SerializeField] List<pickupItemSO> items = new List<pickupItemSO>();
+    [SerializeField] List<ItemSO> items = new List<ItemSO>();
     [SerializeField] GameObject itemModel;
 
     [Header("Controllers")]
@@ -177,12 +177,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         gamemanager.instance.playerDMGScreen.SetActive(false);
     }
 
-    public void buffPlayer()
-    {
-
-    }
-
-    void gainHealth(int amount)
+    public void gainHealth(int amount)
     {
         // check if player is damaged
         if (HP < maxHP)
@@ -197,7 +192,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         }
     }
 
-    void gainShield(int amount)
+    public void gainShield(int amount)
     {
         // check if player needs shield
         if(Shield < maxShield)
@@ -212,7 +207,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         }
     }
 
-    void gainDamage(int amount)
+    public void gainDamage(int amount)
     {
         if (damage != null)
         {
@@ -221,7 +216,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         }
     }
 
-    void gainSpeed(int amount)
+    public void gainSpeed(int amount)
     {
         speed += amount;
     }
@@ -242,18 +237,11 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     void changeItem()
     {
-        damageAmount = items[itemListPos].damgageAmount;
-        shootDist = items[itemListPos].shootRange;
-        shootRate = items[itemListPos].shootRate;
-        buffStatAmount = items[itemListPos].buffAmount;
-
-
-
         itemModel.GetComponent<MeshFilter>().sharedMesh = items[itemListPos].model.GetComponent<MeshFilter>().sharedMesh;
         itemModel.GetComponent<MeshRenderer>().sharedMaterial = items[itemListPos].model.GetComponent<MeshRenderer>().sharedMaterial;
     }
 
-    public void getItemStats(pickupItemSO weapon)
+    public void getItemStats(ItemSO weapon)
     {
         items.Add(weapon);
         itemListPos = items.Count - 1;
