@@ -24,6 +24,9 @@ public class gamemanager : MonoBehaviour
     public GameObject Player;
     public playerController PlayerScript;
 
+    public GameObject TextPopup;
+    public TMP_Text PopupText;
+
     public bool isPaused;
 
     public collectiblePickup pickUp;

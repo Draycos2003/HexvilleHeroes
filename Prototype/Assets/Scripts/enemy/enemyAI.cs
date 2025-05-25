@@ -62,7 +62,7 @@ public class enemyAI : MonoBehaviour, IDamage
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
         colorOrig = model.material.color; // Starter color
-        gamemanager.instance.updateGameGoal(1); // total enemy count
+        //gamemanager.instance.updateGameGoal(1); // total enemy count
     }
 
     // Update is called once per frame
