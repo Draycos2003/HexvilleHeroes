@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Text;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class inventoryController : MonoBehaviour
 {
@@ -11,6 +13,9 @@ public class inventoryController : MonoBehaviour
     public inventorySO inventoryData;
 
     public List<InventoryItem> initialItems = new();
+
+    [SerializeField] AudioClip dropClip;
+    [SerializeField] AudioSource audioSource;
 
     public void Start()
     {
@@ -55,16 +60,23 @@ public class inventoryController : MonoBehaviour
         InventoryItem item = inventoryData.GetItemAt(itemIndex);
         if (item.isEmpty) 
             return;
-        IItemAction itemAction = item.item as IItemAction;
-        if(itemAction != null)
-        {
-            itemAction.PerformAction(gameObject);
-        }
         IDestroyableItem _item = item.item as IDestroyableItem;
-        if( _item != null )
+        if (_item != null)
         {
             inventoryData.RemoveItem(itemIndex, 1);
         }
+        IItemAction itemAction = item.item as IItemAction;
+        if(itemAction != null)
+        {
+            itemAction.PerformAction(gameObject, item.itemState);
+        }
+    }
+
+    private void DropItem(int itemIndex, int quantity)
+    {
+        inventoryData.RemoveItem(itemIndex, quantity);
+        invUI.ResetSelection();
+        audioSource.PlayOneShot(dropClip);
     }
 
     private void HandleDragging(int itemIndex)
@@ -77,7 +89,7 @@ public class inventoryController : MonoBehaviour
         IItemAction itemAction = item.item as IItemAction;
         if (itemAction != null)
         {
-            itemAction.PerformAction(gameObject);
+            itemAction.PerformAction(gameObject, null);
         }
     }
 
@@ -89,13 +101,33 @@ public class inventoryController : MonoBehaviour
     private void HandleDescriptionRequest(int itemIndex)
     {
         InventoryItem invItem = inventoryData.GetItemAt(itemIndex);
+        string description = PrepareDescription(invItem);
         if (invItem.isEmpty)
         {
             invUI.ResetSelection();
             return;
         }
         ItemSO item = invItem.item;
-        invUI.UpdateDescription(itemIndex, item.itemIcon, item.name, item.description);
+        invUI.UpdateDescription(itemIndex, item.itemIcon, item.name, description);
+    }
+
+    public string PrepareDescription(InventoryItem invItem)
+    {
+        if (!invItem.isEmpty)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(invItem.item.description);
+            sb.AppendLine();
+            for (int i = 0; i < invItem.itemState.Count; i++)
+            {
+                sb.Append($"{invItem.itemState[i].itemParameter.ParameterName}" +
+                    $": {invItem.itemState[i].value} /" +
+                    $"{invItem.item.defaultParameterList[i].value}");
+                sb.AppendLine();
+            }
+            return sb.ToString();
+        }
+        return null;
     }
 
     public void Update()

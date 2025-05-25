@@ -1,16 +1,19 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-public class EquippableSO : MonoBehaviour
+[CreateAssetMenu]
+public class EquippableSO : ItemSO, IDestroyableItem, IItemAction
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    public string ActionName => "Equip";
 
-    // Update is called once per frame
-    void Update()
+    public bool PerformAction(GameObject character, List<ItemParameter> itemState)
     {
-        
+        agentWeapon weaponSystem = character.GetComponent<agentWeapon>();
+        if(weaponSystem != null)
+        {
+            weaponSystem.SetWeapon(this, itemState == null ? defaultParameterList : itemState);
+            return true;
+        }
+        return false;
     }
 }

@@ -9,22 +9,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2951c5db3eaed6f4a9d3b1fecee492d2, type: 3}
+  m_Script: {fileID: 11500000, guid: 1ad75af9e813d894ea1d1a5dfdd7e3d2, type: 3}
   m_Name: Sword
   m_EditorClassIdentifier: 
   IType: 0
-  model: {fileID: 9093577617138494296, guid: 4d4111a3b84997c4dba0dae144abc019, type: 3}
-  description: '5 Melee Damage
-
-'
-  quantity: 1
+  model: {fileID: 0}
+  description: Cuts Things Hehe
+  quantity: 2
   isStackable: 0
-  maxStack: 64
+  maxStack: 1
   itemIcon: {fileID: 21300000, guid: 789e518168d493d4396ec984b1b5bcb3, type: 3}
   hitFX: {fileID: 0}
   hitSound: []
   volume: 0
-  damgageAmount: 15
-  shootRange: 5
-  shootRate: 0
-  buffAmount: 10
+  <defaultParameterList>k__BackingField:
+  - itemParameter: {fileID: 11400000, guid: d0e95a598cf959746835999c58248441, type: 2}
+    value: 100

@@ -9,7 +9,7 @@ public class ComsumableSO : ItemSO, IDestroyableItem, IItemAction
     [SerializeField] private List<ModifierData> modifiers = new();
     public string ActionName => "Consume";
 
-    public bool PerformAction(GameObject character)
+    public bool PerformAction(GameObject character, List<ItemParameter> itemState = null)
     {
         foreach (ModifierData data in modifiers)
         {
@@ -27,7 +27,7 @@ public interface IDestroyableItem
 public interface IItemAction
 {
     public string ActionName { get; }
-    bool PerformAction(GameObject character);
+    bool PerformAction(GameObject character, List<ItemParameter> itemState);
 }
 
 [Serializable]

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,11 +20,26 @@ public abstract class ItemSO : ScriptableObject
     [TextArea] public string description;
     public int quantity;
     public bool isStackable;
-    [Range(10, 99)] public int maxStack;
+    [Range(1, 99)] public int maxStack;
     public Sprite itemIcon;
 
     [Header("Other")]
     public ParticleSystem hitFX;
     public AudioClip[] hitSound;
     [Range(0, 1)] public float volume;
+
+    [field : SerializeField] public List<ItemParameter> defaultParameterList {  get; set; }
 }
+
+[Serializable]
+public struct ItemParameter : IEquatable<ItemParameter>
+{
+    public ItemParameterSO itemParameter;
+    public float value;
+
+    public bool Equals(ItemParameter other)
+    {
+        return other.itemParameter == itemParameter;
+    }
+}
+
