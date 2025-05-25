@@ -9,24 +9,31 @@ using Unity.VisualScripting;
 public class enemyAI : MonoBehaviour, IDamage
 {
 
+    enum EnemyType
+    {
+        melee, range,
+    }
+
+    EnemyType type;
+
     private float angleToPlayer;
     private float shootTimer;
+    private float attackTimer;
 
-    [SerializeField] Transform headPos;
-    [SerializeField] int FOV;
-    [SerializeField] NavMeshAgent agent;
-    [SerializeField] Animator anim;
-    [SerializeField] float animTransSpeed;
 
     private Vector3 targetPos;
-    [SerializeField] float attackRange;
 
     [Header("Enemy Fields")]
     public int HP;
     public int Shield;
     public Renderer model;
     public float faceTargetSpeed;
-    Transform target;
+    [SerializeField] float attackRange;
+    [SerializeField] Transform headPos;
+    [SerializeField] int FOV;
+    [SerializeField] NavMeshAgent agent;
+    [SerializeField] Animator anim;
+    [SerializeField] float animTransSpeed;
 
     public int CurrentHP => HP;
     public int currentShield => Shield;
@@ -38,10 +45,10 @@ public class enemyAI : MonoBehaviour, IDamage
     public float shootRate;
 
     [Header("Melee Fields")]
-    public float attackSpeed;
-    public GameObject weapon;
-    public Collider hitPos;
+    public float attackRate;
+    [SerializeField] GameObject weapon;
 
+    Transform target;
     Color colorOrig;
     bool inRange;
     float pathUpdateDely;
@@ -50,6 +57,7 @@ public class enemyAI : MonoBehaviour, IDamage
 
     private void Start()
     {
+        weapon.GetComponent<Collider>().enabled = false;
         setAnimPara();
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
@@ -61,6 +69,7 @@ public class enemyAI : MonoBehaviour, IDamage
     private void Update()
     {
         shootTimer += Time.deltaTime;
+        attackTimer += Time.deltaTime;
         
         setAnimPara();
         
@@ -102,9 +111,22 @@ public class enemyAI : MonoBehaviour, IDamage
                 }
                 else
                 {
-                        faceTarget();
-                    if (shootTimer >= shootRate)
-                        shoot();
+                    faceTarget();
+                    
+                    if(type == EnemyType.range)
+                    {
+                        if (shootTimer >= shootRate )
+                            shoot();
+
+                    }
+                    if(type == EnemyType.melee)
+                    {
+                        if(attackTimer >= attackRate)
+                        {
+                            Debug.Log("calling attack"); // works
+                            attack();
+                        }
+                    }
                 }
                 return true;
             }       
@@ -155,6 +177,22 @@ public class enemyAI : MonoBehaviour, IDamage
     {
         anim.SetTrigger("shoot");
         shootTimer = 0;
+    }
+
+    private void attack()
+    {
+        Debug.Log("Trigger was set"); // works
+        anim.SetTrigger("attack");
+        attackTimer = 0;
+    }
+
+    public void weaponColOn()
+    {
+        weapon.GetComponent<Collider>().enabled = true;
+    }
+    public void weaponColOff()
+    {
+        weapon.GetComponent<Collider>().enabled = false;
     }
 
     public void createProjectile()
