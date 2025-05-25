@@ -141,22 +141,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a916b528e6f2244ba6ff1ede11ee90f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 1
+  HP: 10
+  Shield: 10
+  model: {fileID: 3572308494894061630}
+  faceTargetSpeed: 50
+  attackRange: 10
   headPos: {fileID: 2181659143713666306}
   FOV: 180
   agent: {fileID: 686957030658663308}
   anim: {fileID: 6770496911590430363}
   animTransSpeed: 1
-  attackRange: 10
-  HP: 10
-  Shield: 10
-  model: {fileID: 3572308494894061630}
-  faceTargetSpeed: 50
   shootPos: {fileID: 2021521228802724177}
   projectile: {fileID: 6107948728500391942, guid: ac49740b51eb4464fbbe16eb7ccd55cd, type: 3}
   shootRate: 5
-  attackSpeed: 0
+  attackRate: 0
   weapon: {fileID: 0}
-  hitPos: {fileID: 0}
 --- !u!95 &6770496911590430363
 Animator:
   serializedVersion: 7

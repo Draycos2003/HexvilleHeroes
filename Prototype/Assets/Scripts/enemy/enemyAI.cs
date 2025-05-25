@@ -14,7 +14,7 @@ public class enemyAI : MonoBehaviour, IDamage
         melee, range,
     }
 
-    EnemyType type;
+    [SerializeField] EnemyType type;
 
     private float angleToPlayer;
     private float shootTimer;
