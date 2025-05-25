@@ -53,8 +53,18 @@ public class inventoryController : MonoBehaviour
     private void HandleItemActionRequest(int itemIndex)
     {
         InventoryItem item = inventoryData.GetItemAt(itemIndex);
-        if (item.isEmpty)
+        if (item.isEmpty) 
             return;
+        IItemAction itemAction = item.item as IItemAction;
+        if(itemAction != null)
+        {
+            itemAction.PerformAction(gameObject);
+        }
+        IDestroyableItem _item = item.item as IDestroyableItem;
+        if( _item != null )
+        {
+            inventoryData.RemoveItem(itemIndex, 1);
+        }
     }
 
     private void HandleDragging(int itemIndex)

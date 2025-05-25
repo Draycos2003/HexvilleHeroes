@@ -64,8 +64,9 @@ public class inventoryUI : MonoBehaviour
     {
         int index = listOfUIItems.IndexOf(item);
         if (index == -1)
+        {
             return;
-    
+        }
         OnSwapItems?.Invoke(currentlyDraggedItmeIndex, index);
         HandleItemSelection(item);
     }
@@ -92,7 +93,9 @@ public class inventoryUI : MonoBehaviour
     {
         int index = listOfUIItems.IndexOf(item);
         if (index == -1)
+        {
             return;
+        }
         OnItemActionRequested?.Invoke(index);
     }
 

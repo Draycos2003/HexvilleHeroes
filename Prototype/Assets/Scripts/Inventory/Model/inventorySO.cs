@@ -60,38 +60,51 @@ public class inventorySO : ScriptableObject
         return 0;
     }
 
-    private bool InventoryFull() => inventoryItems.Any(item => item.isEmpty) == false;
+    private bool InventoryFull() // Had to change the way this works since when hitting last slot, regardless of stack, it would return full inventory. 
+    {
+        foreach (var slot in inventoryItems)
+        {
+            if (slot.isEmpty)
+                return false;
+
+            if (slot.item.isStackable && slot.quantity < slot.item.maxStack)
+                return false;
+        }
+
+        return true;
+    }
 
     private int AddStackableItem(ItemSO item, int quantity)
     {
-        for (int i = 0; i < inventoryItems.Count; i++)
+        // Fill existing stacks
+        for (int i = 0; i < inventoryItems.Count && quantity > 0; i++)
         {
-            if (inventoryItems[i].isEmpty)
+            var slot = inventoryItems[i];
+            if (slot.isEmpty || slot.item != item)
                 continue;
-            if (inventoryItems[i].item == item)
-            {
-                int takableAmount = inventoryItems[i].item.maxStack -inventoryItems[i].quantity;
-                if(quantity > takableAmount)
-                {
-                    inventoryItems[i] = inventoryItems[i].ChangeQuantity(inventoryItems[i].item.maxStack);
-                    quantity -= takableAmount;
-                }
-                else
-                {
-                    inventoryItems[i] = inventoryItems[i].ChangeQuantity(inventoryItems[i].quantity + quantity);
-                    InformAbountChange();
-                    return 0;
-                }
 
-                return quantity;
-            }
+            int space = item.maxStack - slot.quantity;
+            if (space <= 0)
+                continue;
+
+            int toAdd = Mathf.Min(space, quantity);
+            inventoryItems[i] = slot.ChangeQuantity(slot.quantity + toAdd);
+            quantity -= toAdd;
         }
-        while (quantity > 0 && InventoryFull() == false)
+
+        // New stack in empty slot
+        for (int i = 0; i < inventoryItems.Count && quantity > 0; i++)
         {
-            int newQuantity = Mathf.Clamp(quantity, 0, item.maxStack);
-            quantity -= newQuantity;
-            AddNonStackableItem(item, newQuantity);
+            if (!inventoryItems[i].isEmpty)
+                continue;
+
+            int toAdd = Mathf.Min(item.maxStack, quantity);
+            AddNonStackableItem(item, toAdd);
+            quantity -= toAdd;
         }
+
+        InformAbountChange();
+
         return quantity;
     }
 
@@ -122,6 +135,20 @@ public class inventorySO : ScriptableObject
     private void InformAbountChange()
     {
         InventoryChanged?.Invoke(GetCurrentInventoryState());
+    }
+
+    public void RemoveItem(int itemIndex, int amount)
+    {
+        if(inventoryItems.Count > itemIndex){
+            if (inventoryItems[itemIndex].isEmpty)
+                return;
+            int remainder = inventoryItems[itemIndex].quantity - amount;
+            if(remainder <= 0)
+                inventoryItems[itemIndex] = InventoryItem.GetEmptyItem();
+            else
+                inventoryItems[itemIndex] = inventoryItems[itemIndex].ChangeQuantity(remainder);
+            InformAbountChange();
+        }
     }
 }
 
