@@ -6,36 +6,42 @@ public class Damage : MonoBehaviour
 
     enum DamageType
     {
-        ranged, melee, casting, homing, DOT, AOE 
+        ranged, melee, frost, homing, DOT, AOE, RDOT
     }
 
     [SerializeField] DamageType type;
     [SerializeField] Rigidbody body;
+    [SerializeField] GameObject obj;
 
-    [SerializeField] public int damageAmount;
+    public int damageAmount;
     [SerializeField] int damageRate;
     [SerializeField] int speed;
     [SerializeField] int destroyTime;
     [SerializeField] int damageAOE;
     [SerializeField] float radiusAOE;
 
+
     Vector2 centerAOE;
     Vector2 rangeAOE;
-   
+    
     bool isDamaging;
+    bool frozen;
+
+    
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
 
-        if (type == DamageType.ranged || type == DamageType.homing || type == DamageType.casting)
+        if (type == DamageType.ranged || type == DamageType.homing || type == DamageType.RDOT || type == DamageType.frost)
         {
             Destroy(gameObject, destroyTime);
 
-            if(type == DamageType.ranged || type == DamageType.casting)
+            if(type == DamageType.ranged || type == DamageType.frost || type == DamageType.RDOT)
             {
                 body.linearVelocity = transform.forward * speed; 
             }
+
         }
     }
 
@@ -59,12 +65,30 @@ public class Damage : MonoBehaviour
 
         IDamage damage = other.GetComponent<IDamage>();
         
-        if (damage != null && (type == DamageType.ranged || type == DamageType.casting))
+        if (damage != null && (type == DamageType.ranged))
         {
             damage.TakeDamage(damageAmount);
         }
 
-        if (type == DamageType.ranged || type == DamageType.homing || type == DamageType.casting)
+        //if(damage != null && type == DamageType.frost)
+        //{
+        //    if (!frozen)
+        //    {
+        //        StartCoroutine(frozenInTime());
+        //        damage.TakeDamage(damageAmount);
+        //    }
+
+        //}        //if(damage != null && type == DamageType.frost)
+        //{
+        //    if (!frozen)
+        //    {
+        //        StartCoroutine(frozenInTime());
+        //        damage.TakeDamage(damageAmount);
+        //    }
+
+        //}
+
+        if (type == DamageType.ranged || type == DamageType.homing || type == DamageType.frost)
         {
             Destroy(gameObject);
         }
@@ -78,7 +102,19 @@ public class Damage : MonoBehaviour
                 damage.TakeDamage(damageAmount);
             }
         }
+
+        if (type == DamageType.RDOT)
+        {
+            if (other.CompareTag("Player"))
+            {
+                obj.transform.SetParent(gamemanager.instance.Player.transform);
+                body.linearVelocity = Vector3.zero;
+                GetComponent<Renderer>().enabled = false;
+           
+            }
+        }
     }
+
 
     private void OnTriggerStay(Collider other)
     {
@@ -89,7 +125,7 @@ public class Damage : MonoBehaviour
 
         IDamage damage = other.GetComponent<IDamage>();
 
-        if(damage != null && type == DamageType.DOT)
+        if(damage != null && type == DamageType.DOT || type == DamageType.RDOT)
         {
             if(!isDamaging)
             {
@@ -102,7 +138,24 @@ public class Damage : MonoBehaviour
             other.GetComponent<Animator>().SetTrigger("hit");
             StartCoroutine(damageMelee(damage));
         }
+
     }
+
+    //IEnumerator frozenInTime()
+    //{
+    //    frozen = true;
+        
+    //    gamemanager.instance.PlayerScript.speed = 0;
+    //    Debug.Log("HAHAHAHAH FROZEN");
+        
+    //    yield return new WaitForSeconds(damageRate);
+    //    Debug.Log("This isnt working");
+        
+    //    gamemanager.instance.PlayerScript.speed = gamemanager.instance.PlayerScript.speedOG;
+    //    Debug.Log("unFrozen");
+
+    //    frozen = false;
+    //}
 
     IEnumerator damageOverTime(IDamage damage)
     {
