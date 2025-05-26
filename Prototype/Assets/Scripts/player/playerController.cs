@@ -34,9 +34,6 @@ public class playerController : MonoBehaviour, IDamage
 
     [SerializeField] int jumpMax;
     [SerializeField] int jumpForce;
-
-    [Header("Buffs")]
-    [SerializeField] int buffStatAmount;
     
     private int currentSceneIndex;
     private int originalSceneIndex;
@@ -56,14 +53,14 @@ public class playerController : MonoBehaviour, IDamage
     int jumpCount;
     float shootTimer;
 
-    private Animator animator;
+    [SerializeField] Animator animator;
+    [SerializeField] float animTransSpeed;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         speedOG = speed;
         damage = gameObject.GetComponentInChildren<Damage>();
-        animator = GetComponent<Animator>();
         maxHP = HP;
         maxShield = Shield;
     }
@@ -113,8 +110,9 @@ public class playerController : MonoBehaviour, IDamage
         moveDir = (Input.GetAxis("Horizontal") * transform.right) + (Input.GetAxis("Vertical") * transform.forward);
         controller.Move(moveDir * speed * Time.deltaTime);
 
-        animator.SetFloat("speed", moveDir.magnitude);
-
+        float animSpeedCur = animator.GetFloat("speed");
+        animator.SetFloat("speed", Mathf.Lerp(animSpeedCur, moveDir.magnitude, Time.deltaTime * animTransSpeed));
+      
 
         Jump();
 
@@ -247,4 +245,19 @@ public class playerController : MonoBehaviour, IDamage
     {
        
     }
+
+    public void attack(int damageAmount)
+    {
+        //if(Input.GetButtonDown("Fire1"))
+        //{
+
+        //}
+    }
+
+    //public void setAnimParam()
+    //{
+    //    float playerSpeedCur = 
+    //    float animSpeedCur = animator.GetFloat("speed");
+    //    animator.SetFloat("speed", Mathf.Lerp(animSpeedCur, speed, Time.deltaTime * animTransSpeed));
+    //}
 }

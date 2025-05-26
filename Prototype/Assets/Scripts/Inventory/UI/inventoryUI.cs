@@ -67,7 +67,6 @@ public class inventoryUI : MonoBehaviour
 
     private void HandleBeginDrag(inventoryItemUI item)
     {
-        Debug.Log("BEGIN");
         int index = listOfUIItems.IndexOf(item);
         if (index == -1) return;
         currentlyDraggedItmeIndex = index;

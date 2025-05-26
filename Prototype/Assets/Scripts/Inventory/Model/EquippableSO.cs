@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [CreateAssetMenu]
@@ -6,6 +7,7 @@ public class EquippableSO : ItemSO, IDestroyableItem, IItemAction, IEquippable
 {
     public string ActionName => "Equip";
     [HideInInspector] public bool isEquipped = false;
+    [SerializeField] GameObject obj;
 
     public bool PerformAction(GameObject character, List<ItemParameter> itemState)
     {
@@ -17,4 +19,6 @@ public class EquippableSO : ItemSO, IDestroyableItem, IItemAction, IEquippable
         }
         return false;
     }
+
+
 }
