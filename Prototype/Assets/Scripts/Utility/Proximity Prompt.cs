@@ -16,9 +16,9 @@ public class ProximityPrompt : MonoBehaviour
     [SerializeField] TextMeshProUGUI secondaryPromptTextLabel;
 
     [Header("Prompt Settings")]
-    [SerializeField] KeyCode primaryKey = KeyCode.E;
+    [SerializeField] KeyCode primaryKey;
     [SerializeField] string primaryPromptMessage;
-    [SerializeField] KeyCode secondaryKey = KeyCode.None;
+    [SerializeField] KeyCode secondaryKey;
     [SerializeField] string secondaryPromptMessage;
 
     [Header("Item Info Settings")]
