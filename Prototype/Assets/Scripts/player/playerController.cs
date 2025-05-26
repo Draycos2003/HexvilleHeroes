@@ -30,7 +30,8 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     public int ShieldOrig => Shield;
     private int maxShield;
 
-    [SerializeField] int speed;
+    public int speed;
+    public int speedOG;
     [SerializeField] int sprintMod;
 
     [SerializeField] int jumpMax;
@@ -62,6 +63,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        speedOG = speed;
         inventory = inventorymanager.instance;
         damage = gameObject.GetComponentInChildren<Damage>();
         animator = GetComponent<Animator>();
