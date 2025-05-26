@@ -23,6 +23,11 @@ public abstract class ItemSO : ScriptableObject
     [Range(1, 99)] public int maxStack;
     public Sprite itemIcon;
 
+    [Header("Weapon")]
+    public int damage;
+    public int shotRate;
+    public int shootDistance;
+
     [Header("Other")]
     public ParticleSystem hitFX;
     public AudioClip[] hitSound;

@@ -7,7 +7,6 @@ public class EquippableSO : ItemSO, IDestroyableItem, IItemAction, IEquippable
 {
     public string ActionName => "Equip";
     [HideInInspector] public bool isEquipped = false;
-    [SerializeField] GameObject obj;
 
     public bool PerformAction(GameObject character, List<ItemParameter> itemState)
     {

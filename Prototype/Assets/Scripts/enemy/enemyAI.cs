@@ -57,7 +57,9 @@ public class enemyAI : MonoBehaviour, IDamage
 
     private void Start()
     {
-        weapon.GetComponent<Collider>().enabled = false;
+        if(weapon != null)
+            weapon.GetComponent<Collider>().enabled = false;
+
         setAnimPara();
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();

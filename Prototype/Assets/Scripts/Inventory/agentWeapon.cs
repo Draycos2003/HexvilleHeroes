@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using UnityEngine;
 
 public class agentWeapon : MonoBehaviour
@@ -17,14 +18,30 @@ public class agentWeapon : MonoBehaviour
         weapon = weaponItemSO;
         weapon.isEquipped = true;
         itemCurrentState = new List<ItemParameter>(itemState);
-        ModifyParameters();
     }
 
-    private void ModifyParameters()
+    public void ModifyAllParameters()
     {
         foreach(var parameter in parametersToModify)
         {
             if(itemCurrentState.Contains(parameter))
+            {
+                int index = itemCurrentState.IndexOf(parameter);
+                float newValue = itemCurrentState[index].value + parameter.value;
+                itemCurrentState[index] = new ItemParameter
+                {
+                    itemParameter = parameter.itemParameter,
+                    value = newValue
+                };
+            }
+        }
+    }
+
+    public void ModifyParameter(string parameterName)
+    {
+        foreach (var parameter in parametersToModify)
+        {
+            if (itemCurrentState.Contains(parameter) && (parameter.itemParameter.ParameterName == parameterName))
             {
                 int index = itemCurrentState.IndexOf(parameter);
                 float newValue = itemCurrentState[index].value + parameter.value;

@@ -34,18 +34,21 @@ public class playerController : MonoBehaviour, IDamage
 
     [SerializeField] int jumpMax;
     [SerializeField] int jumpForce;
-    
+
     private int currentSceneIndex;
     private int originalSceneIndex;
+    private List<ItemParameter> parameters;
 
     [Header("Weapon")] // Weapon
-    [SerializeField] int damageAmount;
-    [SerializeField] float shootRate;
-    [SerializeField] int shootDist;
+    [HideInInspector] public int damageAmount;
+    [HideInInspector] public float shootRate;
+    [HideInInspector] public int shootDist;
+    [SerializeField] int damageWithoutAWeapon;
 
     [Header("Inventory")]
     [SerializeField] GameObject itemModel;
     public InventoryItem item;
+    agentWeapon weaponAgent;
 
     Vector3 moveDir;
     Vector3 playerVel;
@@ -53,7 +56,8 @@ public class playerController : MonoBehaviour, IDamage
     int jumpCount;
     float shootTimer;
 
-    [SerializeField] Animator animator;
+    [SerializeField] Animator mainCamAnimator;
+    [SerializeField] Animator weaponCamAnimator;
     [SerializeField] float animTransSpeed;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -63,6 +67,10 @@ public class playerController : MonoBehaviour, IDamage
         damage = gameObject.GetComponentInChildren<Damage>();
         maxHP = HP;
         maxShield = Shield;
+        weaponAgent = gameObject.GetComponent<agentWeapon>();
+        damageAmount = damageWithoutAWeapon;
+        shootRate = 0;
+        shootDist = 0;
     }
 
     // Update is called once per frame
@@ -71,14 +79,8 @@ public class playerController : MonoBehaviour, IDamage
         Movement();
         Sprint();
         item = GetComponent<inventoryController>().inventoryData.inventoryItems.Last();
-        if (!item.isEmpty)
-        {
-            changeEquippedItem();
-        }
-        else
-        {
-            noItemEquipped();
-        }
+        equip();
+        setAnimParams();
     }
 
     public void SetSceneIndex(int newSceneIndex)
@@ -101,7 +103,7 @@ public class playerController : MonoBehaviour, IDamage
 
     void Movement()
     {
-        if (controller.isGrounded && jumpCount != 0) 
+        if (controller.isGrounded && jumpCount != 0)
         {
             jumpCount = 0;
             playerVel = Vector3.zero;
@@ -109,10 +111,6 @@ public class playerController : MonoBehaviour, IDamage
 
         moveDir = (Input.GetAxis("Horizontal") * transform.right) + (Input.GetAxis("Vertical") * transform.forward);
         controller.Move(moveDir * speed * Time.deltaTime);
-
-        float animSpeedCur = animator.GetFloat("speed");
-        animator.SetFloat("speed", Mathf.Lerp(animSpeedCur, moveDir.magnitude, Time.deltaTime * animTransSpeed));
-      
 
         Jump();
 
@@ -142,18 +140,18 @@ public class playerController : MonoBehaviour, IDamage
 
             playerVel.y = jumpForce;
 
-            animator.SetBool("isJumping", true);
+            mainCamAnimator.SetBool("isJumping", true);
         }
 
         if (Input.GetButtonUp("Jump"))
         {
-            animator.SetBool("isJumping", false);
+            mainCamAnimator.SetBool("isJumping", false);
         }
     }
 
     public void TakeDamage(int amount)
     {
-        if(Shield > 0)
+        if (Shield > 0)
         {
             Shield -= amount;
             StartCoroutine(flashShieldDamageScreen());
@@ -163,11 +161,11 @@ public class playerController : MonoBehaviour, IDamage
             HP -= amount;
             StartCoroutine(flashDamageScreen());
         }
-            
+
         // check for death
         if (HP <= 0)
         {
-            gamemanager.instance.youLose(); 
+            gamemanager.instance.youLose();
         }
     }
 
@@ -194,7 +192,7 @@ public class playerController : MonoBehaviour, IDamage
         }
 
         // make sure health doesn't exceed max
-        if(HP > maxHP)
+        if (HP > maxHP)
         {
             HP = maxHP;
         }
@@ -203,13 +201,13 @@ public class playerController : MonoBehaviour, IDamage
     public void gainShield(int amount)
     {
         // check if player needs shield
-        if(Shield < maxShield)
+        if (Shield < maxShield)
         {
             Shield += amount;
         }
 
         // make sure shield doesn't exceed max
-        if(Shield > maxShield)
+        if (Shield > maxShield)
         {
             Shield = maxShield;
         }
@@ -229,35 +227,51 @@ public class playerController : MonoBehaviour, IDamage
         speed += amount;
     }
 
-    public void changeEquippedItem()
+    private void equip()
+    {
+        if (!item.isEmpty)
+        {
+            changeEquippedItem();
+        }
+        else
+        {
+            noItemEquipped();
+        }
+    }
+
+    private void changeEquippedItem()
     {
         itemModel.GetComponent<MeshFilter>().sharedMesh = item.item.model.GetComponent<MeshFilter>().sharedMesh;
         itemModel.GetComponent<MeshRenderer>().sharedMaterial = item.item.model.GetComponent<MeshRenderer>().sharedMaterial;
+        getItemStats();
     }
 
-    public void noItemEquipped()
+    private void noItemEquipped()
     {
         itemModel.GetComponent<MeshFilter>().sharedMesh = null;
         itemModel.GetComponent<MeshRenderer>().sharedMaterial = null;
+        damageAmount = damageWithoutAWeapon;
+        shootRate = 0;
+        shootDist = 0;
     }
 
-    public void getItemStats(ItemSO weapon)
+    private void getItemStats()
     {
-       
+        damageAmount = item.item.damage;
+        shootRate = item.item.shotRate;
+        shootDist = item.item.shootDistance;
+
+        //weaponAgent.ModifyParameters();
     }
 
-    public void attack(int damageAmount)
+    private void setAnimParams()
     {
-        //if(Input.GetButtonDown("Fire1"))
-        //{
+        if (Input.GetMouseButtonDown(0))
+        {
+            weaponCamAnimator.SetTrigger("attack");
+        }
 
-        //}
+        float animSpeedCur = mainCamAnimator.GetFloat("speed");
+        mainCamAnimator.SetFloat("speed", Mathf.Lerp(animSpeedCur, moveDir.magnitude, Time.deltaTime * animTransSpeed));
     }
-
-    //public void setAnimParam()
-    //{
-    //    float playerSpeedCur = 
-    //    float animSpeedCur = animator.GetFloat("speed");
-    //    animator.SetFloat("speed", Mathf.Lerp(animSpeedCur, speed, Time.deltaTime * animTransSpeed));
-    //}
 }

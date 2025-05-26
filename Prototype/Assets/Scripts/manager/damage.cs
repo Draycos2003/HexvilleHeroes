@@ -13,6 +13,7 @@ public class Damage : MonoBehaviour
     [SerializeField] DamageType type;
     [SerializeField] Rigidbody body;
     [SerializeField] GameObject obj;
+    [SerializeField] playerController playerController;
 
     public int damageAmount;
     [SerializeField] int damageRate;
@@ -59,6 +60,7 @@ public class Damage : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("OUCH");
         if(other.isTrigger)
         {
             return;
@@ -66,7 +68,7 @@ public class Damage : MonoBehaviour
 
         IDamage damage = other.GetComponent<IDamage>();
         
-        if (damage != null && (type == DamageType.ranged))
+        if (damage != null && (type == DamageType.ranged || type == DamageType.melee))
         {
             damage.TakeDamage(damageAmount);
         }
@@ -114,14 +116,6 @@ public class Damage : MonoBehaviour
            
             }
         }
-        
-        if (damage != null && type == DamageType.melee)
-        {
-            Debug.Log(other.name);
-            other.GetComponent<Animator>().SetTrigger("attack");
-            damage.TakeDamage(damageAmount);
-            //StartCoroutine(damageMelee(damage));
-        }
     }
 
 
@@ -141,15 +135,6 @@ public class Damage : MonoBehaviour
                 StartCoroutine(damageOverTime(damage));
             }
         }
-       
-        if (damage != null && type == DamageType.melee)
-        {
-            Debug.Log(other.name);
-            other.GetComponent<Animator>().SetTrigger("attack");
-            damage.TakeDamage(damageAmount);
-            //StartCoroutine(damageMelee(damage));
-        }
-
     }
 
     //IEnumerator frozenInTime()
@@ -170,14 +155,5 @@ public class Damage : MonoBehaviour
         damage.TakeDamage(damageAmount);
         yield return new WaitForSeconds(damageRate);
         isDamaging = false;
-    }
-
-    IEnumerator damageMelee(IDamage damage)
-    {
-        damage.TakeDamage(damageAmount);
-        gameObject.GetComponent<Collider>().isTrigger = false;
-
-        yield return new WaitForSeconds(damageRate);
-        gameObject.GetComponent<Collider>().isTrigger = true;
     }
 }

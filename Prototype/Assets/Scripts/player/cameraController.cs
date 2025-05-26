@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class cameraController : MonoBehaviour
 {
+    [SerializeField] GameObject attackCollider;
     [SerializeField] int sens;
     [SerializeField] int lockVertMin, lockVertMax;
     [SerializeField] bool invertY;
@@ -35,5 +36,16 @@ public class cameraController : MonoBehaviour
 
         // Rotate the Player on Y Axis to look left and right
         transform.parent.Rotate(Vector3.up * mouseX);
+    }
+
+    public void colliderOn()
+    {
+        attackCollider.GetComponent<BoxCollider>().enabled = true;
+    }
+
+    public void colliderOff()
+    {
+        //attackCollider.GetComponent<BoxCollider>().enabled = false;
+
     }
 }
