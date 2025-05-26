@@ -37,9 +37,13 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     [SerializeField] int jumpMax;
     [SerializeField] int jumpForce;
 
+    [Header("Currency")] // Currency
+    [SerializeField] private int gold;
+    public int Gold => gold;
+
     [Header("Buffs")]
     [SerializeField] int buffStatAmount;
-    
+
     private int currentSceneIndex;
     private int originalSceneIndex;
 
@@ -98,7 +102,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     void Movement()
     {
-        if (controller.isGrounded && jumpCount != 0) 
+        if (controller.isGrounded && jumpCount != 0)
         {
             jumpCount = 0;
             playerVel = Vector3.zero;
@@ -151,7 +155,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     public void TakeDamage(int amount)
     {
-        if(Shield > 0)
+        if (Shield > 0)
         {
             Shield -= amount;
             StartCoroutine(flashShieldDamageScreen());
@@ -161,11 +165,11 @@ public class playerController : MonoBehaviour, IDamage, IPickup
             HP -= amount;
             StartCoroutine(flashDamageScreen());
         }
-            
+
         // check for death
         if (HP <= 0)
         {
-            gamemanager.instance.youLose(); 
+            gamemanager.instance.youLose();
         }
     }
 
@@ -197,7 +201,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         }
 
         // make sure health doesn't exceed max
-        if(HP > maxHP)
+        if (HP > maxHP)
         {
             HP = maxHP;
         }
@@ -206,13 +210,13 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     void gainShield(int amount)
     {
         // check if player needs shield
-        if(Shield < maxShield)
+        if (Shield < maxShield)
         {
             Shield += amount;
         }
 
         // make sure shield doesn't exceed max
-        if(Shield > maxShield)
+        if (Shield > maxShield)
         {
             Shield = maxShield;
         }
@@ -234,14 +238,14 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     void selectItem()
     {
-        if(Input.GetAxis("Mouse ScrollWheel") > 0 && itemListPos > 0)
+        if (Input.GetAxis("Mouse ScrollWheel") > 0 && itemListPos > 0)
         {
-                itemListPos--;
-                changeItem();
-                inventory.ChangeSelectedSlot(itemListPos);
-                switchWeaponSoundSource.Play();
+            itemListPos--;
+            changeItem();
+            inventory.ChangeSelectedSlot(itemListPos);
+            switchWeaponSoundSource.Play();
         }
-        else if(Input.GetAxis("Mouse ScrollWheel") < 0 && itemListPos<items.Count - 1)
+        else if (Input.GetAxis("Mouse ScrollWheel") < 0 && itemListPos < items.Count - 1)
         {
             if (itemListPos < inventory.hotBarSize - 1)
             {
@@ -271,10 +275,29 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         items.Add(weapon);
         itemListPos = items.Count - 1;
 
-       if(itemListPos < inventory.hotBarSize)
+        if (itemListPos < inventory.hotBarSize)
         {
             inventory.ChangeSelectedSlot(itemListPos);
             changeItem();
-        }       
+        }
+    }
+
+    public bool BuyItem(int cost)
+    {
+        if (gold < cost)
+        {
+            Debug.Log("Not enough gold!");
+            return false;
+        }
+
+        gold -= cost;
+        Debug.Log($"Purchased for {cost} gold. Remaining: {gold}");
+        return true;
+    }
+
+    public void SellItem(int amount)
+    {
+        gold += amount;
+        Debug.Log($"Sold item for {amount} gold. Total now: {gold}");
     }
 }
