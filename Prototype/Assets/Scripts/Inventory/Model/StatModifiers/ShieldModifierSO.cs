@@ -1,22 +1,14 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "StatModifier/ healthMod")]
-public class HealthModifierSO : CharactersStatModSO
+[CreateAssetMenu(menuName = "StatModifier/ shieldMod")]
+public class ShieldModifierSO : CharactersStatModSO
 {
     public override void AffectCharacter(GameObject character, float val)
     {
         playerController player = character.GetComponent<playerController>();
         if (player != null)
         {
-            player.gainHealth((int)val);
+            player.gainShield((int)val);
         }
     }
 }
-
-
-
-
-
-
-
-

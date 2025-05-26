@@ -10,19 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 278ae7578028ad64484564f1c3364b82, type: 3}
-  m_Name: Apple
+  m_Name: Pineapple
   m_EditorClassIdentifier: 
   IType: 3
-  model: {fileID: 6531880157181135126, guid: a0e84675a848a0148931459b82e49d00, type: 3}
-  description: Gives +10 Health
+  model: {fileID: 6140787685258890299, guid: 9b1d6c71e390e4d43ae1320a75db21c0, type: 3}
+  description: ' Gives +10 Damage'
   quantity: 1
   isStackable: 1
-  maxStack: 10
-  itemIcon: {fileID: 21300000, guid: 7660b40d1800e9d4cbc840c07030de47, type: 3}
+  maxStack: 3
+  itemIcon: {fileID: 21300000, guid: f329ad2a98aea5b499d369ced86e7167, type: 3}
   hitFX: {fileID: 0}
   hitSound: []
   volume: 0
   <defaultParameterList>k__BackingField: []
   modifiers:
-  - statMod: {fileID: 11400000, guid: 8f9d4175dfd4e18419eed46cb07f1d9e, type: 2}
+  - statMod: {fileID: 11400000, guid: 74db89a090272ad468e2da72771bf6ea, type: 2}
     value: 10

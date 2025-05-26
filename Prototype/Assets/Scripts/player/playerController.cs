@@ -62,7 +62,6 @@ public class playerController : MonoBehaviour, IDamage
     void Start()
     {
         speedOG = speed;
-        inventory = inventorymanager.instance;
         damage = gameObject.GetComponentInChildren<Damage>();
         animator = GetComponent<Animator>();
         maxHP = HP;
@@ -74,9 +73,14 @@ public class playerController : MonoBehaviour, IDamage
     {
         Movement();
         Sprint();
-        if(!item.isEmpty)
+        item = GetComponent<inventoryController>().inventoryData.inventoryItems.Last();
+        if (!item.isEmpty)
         {
             changeEquippedItem();
+        }
+        else
+        {
+            noItemEquipped();
         }
     }
 
@@ -229,9 +233,14 @@ public class playerController : MonoBehaviour, IDamage
 
     public void changeEquippedItem()
     {
-        item = GetComponent<inventoryController>().inventoryData.inventoryItems.Last();
         itemModel.GetComponent<MeshFilter>().sharedMesh = item.item.model.GetComponent<MeshFilter>().sharedMesh;
         itemModel.GetComponent<MeshRenderer>().sharedMaterial = item.item.model.GetComponent<MeshRenderer>().sharedMaterial;
+    }
+
+    public void noItemEquipped()
+    {
+        itemModel.GetComponent<MeshFilter>().sharedMesh = null;
+        itemModel.GetComponent<MeshRenderer>().sharedMaterial = null;
     }
 
     public void getItemStats(ItemSO weapon)
