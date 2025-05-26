@@ -3,6 +3,7 @@ using System.Collections;
 using NUnit.Framework;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using System.Linq;
 
 public class playerController : MonoBehaviour, IDamage
 {
@@ -40,16 +41,18 @@ public class playerController : MonoBehaviour, IDamage
     private int originalSceneIndex;
 
     [Header("Weapon")] // Weapon
-
     [SerializeField] int damageAmount;
     [SerializeField] float shootRate;
     [SerializeField] int shootDist;
+
+    [Header("Inventory")]
+    [SerializeField] GameObject itemModel;
+    public InventoryItem item;
 
     Vector3 moveDir;
     Vector3 playerVel;
     bool isSprinting;
     int jumpCount;
-    public int itemListPos;
     float shootTimer;
 
     private Animator animator;
@@ -68,6 +71,10 @@ public class playerController : MonoBehaviour, IDamage
     {
         Movement();
         Sprint();
+        if(!item.isEmpty)
+        {
+            changeEquippedItem();
+        }
     }
 
     public void SetSceneIndex(int newSceneIndex)
@@ -106,8 +113,6 @@ public class playerController : MonoBehaviour, IDamage
 
         controller.Move(playerVel * Time.deltaTime);
         playerVel.y -= gravity * Time.deltaTime;
-
-        //selectItem();
     }
 
     void Sprint()
@@ -219,30 +224,15 @@ public class playerController : MonoBehaviour, IDamage
         speed += amount;
     }
 
-//    void selectItem()
-//    {
-//        if(Input.GetAxis("Mouse ScrollWheel") > 0 && itemListPos > 0)
-//        {
-//                itemListPos--;
-//                changeItem();
-//        }
-//        else if(Input.GetAxis("Mouse ScrollWheel") < 0 && itemListPos<items.Count - 1)
-//        {
-//                itemListPos++;
-//                changeItem();
-//        }
-//    }
+    public void changeEquippedItem()
+    {
+        item = GetComponent<inventoryController>().inventoryData.inventoryItems.Last();
+        itemModel.GetComponent<MeshFilter>().sharedMesh = item.item.model.GetComponent<MeshFilter>().sharedMesh;
+        itemModel.GetComponent<MeshRenderer>().sharedMaterial = item.item.model.GetComponent<MeshRenderer>().sharedMaterial;
+    }
 
-//    public void changeEquippedItem()
-//    {
-//        itemModel.GetComponent<MeshFilter>().sharedMesh = items[itemListPos].model.GetComponent<MeshFilter>().sharedMesh;
-//        itemModel.GetComponent<MeshRenderer>().sharedMaterial = items[itemListPos].model.GetComponent<MeshRenderer>().sharedMaterial;
-//    }
-
-//    public void getItemStats(ItemSO weapon)
-//    {
-//        items.Add(weapon);
-//        itemListPos = items.Count - 1;
-//        changeItem();
-//    }
+    public void getItemStats(ItemSO weapon)
+    {
+       
+    }
 }

@@ -1,22 +1,21 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class agentWeapon : MonoBehaviour
 {
     [SerializeField] private EquippableSO weapon;
+    [SerializeField] private InventoryItem item;
     [SerializeField] private inventorySO inventoryData;
 
     [SerializeField] private List<ItemParameter> parametersToModify, itemCurrentState;
 
     public void SetWeapon(EquippableSO weaponItemSO, List<ItemParameter> itemState)
     {
-        if(weapon != null)
-        {
-            inventoryData.AddItem(weapon, 1, itemCurrentState);
-        }
-
+        Debug.Log("EQUIP");
         weapon = weaponItemSO;
+        weapon.isEquipped = true;
         itemCurrentState = new List<ItemParameter>(itemState);
         ModifyParameters();
     }

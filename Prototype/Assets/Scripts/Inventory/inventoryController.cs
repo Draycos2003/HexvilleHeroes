@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Linq;
 using System.Text;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -63,7 +65,17 @@ public class inventoryController : MonoBehaviour
         IDestroyableItem _item = item.item as IDestroyableItem;
         if (_item != null)
         {
-            inventoryData.RemoveItem(itemIndex, 1);
+            IEquippable eq = item.item as IEquippable;
+            if (eq != null)
+            {
+                int equipSlotIndex = inventoryData.inventoryItems.Count - 1;
+
+                inventoryData.SwapItems(itemIndex, equipSlotIndex);
+            }
+            else
+            {
+                inventoryData.RemoveItem(itemIndex, 1);
+            }
         }
         IItemAction itemAction = item.item as IItemAction;
         if(itemAction != null)

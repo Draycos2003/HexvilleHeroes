@@ -7,9 +7,9 @@ using UnityEngine;
 [CreateAssetMenu (menuName = "Scriptable object/inventory")]
 public class inventorySO : ScriptableObject
 {
-    [SerializeField] private List<InventoryItem> inventoryItems;
+    public List<InventoryItem> inventoryItems;
 
-    [SerializeField] public int Size { get; private set; } = 10;
+    [field : SerializeField] public int Size { get; private set; } = 10;
 
     public event Action<Dictionary<int, InventoryItem>> InventoryChanged;
 
@@ -20,6 +20,9 @@ public class inventorySO : ScriptableObject
         {
             inventoryItems.Add(InventoryItem.GetEmptyItem());
         }
+
+        // add one more empty for equip slot
+        inventoryItems.Add(InventoryItem.GetEmptyItem());
     }
 
     public int AddItem(ItemSO item, int quantity, List<ItemParameter> itemState = null)
@@ -44,6 +47,24 @@ public class inventorySO : ScriptableObject
     }
 
     private int AddNonStackableItem(ItemSO item, int quantity, List<ItemParameter> itemState = null)
+    {
+        for (int i = 0; i < inventoryItems.Count; i++)
+        {
+            if (inventoryItems[i].isEmpty)
+            {
+                inventoryItems[i] = new InventoryItem
+                {
+                    item = item,
+                    quantity = quantity,
+                    itemState = new List<ItemParameter>(itemState == null ? item.defaultParameterList : itemState)
+                };
+                return quantity;
+            }
+        }
+        return 0;
+    }
+
+    public int AddEquippableItem(ItemSO item, int quantity, List<ItemParameter> itemState = null)
     {
         for (int i = 0; i < inventoryItems.Count; i++)
         {

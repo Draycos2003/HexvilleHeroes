@@ -8,7 +8,11 @@ public class inventoryUI : MonoBehaviour
 {
     [SerializeField] inventoryItemUI itemPrefab;
 
+    [SerializeField] inventoryItemUI equipSlot;
+
     [SerializeField] RectTransform contentPanel;
+
+    [SerializeField] RectTransform equipPanel;
 
     [SerializeField] inventoryItemDescription description;
 
@@ -40,6 +44,17 @@ public class inventoryUI : MonoBehaviour
             uiItem.OnItemEndDrag += HandleEndDrag;
             uiItem.OnRightMouseBtnClick += HandleShowItemActions;
         }
+
+        // add the equip slot
+        inventoryItemUI equipItem = Instantiate(equipSlot, Vector3.zero, Quaternion.identity);
+        equipItem.transform.SetParent(equipPanel);
+        listOfUIItems.Add(equipItem);
+
+        equipItem.OnItemClicked += HandleItemSelection;
+        equipItem.OnItemBeginDrag += HandleBeginDrag;
+        equipItem.OnItemDropped += HandleSwap;
+        equipItem.OnItemEndDrag += HandleEndDrag;
+        equipItem.OnRightMouseBtnClick += HandleShowItemActions;
     }
 
     private void HandleItemSelection(inventoryItemUI item)

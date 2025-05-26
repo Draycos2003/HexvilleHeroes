@@ -19,20 +19,3 @@ public class ComsumableSO : ItemSO, IDestroyableItem, IItemAction
     }
 }
 
-public interface IDestroyableItem
-{
-
-}
-
-public interface IItemAction
-{
-    public string ActionName { get; }
-    bool PerformAction(GameObject character, List<ItemParameter> itemState);
-}
-
-[Serializable]
-public class ModifierData
-{
-    public CharactersStatModSO statMod;
-    public float value;
-}

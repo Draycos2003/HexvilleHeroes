@@ -43,3 +43,28 @@ public struct ItemParameter : IEquatable<ItemParameter>
     }
 }
 
+[Serializable]
+public class ModifierData
+{
+    public CharactersStatModSO statMod;
+    public float value;
+}
+
+
+public interface IItemAction
+{
+    public string ActionName { get; }
+    bool PerformAction(GameObject character, List<ItemParameter> itemState);
+}
+
+public interface IDestroyableItem
+{
+
+}
+
+
+public interface IEquippable
+{
+
+}
+
