@@ -35,6 +35,13 @@ public class playerController : MonoBehaviour, IDamage
     [SerializeField] int jumpMax;
     [SerializeField] int jumpForce;
 
+    [Header("Currency")] // Currency
+    [SerializeField] private int gold;
+    public int Gold => gold;
+
+    [Header("Buffs")]
+    [SerializeField] int buffStatAmount;
+
     private int currentSceneIndex;
     private int originalSceneIndex;
     private List<ItemParameter> parameters;
@@ -273,5 +280,24 @@ public class playerController : MonoBehaviour, IDamage
 
         float animSpeedCur = mainCamAnimator.GetFloat("speed");
         mainCamAnimator.SetFloat("speed", Mathf.Lerp(animSpeedCur, moveDir.magnitude, Time.deltaTime * animTransSpeed));
+    }
+
+    public bool BuyItem(int cost)
+    {
+        if (gold < cost)
+        {
+            Debug.Log("Not enough gold!");
+            return false;
+        }
+
+        gold -= cost;
+        Debug.Log($"Purchased for {cost} gold. Remaining: {gold}");
+        return true;
+    }
+
+    public void SellItem(int amount)
+    {
+        gold += amount;
+        Debug.Log($"Sold item for {amount} gold. Total now: {gold}");
     }
 }

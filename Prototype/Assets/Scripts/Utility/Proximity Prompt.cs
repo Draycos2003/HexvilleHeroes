@@ -12,30 +12,29 @@ public class ProximityPrompt : MonoBehaviour
     [SerializeField] CanvasGroup promptCanvasGroup;
     [SerializeField] TextMeshProUGUI primaryPromptTextLabel;
     [SerializeField] TextMeshProUGUI primarykeyTextLabel;
-
     [SerializeField] TextMeshProUGUI secondarykeyTextLabel;
     [SerializeField] TextMeshProUGUI secondaryPromptTextLabel;
 
     [Header("Prompt Settings")]
-    [SerializeField] KeyCode primaryKey = KeyCode.E;
-    [SerializeField] string primaryPromptMessage = "Interact";
-    [SerializeField] KeyCode secondaryKey = KeyCode.None;
-    [SerializeField] string secondaryPromptMessage = "Equip";
+    [SerializeField] KeyCode primaryKey;
+    [SerializeField] string primaryPromptMessage;
+    [SerializeField] KeyCode secondaryKey;
+    [SerializeField] string secondaryPromptMessage;
 
     [Header("Item Info Settings")]
     [SerializeField] TextMeshProUGUI promptItemNameLabel;
     [SerializeField] TextMeshProUGUI promptItemDescLabel;
     [SerializeField] TextMeshProUGUI promptItemAmountLabel;
-    [SerializeField] string promptItemName = "Apple";
-    [SerializeField] string promptDesc = "Gives +10 HP";
-    [SerializeField] string promptAmount = "x";
+    [SerializeField] string promptItemName;
+    [SerializeField] string promptDesc;
+    [SerializeField] string promptAmount;
 
     [Header("Fade Settings")]
-    [SerializeField] float fadeDuration = 0.2f;
+    [SerializeField] float fadeDuration;
 
     [Header("Sight Settings")]
-    [Tooltip("The Renderer on this object (or a child) used for sight checks")]
-    [SerializeField] Renderer sightRenderer;
+    [SerializeField, Tooltip("The Renderer on this object (or a child) used for sight checks")]
+    Renderer sightRenderer;
 
     [Header("Events")]
     public UnityEvent onPrimaryPressed;
@@ -45,47 +44,56 @@ public class ProximityPrompt : MonoBehaviour
     bool isVisible;
     Coroutine fadeRoutine;
 
-    void Reset()
-    {
-        // grab the trigger collider (Object must have a collider (preferably a shepere)
-        var col = GetComponent<Collider>();
-        col.isTrigger = true;
-    }
-
     void Awake()
     {
+        var buySell = GetComponent<ItemBuySell>();
+        if (buySell != null)
+        {
+            if (buySell.PurchaseCost > 0)
+            {
+                primaryPromptMessage = $"Purchase (${buySell.PurchaseCost})";
+                primaryPromptTextLabel.text = primaryPromptMessage;
+                primaryKey = KeyCode.E;
+            }
 
-        // hide immediately
+            if (buySell.SellPrice > 0)
+            {
+                secondaryPromptMessage = $"Sell (${buySell.SellPrice})";
+                secondaryPromptTextLabel.text = secondaryPromptMessage;
+                if (secondaryKey == KeyCode.None)
+                    secondaryKey = KeyCode.F;
+            }
+        }
+        else
+        {
+            if (primaryPromptTextLabel != null)
+                primaryPromptTextLabel.text = primaryPromptMessage;
+            if (secondaryPromptTextLabel != null)
+                secondaryPromptTextLabel.text = secondaryPromptMessage;
+        }
+
         if (promptCanvasGroup != null)
             promptCanvasGroup.alpha = 0;
 
-        // message shown on prompt for keybind(s)
-        if (primaryPromptTextLabel != null)
-            primaryPromptTextLabel.text = primaryPromptMessage;
-        if (secondaryPromptTextLabel != null)
-            secondaryPromptTextLabel.text = secondaryPromptMessage;
+        if (promptItemNameLabel != null) promptItemNameLabel.text = promptItemName;
+        if (promptItemDescLabel != null) promptItemDescLabel.text = promptDesc;
+        if (promptItemAmountLabel != null) promptItemAmountLabel.text = "x" + promptAmount;
 
-        // item info blocks
-        if (promptItemNameLabel != null)
-            promptItemNameLabel.text = promptItemName;
-        if (promptItemDescLabel != null)
-            promptItemDescLabel.text = promptDesc;
-        if (promptItemAmountLabel != null)
-            promptItemAmountLabel.text = promptAmount;
+        if (primarykeyTextLabel != null) primarykeyTextLabel.text = primaryKey.ToString();
+        if (secondarykeyTextLabel != null) secondarykeyTextLabel.text = secondaryKey.ToString();
 
-        if (primarykeyTextLabel != null)
-            primarykeyTextLabel.text = primaryKey.ToString();
-        if (secondarykeyTextLabel != null)
-            secondarykeyTextLabel.text = secondaryKey.ToString();
-
-
-        // no Rendered assigned, will find the objects automatically
         if (sightRenderer == null)
             sightRenderer = GetComponent<Renderer>()
                          ?? GetComponentInChildren<Renderer>();
 
         if (sightRenderer == null)
-            Debug.LogWarning($"[ProximityPrompt] No Renderer found for frustum check on '{name}'");
+            Debug.LogWarning($"[ProximityPrompt] No Renderer for frustum check on '{name}'");
+    }
+
+    void Reset()
+    {
+        var col = GetComponent<Collider>();
+        col.isTrigger = true;
     }
 
     void OnTriggerEnter(Collider other)
@@ -108,7 +116,6 @@ public class ProximityPrompt : MonoBehaviour
 
     void Update()
     {
-        // re-check visibility each frame
         bool nowVisible = IsInCameraFrustum();
         if (nowVisible != isVisible)
         {
@@ -116,7 +123,6 @@ public class ProximityPrompt : MonoBehaviour
             TryShowOrHide();
         }
 
-        // handle input only when both conditions true
         if (playerInRange && isVisible)
         {
             if (Input.GetKeyDown(primaryKey))
@@ -136,7 +142,8 @@ public class ProximityPrompt : MonoBehaviour
     private void TryShowOrHide()
     {
         float target = (playerInRange && isVisible) ? 1f : 0f;
-        FadeTo(target);
+        if (fadeRoutine != null) StopCoroutine(fadeRoutine);
+        fadeRoutine = StartCoroutine(FadeCoroutine(target));
     }
 
     private bool IsInCameraFrustum()
@@ -144,17 +151,8 @@ public class ProximityPrompt : MonoBehaviour
         if (sightRenderer == null || Camera.main == null)
             return false;
 
-        // build frustum planes for the main camera
         Plane[] planes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
-        // test the renderer's bounding box
         return GeometryUtility.TestPlanesAABB(planes, sightRenderer.bounds);
-    }
-
-    private void FadeTo(float target)
-    {
-        if (fadeRoutine != null)
-            StopCoroutine(fadeRoutine);
-        fadeRoutine = StartCoroutine(FadeCoroutine(target));
     }
 
     private IEnumerator FadeCoroutine(float target)
