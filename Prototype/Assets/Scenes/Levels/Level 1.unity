@@ -1291,7 +1291,8 @@ MonoBehaviour:
   spawnObject:
   - {fileID: 8855280108015326162, guid: 01b56a5e184590a48b04f972db1f0e07, type: 3}
   - {fileID: 8347423614987422851, guid: 20705ea9e6835d842ab7dcddaa4f3948, type: 3}
-  - {fileID: 7205600995067848402, guid: e976b11d598bab846b0a11d42037191c, type: 3}
+  - {fileID: 2727473855064272006, guid: 462827a61193e7e4ca9465fe0259d09a, type: 3}
+  - {fileID: 238476338173845793, guid: bf834504c22f5c141b665cc7c7c53d6b, type: 3}
   spawnAmount: 4
   spawnRate: 0
   spawnPos:
@@ -8753,6 +8754,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1614127103}
     m_Modifications:
+    - target: {fileID: 8855280108015326162, guid: 01b56a5e184590a48b04f972db1f0e07, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 614201525049001044, guid: 671163a3eff3ccf418b2330e4dc0e155, type: 3}
       propertyPath: m_Name
       value: ProximityPrompt (Single Key)

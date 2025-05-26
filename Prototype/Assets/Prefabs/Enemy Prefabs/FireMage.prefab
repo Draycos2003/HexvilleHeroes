@@ -2131,7 +2131,6 @@ GameObject:
   - component: {fileID: 1181970831780138285}
   - component: {fileID: 8261589302897798510}
   - component: {fileID: 4091346185833959010}
-  - component: {fileID: 8947017652845992863}
   - component: {fileID: 3429634135691362835}
   - component: {fileID: 7133325616816411193}
   - component: {fileID: 3056492797638293445}
@@ -2178,22 +2177,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a916b528e6f2244ba6ff1ede11ee90f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 1
+  HP: 20
+  Shield: 0
+  model: {fileID: 5984132666329031490}
+  faceTargetSpeed: 10
+  attackRange: 10
   headPos: {fileID: 6950099372492892922}
   FOV: 180
   agent: {fileID: 3429634135691362835}
   anim: {fileID: 8278446102394531361}
   animTransSpeed: 1
-  attackRange: 10
-  HP: 20
-  Shield: 0
-  model: {fileID: 5984132666329031490}
-  faceTargetSpeed: 500
   shootPos: {fileID: 6062879582135962456}
   projectile: {fileID: 7491880933644792005, guid: 41c87ef8263594d43b3576c52c22006a, type: 3}
   shootRate: 3
-  attackSpeed: 0
+  attackRate: 0
   weapon: {fileID: 0}
-  hitPos: {fileID: 0}
 --- !u!114 &4091346185833959010
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2209,21 +2208,6 @@ MonoBehaviour:
   healthBarFill: {fileID: 7875728765796931631}
   shieldBarFill: {fileID: 6595074350951161476}
   hpText: {fileID: 1416803237797090000}
---- !u!114 &8947017652845992863
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8347423614987422851}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2b139113de3e1c4f9e7cb3977f78ab3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  navMesh: {fileID: 3429634135691362835}
-  animate: {fileID: 8278446102394531361}
-  pathUpdateDely: 0.2
 --- !u!195 &3429634135691362835
 NavMeshAgent:
   m_ObjectHideFlags: 0
