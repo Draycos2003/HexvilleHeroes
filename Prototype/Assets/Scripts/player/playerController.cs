@@ -47,6 +47,7 @@ public class playerController : MonoBehaviour, IDamage
     private List<ItemParameter> parameters;
 
     [Header("Weapon")] // Weapon
+    [SerializeField] GameObject weapon;
     [HideInInspector] public int damageAmount;
     [HideInInspector] public float shootRate;
     [HideInInspector] public int shootDist;
@@ -63,13 +64,13 @@ public class playerController : MonoBehaviour, IDamage
     int jumpCount;
     float shootTimer;
 
-    [SerializeField] Animator mainCamAnimator;
-    [SerializeField] Animator weaponCamAnimator;
+    [SerializeField] Animator animator;
     [SerializeField] float animTransSpeed;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        animator = GetComponent<Animator>();
         speedOG = speed;
         damage = gameObject.GetComponentInChildren<Damage>();
         maxHP = HP;
@@ -147,12 +148,12 @@ public class playerController : MonoBehaviour, IDamage
 
             playerVel.y = jumpForce;
 
-            mainCamAnimator.SetBool("isJumping", true);
+            animator.SetBool("isJumping", true);
         }
 
         if (Input.GetButtonUp("Jump"))
         {
-            mainCamAnimator.SetBool("isJumping", false);
+            animator.SetBool("isJumping", false);
         }
     }
 
@@ -270,16 +271,25 @@ public class playerController : MonoBehaviour, IDamage
 
         //weaponAgent.ModifyParameters();
     }
+    public void weaponColOn()
+    {
+        weapon.GetComponent<Collider>().enabled = true;
+    }
+    public void weaponColOff()
+    {
+        weapon.GetComponent<Collider>().enabled = false;
+    }
+
 
     private void setAnimParams()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            weaponCamAnimator.SetTrigger("attack");
+            animator.SetTrigger("attack");
         }
 
-        float animSpeedCur = mainCamAnimator.GetFloat("speed");
-        mainCamAnimator.SetFloat("speed", Mathf.Lerp(animSpeedCur, moveDir.magnitude, Time.deltaTime * animTransSpeed));
+        float animSpeedCur = animator.GetFloat("speed");
+        animator.SetFloat("speed", Mathf.Lerp(animSpeedCur, moveDir.magnitude, Time.deltaTime * animTransSpeed));
     }
 
     public bool BuyItem(int cost)

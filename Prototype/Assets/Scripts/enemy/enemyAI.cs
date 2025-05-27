@@ -137,26 +137,23 @@ public class enemyAI : MonoBehaviour, IDamage
     }
 
 
-    public void TakeDamage(int Amount)
+    public void TakeDamage(int amount)
     {
-        if (currentShield <= 0)
+        if (Shield > 0)
         {
-            HP -= Amount;
-           
-            if (HP <= 0)
-            {
-                Destroy(gameObject);
-                gamemanager.instance.updateGameGoal(-1);
-
-            }
-            else
-            {
-                StartCoroutine(flashRed()); 
-            }
+            Shield -= amount;
+            StartCoroutine(flashRed());
         }
         else
         {
-            Shield -= Amount;
+            HP -= amount;
+            StartCoroutine(flashRed());
+        }
+
+        // check for death
+        if (HP <= 0)
+        {
+            gamemanager.instance.youLose();
         }
     }
 
