@@ -45,7 +45,7 @@ public class cameraController : MonoBehaviour
 
     public void colliderOff()
     {
-        //attackCollider.GetComponent<BoxCollider>().enabled = false;
+        attackCollider.GetComponent<BoxCollider>().enabled = false;
 
     }
 }

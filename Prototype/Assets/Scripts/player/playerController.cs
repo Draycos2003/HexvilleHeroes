@@ -51,6 +51,7 @@ public class playerController : MonoBehaviour, IDamage
     [HideInInspector] public float shootRate;
     [HideInInspector] public int shootDist;
     [SerializeField] int damageWithoutAWeapon;
+    [SerializeField] GameObject weapon;
 
     [Header("Inventory")]
     [SerializeField] GameObject itemModel;
@@ -64,7 +65,7 @@ public class playerController : MonoBehaviour, IDamage
     float shootTimer;
 
     [SerializeField] Animator mainCamAnimator;
-    [SerializeField] Animator weaponCamAnimator;
+   // [SerializeField] Animator weaponCamAnimator;
     [SerializeField] float animTransSpeed;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -275,7 +276,7 @@ public class playerController : MonoBehaviour, IDamage
     {
         if (Input.GetMouseButtonDown(0))
         {
-            weaponCamAnimator.SetTrigger("attack");
+            mainCamAnimator.SetTrigger("attack");
         }
 
         float animSpeedCur = mainCamAnimator.GetFloat("speed");
@@ -299,5 +300,14 @@ public class playerController : MonoBehaviour, IDamage
     {
         gold += amount;
         Debug.Log($"Sold item for {amount} gold. Total now: {gold}");
+    }
+
+    public void weaponColOn()
+    {
+        weapon.GetComponent<Collider>().enabled = true;
+    }
+    public void weaponColOff()
+    {
+        weapon.GetComponent<Collider>().enabled = false;
     }
 }

@@ -8,6 +8,7 @@ using Unity.VisualScripting;
 
 public class enemyAI : MonoBehaviour, IDamage
 {
+    LootBag loot;
 
     enum EnemyType
     {
@@ -57,13 +58,15 @@ public class enemyAI : MonoBehaviour, IDamage
 
     private void Start()
     {
-        if(weapon != null)
-            weapon.GetComponent<Collider>().enabled = false;
+        if (weapon != null)
+            return;
 
+        weapon.GetComponent<Collider>().enabled = false;
         setAnimPara();
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
         colorOrig = model.material.color; // Starter color
+        loot.GetComponent<Transform>();
         //gamemanager.instance.updateGameGoal(1); // total enemy count
     }
 
@@ -139,30 +142,37 @@ public class enemyAI : MonoBehaviour, IDamage
 
     public void TakeDamage(int Amount)
     {
-        if (currentShield <= 0)
+        if (Shield > 0)
         {
-            HP -= Amount;
-           
-            if (HP <= 0)
+            Shield -= Amount;
+            StartCoroutine(flashBlue());
+        }
+        else
+        {
+            if (HP < 1)
             {
                 Destroy(gameObject);
+                loot.GetDroppedItem();
                 gamemanager.instance.updateGameGoal(-1);
 
             }
             else
             {
-                StartCoroutine(flashRed()); 
+                StartCoroutine(flashRed());
             }
-        }
-        else
-        {
-            Shield -= Amount;
         }
     }
 
     private IEnumerator flashRed()
     {
         model.material.color = Color.red;
+        yield return new WaitForSeconds(0.05f);
+        model.material.color = colorOrig;
+    }
+
+    private IEnumerator flashBlue()
+    {
+        model.material.color = Color.blue;
         yield return new WaitForSeconds(0.05f);
         model.material.color = colorOrig;
     }
