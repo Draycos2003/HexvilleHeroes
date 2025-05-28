@@ -8,10 +8,11 @@ public class gamemanager : MonoBehaviour
     public static gamemanager instance;
 
     [Header("Menues")]
-    [SerializeField] GameObject MenuActive;
+    [SerializeField] public GameObject MenuActive;
     [SerializeField] GameObject MenuPaused;
     [SerializeField] GameObject MenuWin;
     [SerializeField] GameObject MenuLose;
+    public GameObject OptionsMenu;
 
     [Header("Match Timer")]
     [SerializeField] TMP_Text winMessageText;
@@ -34,8 +35,12 @@ public class gamemanager : MonoBehaviour
     [Header("Enemy Info")]
     [SerializeField] TMP_Text gameGoalCountText;
 
+    [Header("InventoryUI")]
+    [SerializeField] inventoryUI invUI;
+    [SerializeField] inventoryController invController;
+
     float timeScaleOrig;
-    int gameGoalCount;
+    public int gameGoalCount;
 
     public int GameGoalCount => gameGoalCount;
 
@@ -111,6 +116,7 @@ public class gamemanager : MonoBehaviour
         }
     }
 
+
     public void statePause()
     {
         isPaused = !isPaused;
@@ -125,9 +131,13 @@ public class gamemanager : MonoBehaviour
         isPaused = !isPaused;
 
         Time.timeScale = timeScaleOrig;
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
 
+        if (SceneManager.GetActiveScene().buildIndex != 0)
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+           
         if(MenuActive != null)
         {
             MenuActive.SetActive(false);
@@ -177,20 +187,17 @@ public class gamemanager : MonoBehaviour
         return string.Format("{0}:{1:00}:{2:00}", hours, minutes, seconds);
     }
 
-    public void openInventory(GameObject inventoryMenu)
+    public void setActiveMenu(GameObject menu)
     {
-        if (Input.GetKeyDown(KeyCode.I))
+        if (MenuActive == null)
         {
-            if (MenuActive == null)
-            {
-                statePause();
-                MenuActive = inventoryMenu;
-                MenuActive.SetActive(isPaused);
-            }
-            else if (MenuActive == inventoryMenu)
-            {
-                stateUnpause();
-            }
+            statePause();
+            MenuActive = menu;
+            MenuActive.SetActive(isPaused);
+        }
+        else if (MenuActive == menu)
+        {
+            stateUnpause();
         }
     }
 }

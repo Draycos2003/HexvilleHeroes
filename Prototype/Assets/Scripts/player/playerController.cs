@@ -3,13 +3,11 @@ using System.Collections;
 using NUnit.Framework;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using System.Linq;
 
 public class playerController : MonoBehaviour, IDamage, IPickup
 {
     // Player
-    [SerializeField] List<pickupItemStats> items = new List<pickupItemStats>();
-    [SerializeField] GameObject itemModel;
-
     [Header("Controllers")]
     [SerializeField] CharacterController controller;
     [SerializeField] LayerMask ignoreLayer;
@@ -30,50 +28,67 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     public int ShieldOrig => Shield;
     private int maxShield;
 
-    [SerializeField] int speed;
+    public int speed;
+    public int speedOG;
     [SerializeField] int sprintMod;
 
     [SerializeField] int jumpMax;
     [SerializeField] int jumpForce;
 
-    [Header("Buffs")]
-    [SerializeField] int buffStatAmount;
-    
+    [Header("Currency")] // Currency
+    [SerializeField] private int gold;
+    public int Gold => gold;
+
     private int currentSceneIndex;
     private int originalSceneIndex;
+    private List<ItemParameter> parameters;
+    private Camera cam;
 
     [Header("Weapon")] // Weapon
-    [SerializeField] Transform equipPos;
-    [SerializeField] int damageAmount;
-    [SerializeField] float shootRate;
-    [SerializeField] int shootDist;
+    [SerializeField] GameObject weapon;
+    [SerializeField] Transform shootPos;
+     public int damageAmount;
+    [HideInInspector] public float shootRate;
+    [HideInInspector] public int shootDist;
+    [SerializeField] int damageWithoutAWeapon;
+    private int allTimeDamageBuffAmount;
 
-    inventorymanager inventory;
+    [Header("Inventory")]
+    [SerializeField] GameObject itemModel;
+    public InventoryItem item;
+    agentWeapon weaponAgent;
 
     Vector3 moveDir;
     Vector3 playerVel;
     bool isSprinting;
     int jumpCount;
-    public int itemListPos;
     float shootTimer;
 
     private Animator animator;
+    [SerializeField] float animTransSpeed;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        inventory = inventorymanager.instance;
-        damage = gameObject.GetComponentInChildren<Damage>();
+        cam = Camera.main;
         animator = GetComponent<Animator>();
+        speedOG = speed;
+        damage = gameObject.GetComponentInChildren<Damage>();
         maxHP = HP;
         maxShield = Shield;
+        weaponAgent = gameObject.GetComponent<agentWeapon>();
+        damageAmount = damageWithoutAWeapon;
     }
 
     // Update is called once per frame
     void Update()
     {
+        shootTimer += Time.deltaTime;
         Movement();
         Sprint();
+        item = GetComponent<inventoryController>().inventoryData.inventoryItems.Last();
+        equip();
+        setAnimParams();
     }
 
     public void SetSceneIndex(int newSceneIndex)
@@ -96,7 +111,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     void Movement()
     {
-        if (controller.isGrounded && jumpCount != 0) 
+        if (controller.isGrounded && jumpCount != 0)
         {
             jumpCount = 0;
             playerVel = Vector3.zero;
@@ -105,15 +120,10 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         moveDir = (Input.GetAxis("Horizontal") * transform.right) + (Input.GetAxis("Vertical") * transform.forward);
         controller.Move(moveDir * speed * Time.deltaTime);
 
-        animator.SetFloat("speed", moveDir.magnitude);
-
-
         Jump();
 
         controller.Move(playerVel * Time.deltaTime);
         playerVel.y -= gravity * Time.deltaTime;
-
-        selectItem();
     }
 
     void Sprint()
@@ -149,7 +159,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     public void TakeDamage(int amount)
     {
-        if(Shield > 0)
+        if (Shield > 0)
         {
             Shield -= amount;
             StartCoroutine(flashShieldDamageScreen());
@@ -159,11 +169,11 @@ public class playerController : MonoBehaviour, IDamage, IPickup
             HP -= amount;
             StartCoroutine(flashDamageScreen());
         }
-            
+
         // check for death
         if (HP <= 0)
         {
-            gamemanager.instance.youLose(); 
+            gamemanager.instance.youLose();
         }
     }
 
@@ -176,18 +186,15 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     IEnumerator flashShieldDamageScreen()
     {
-        gamemanager.instance.playerDMGScreen.SetActive(true);
+        gamemanager.instance.playerShieldDMGScreen.SetActive(true);
         yield return new WaitForSeconds(0.1f);
-        gamemanager.instance.playerDMGScreen.SetActive(false);
+        gamemanager.instance.playerShieldDMGScreen.SetActive(false);
     }
 
-    public void buffPlayer()
+    public void gainHealth(int amount)
     {
+        Debug.Log("HEALTH UP");
 
-    }
-
-    void gainHealth(int amount)
-    {
         // check if player is damaged
         if (HP < maxHP)
         {
@@ -195,84 +202,144 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         }
 
         // make sure health doesn't exceed max
-        if(HP > maxHP)
+        if (HP > maxHP)
         {
             HP = maxHP;
         }
     }
 
-    void gainShield(int amount)
+    public void gainShield(int amount)
     {
+        Debug.Log("SHIELD UP");
+
         // check if player needs shield
-        if(Shield < maxShield)
+        if (Shield < maxShield)
         {
             Shield += amount;
         }
 
         // make sure shield doesn't exceed max
-        if(Shield > maxShield)
+        if (Shield > maxShield)
         {
             Shield = maxShield;
         }
     }
 
-    void gainDamage(int amount)
+    public void gainDamage(int amount)
     {
+        Debug.Log("DAMAGE UP");
+
         if (damage != null)
         {
-            Debug.Log("HAHAHA");
-            damage.damageAmount += amount;
+            allTimeDamageBuffAmount += amount;
+            damageWithoutAWeapon += amount;
         }
     }
 
-    void gainSpeed(int amount)
+    public void gainSpeed(int amount)
     {
+        Debug.Log("SPEED UP");
+
         speed += amount;
     }
 
-    void selectItem()
+    private void equip()
     {
-        if(Input.GetAxis("Mouse ScrollWheel") > 0 && itemListPos > 0)
+        if (!item.isEmpty)
         {
-                itemListPos--;
-                changeItem();
-                inventory.ChangeSelectedSlot(itemListPos);
-                switchWeaponSoundSource.Play();
+            changeEquippedItem();
         }
-        else if(Input.GetAxis("Mouse ScrollWheel") < 0 && itemListPos<items.Count - 1)
+        else
         {
-            if (itemListPos < inventory.hotBarSize - 1)
+            noItemEquipped();
+        }
+    }
+
+    private void changeEquippedItem()
+    {
+        itemModel.GetComponent<MeshFilter>().sharedMesh = item.item.model.GetComponent<MeshFilter>().sharedMesh;
+        itemModel.GetComponent<MeshRenderer>().sharedMaterial = item.item.model.GetComponent<MeshRenderer>().sharedMaterial;
+        getItemStats();
+    }
+
+    private void noItemEquipped()
+    {
+        itemModel.GetComponent<MeshFilter>().sharedMesh = null;
+        itemModel.GetComponent<MeshRenderer>().sharedMaterial = null;
+        damageAmount = damageWithoutAWeapon;
+    }
+
+    private void getItemStats()
+    {
+        damageAmount = (int)weaponAgent.FindParameterValue("Damage") + allTimeDamageBuffAmount;
+        if (item.item.IType == ItemSO.ItemType.ranged)
+        {
+            shootRate = weaponAgent.FindParameterValue("Shoot Rate");
+            shootDist = (int)weaponAgent.FindParameterValue("Range");
+        }
+        //weaponAgent.ModifyParameters();
+    }
+    public void weaponColOn()
+    {
+        weapon.GetComponent<Collider>().enabled = true;
+    }
+
+    public void weaponColOff()
+    {
+        weapon.GetComponent<Collider>().enabled = false;
+    }
+
+    public void shoot()
+    {
+        Instantiate(item.item.projectile, shootPos.position, Camera.main.transform.rotation);
+    }
+
+    private void setAnimParams()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            if(item.isEmpty)
             {
-                itemListPos++;
-                changeItem();
-                inventory.ChangeSelectedSlot(itemListPos);
-                switchWeaponSoundSource.Play();
+                animator.SetTrigger("attack");
+                return;
+            }
+
+            if(shootTimer >= shootRate)
+            {
+                if (item.item.IType == ItemSO.ItemType.ranged)
+                {
+                    animator.SetTrigger("shoot");
+                }
+                shootTimer = 0;
+            }
+           
+
+            if(item.item.IType == ItemSO.ItemType.melee)
+            {
+                animator.SetTrigger("attack");
             }
         }
+
+        float animSpeedCur = animator.GetFloat("speed");
+        animator.SetFloat("speed", Mathf.Lerp(animSpeedCur, moveDir.magnitude, Time.deltaTime * animTransSpeed));
     }
 
-    void changeItem()
+    public bool BuyItem(int cost)
     {
-        damageAmount = items[itemListPos].damgageAmount;
-        shootDist = items[itemListPos].shootRange;
-        shootRate = items[itemListPos].shootRate;
-        buffStatAmount = items[itemListPos].buffAmount;
-
-
-
-        itemModel.GetComponent<MeshFilter>().sharedMesh = items[itemListPos].model.GetComponent<MeshFilter>().sharedMesh;
-        itemModel.GetComponent<MeshRenderer>().sharedMaterial = items[itemListPos].model.GetComponent<MeshRenderer>().sharedMaterial;
-    }
-
-    public void getItemStats(pickupItemStats weapon)
-    {
-        items.Add(weapon);
-        itemListPos = items.Count - 1;
-
-       if(itemListPos < inventory.hotBarSize)
+        if (gold < cost)
         {
-            inventory.ChangeSelectedSlot(itemListPos);
-            changeItem();
-        }       
+            Debug.Log("Not enough gold!");
+            return false;
+        }
+
+        gold -= cost;
+        Debug.Log($"Purchased for {cost} gold. Remaining: {gold}");
+        return true;
+    }
+
+    public void SellItem(int amount)
+    {
+        gold += amount;
+        Debug.Log($"Sold item for {amount} gold. Total now: {gold}");
     }
 }
