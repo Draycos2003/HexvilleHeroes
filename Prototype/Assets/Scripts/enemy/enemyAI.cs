@@ -212,7 +212,10 @@ public class enemyAI : MonoBehaviour, IDamage
         {
             pathUpdateDely = 0.2f;
             updatePathDeadline = Time.time + pathUpdateDely;
-            agent.SetDestination(target.transform.position);
+
+            if (target != null)
+                agent.SetDestination(target.transform.position);
+            
             Debug.Log("Updating Path");
         }
     }
