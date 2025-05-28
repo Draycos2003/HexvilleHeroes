@@ -31,7 +31,8 @@ public class buttonfunctions : MonoBehaviour
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         GameObject target = GameObject.Find(teleportTargetName);
-        if (target != null)
+        
+        if (target != null && gamemanager.instance.Player != null)
         {
             Transform player = gamemanager.instance.Player.transform;
 
@@ -126,6 +127,8 @@ public class buttonfunctions : MonoBehaviour
             int originalScene = gm.PlayerScript.GetOriginalSceneIndex();
             SceneManager.LoadScene(originalScene);
             gm.stateUnpause();
+
+
         }
     }
 

@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 enum Type
@@ -6,7 +7,8 @@ enum Type
     health,
     shield,
     damage,
-    speed
+    speed,
+    money
 }
 
 public class collectiblePickup : MonoBehaviour
@@ -41,6 +43,10 @@ public class collectiblePickup : MonoBehaviour
                     case Type.speed:
                         pc.gainSpeed(amountToBuff);
                         break;
+                    case Type.money:
+                        pc.AddGold(amountToBuff);
+                        break;
+
                 }
             }
             Destroy(gameObject);
