@@ -8,6 +8,7 @@ using Unity.VisualScripting;
 
 public class enemyAI : MonoBehaviour, IDamage
 {
+    LootBag loot;
 
     enum EnemyType
     {
@@ -57,9 +58,9 @@ public class enemyAI : MonoBehaviour, IDamage
 
     private void Start()
     {
-        if(weapon != null)
+        if (weapon != null)
             weapon.GetComponent<Collider>().enabled = false;
-
+        
         setAnimPara();
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
@@ -137,30 +138,41 @@ public class enemyAI : MonoBehaviour, IDamage
     }
 
 
-    public void TakeDamage(int amount)
+    public void TakeDamage(int Amount)
     {
-        if (Shield > 0)
+        if (CurrentHP > 0)
         {
-            Shield -= amount;
-            StartCoroutine(flashRed());
+            TakeDamage(Amount);
+
+            if (HP < 1)
+            {
+                loot.InstantiateLoot(target.transform.position);
+                Destroy(gameObject);
+                gamemanager.instance.updateGameGoal(-1);
+
+            }
+            else
+            {
+                StartCoroutine(flashRed());
+            }
         }
         else
         {
-            HP -= amount;
-            StartCoroutine(flashRed());
-        }
-
-        // check for death
-        if (HP <= 0)
-        {
-            gamemanager.instance.updateGameGoal(-1);
-            Destroy(gameObject);
+            Shield -= Amount;
+            StartCoroutine(flashBlue());
         }
     }
 
     private IEnumerator flashRed()
     {
         model.material.color = Color.red;
+        yield return new WaitForSeconds(0.05f);
+        model.material.color = colorOrig;
+    }
+
+    private IEnumerator flashBlue()
+    {
+        model.material.color = Color.blue;
         yield return new WaitForSeconds(0.05f);
         model.material.color = colorOrig;
     }
@@ -212,7 +224,10 @@ public class enemyAI : MonoBehaviour, IDamage
         {
             pathUpdateDely = 0.2f;
             updatePathDeadline = Time.time + pathUpdateDely;
-            agent.SetDestination(target.transform.position);
+
+            if (target != null)
+                agent.SetDestination(target.transform.position);
+            
             Debug.Log("Updating Path");
         }
     }

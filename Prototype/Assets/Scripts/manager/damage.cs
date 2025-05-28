@@ -35,7 +35,7 @@ public class Damage : MonoBehaviour
     void Start()
     {
 
-        if (type == DamageType.ranged || type == DamageType.homing || type == DamageType.RDOT || type == DamageType.frost)
+        if (type == DamageType.ranged || type == DamageType.homing || type == DamageType.DOT || type == DamageType.RDOT || type == DamageType.frost)
         {
             Destroy(gameObject, destroyTime);
 
@@ -71,7 +71,7 @@ public class Damage : MonoBehaviour
         {
             if (playerController!=null)
             {
-                damageAmount += playerController.damageAmount;
+                damageAmount = playerController.damageAmount;
             }
             damage.TakeDamage(damageAmount);
         }
@@ -111,7 +111,7 @@ public class Damage : MonoBehaviour
 
         if (type == DamageType.RDOT)
         {
-            if (other.CompareTag("Player"))
+            if (other.CompareTag("Player") && gamemanager.instance.Player != null)
             {
                 obj.transform.SetParent(gamemanager.instance.Player.transform);
                 body.linearVelocity = Vector3.zero;

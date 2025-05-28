@@ -3,9 +3,19 @@ using UnityEngine.SceneManagement;
 
 public class buttonfunctions : MonoBehaviour
 {
+    private GameObject Player;
+
+    void Start()
+    {
+        Player = gamemanager.instance?.Player;
+
+        if (Player == null)
+        {
+            Debug.LogError("[Currency] Player not found from GameManager.");
+        }
+    }
 
     private static readonly string teleportTargetName = "SpawnPoint";
-
     private playerController playerControl;
 
     void OnEnable()
@@ -21,7 +31,8 @@ public class buttonfunctions : MonoBehaviour
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         GameObject target = GameObject.Find(teleportTargetName);
-        if (target != null)
+        
+        if (target != null && gamemanager.instance.Player != null)
         {
             Transform player = gamemanager.instance.Player.transform;
 
@@ -33,11 +44,11 @@ public class buttonfunctions : MonoBehaviour
 
             if (cc != null) cc.enabled = true;
 
-            Debug.Log("[ButtonFunctions] Teleported to: " + teleportTargetName);
+            //Debug.Log("[ButtonFunctions] Teleported to: " + teleportTargetName);
         }
         else
         {
-            Debug.LogWarning("[ButtonFunctions] SpawnPoint not found.");
+            //Debug.LogWarning("[ButtonFunctions] SpawnPoint not found.");
         }
     }
 
@@ -49,7 +60,19 @@ public class buttonfunctions : MonoBehaviour
     public void Restart()
     {        
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        gamemanager.instance.stateUnpause();        
+        gamemanager.instance.stateUnpause();
+
+        playerController pc = Player.GetComponent<playerController>();
+        if (pc != null)
+        {
+            //Debug.Log($"[ButtonFunctions] HP before reset: {pc.HP}, Shield before reset: {pc.Shield}");
+            //Debug.Log($"[ButtonFunctions] HPOrig: {pc.MAXHPOrig}, ShieldOrig: {pc.MAXShieldOrig}");
+
+            pc.HP = pc.MAXHPOrig;
+            pc.Shield = pc.MAXShieldOrig;
+
+            //Debug.Log($"[ButtonFunctions] HP after reset: {pc.HP}, Shield after reset: {pc.Shield}");
+        }
     }
 
     public void Quit()
@@ -71,13 +94,13 @@ public class buttonfunctions : MonoBehaviour
             if (gm != null && gm.PlayerScript != null)
             {
                 int originalScene = gm.PlayerScript.GetOriginalSceneIndex();
-                Debug.Log("[ButtonFunctions] Returning to original scene: " + originalScene);
+                //Debug.Log("[ButtonFunctions] Returning to original scene: " + originalScene);
                 SceneManager.LoadScene(originalScene);
             }
         }
         else
         {
-            Debug.Log("[ButtonFunctions] Loading scene: " + Lvl);
+            //Debug.Log("[ButtonFunctions] Loading scene: " + Lvl);
             SceneManager.LoadScene(Lvl);
         }
 
@@ -104,6 +127,8 @@ public class buttonfunctions : MonoBehaviour
             int originalScene = gm.PlayerScript.GetOriginalSceneIndex();
             SceneManager.LoadScene(originalScene);
             gm.stateUnpause();
+
+
         }
     }
 

@@ -86,8 +86,12 @@ public class gamemanager : MonoBehaviour
 
     void Start()
     {
-        DontDestroyOnLoad(Player);
-        PlayerScript = Player.GetComponent<playerController>();
+        
+        if(Player != null)
+        {
+            DontDestroyOnLoad(Player);
+            PlayerScript = Player.GetComponent<playerController>();
+        }
     }
 
     // Update is called once per frame
