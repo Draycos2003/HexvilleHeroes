@@ -59,14 +59,12 @@ public class enemyAI : MonoBehaviour, IDamage
     private void Start()
     {
         if (weapon != null)
-            return;
-
-        weapon.GetComponent<Collider>().enabled = false;
+            weapon.GetComponent<Collider>().enabled = false;
+        
         setAnimPara();
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
         colorOrig = model.material.color; // Starter color
-        loot.GetComponent<Transform>();
         //gamemanager.instance.updateGameGoal(1); // total enemy count
     }
 
@@ -142,13 +140,10 @@ public class enemyAI : MonoBehaviour, IDamage
 
     public void TakeDamage(int Amount)
     {
-        if (Shield > 0)
+        if (CurrentHP > 0)
         {
-            Shield -= Amount;
-            StartCoroutine(flashBlue());
-        }
-        else
-        {
+            TakeDamage(Amount);
+
             if (HP < 1)
             {
                 loot.InstantiateLoot(target.transform.position);
@@ -160,6 +155,11 @@ public class enemyAI : MonoBehaviour, IDamage
             {
                 StartCoroutine(flashRed());
             }
+        }
+        else
+        {
+            Shield -= Amount;
+            StartCoroutine(flashBlue());
         }
     }
 
@@ -224,8 +224,10 @@ public class enemyAI : MonoBehaviour, IDamage
         {
             pathUpdateDely = 0.2f;
             updatePathDeadline = Time.time + pathUpdateDely;
-            agent.SetDestination(target.transform.position);
-            Debug.Log("Updating Path");
+            if(target != null)
+            {
+                agent.SetDestination(target.transform.position);
+            }
         }
     }
     private void OnTriggerEnter(Collider other)

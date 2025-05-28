@@ -111,7 +111,7 @@ public class Damage : MonoBehaviour
 
         if (type == DamageType.RDOT)
         {
-            if (other.CompareTag("Player"))
+            if (other.CompareTag("Player") && gamemanager.instance.Player != null)
             {
                 obj.transform.SetParent(gamemanager.instance.Player.transform);
                 body.linearVelocity = Vector3.zero;
