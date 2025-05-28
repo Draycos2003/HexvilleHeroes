@@ -151,8 +151,8 @@ public class enemyAI : MonoBehaviour, IDamage
         {
             if (HP < 1)
             {
+                loot.InstantiateLoot(target.transform.position);
                 Destroy(gameObject);
-                loot.GetDroppedItem();
                 gamemanager.instance.updateGameGoal(-1);
 
             }
