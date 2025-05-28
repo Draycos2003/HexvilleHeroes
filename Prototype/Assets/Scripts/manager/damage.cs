@@ -60,7 +60,6 @@ public class Damage : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("OUCH");
         if(other.isTrigger)
         {
             return;
@@ -70,6 +69,10 @@ public class Damage : MonoBehaviour
         
         if (damage != null && (type == DamageType.ranged || type == DamageType.melee))
         {
+            if (playerController!=null)
+            {
+                damageAmount += playerController.damageAmount;
+            }
             damage.TakeDamage(damageAmount);
         }
 

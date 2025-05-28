@@ -106,4 +106,9 @@ public class buttonfunctions : MonoBehaviour
             gm.stateUnpause();
         }
     }
+
+    public void onClickOptions()
+    {
+        gamemanager.instance.setActiveMenu(gamemanager.instance.OptionsMenu);
+    }
 }

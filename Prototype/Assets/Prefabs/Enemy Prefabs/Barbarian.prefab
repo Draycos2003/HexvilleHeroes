@@ -836,6 +836,7 @@ GameObject:
   - component: {fileID: 1314998057696334036}
   - component: {fileID: 1412590454816634533}
   - component: {fileID: 6743922742444921302}
+  - component: {fileID: -6253225976014014465}
   m_Layer: 0
   m_Name: Barbarian
   m_TagString: Untagged
@@ -982,7 +983,7 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
---- !u!54 &1412590454816634533
+--- !u!54 &-6253225976014014465
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1002,28 +1003,13 @@ Rigidbody:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_ImplicitCom: 0
-  m_ImplicitTensor: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &6743922742444921302
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2727473855064272006}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2cbfa3716377abb41bb8f92d064b15a1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  healthBarFill: {fileID: 7890802248931507632}
-  shieldBarFill: {fileID: 6578525872959486747}
-  hpText: {fileID: 1397391638238099279}
 --- !u!1 &2845154225852884179
 GameObject:
   m_ObjectHideFlags: 0

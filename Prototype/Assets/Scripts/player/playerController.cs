@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using System.Linq;
 
-public class playerController : MonoBehaviour, IDamage
+public class playerController : MonoBehaviour, IDamage, IPickup
 {
     // Player
     [Header("Controllers")]
@@ -39,19 +39,19 @@ public class playerController : MonoBehaviour, IDamage
     [SerializeField] private int gold;
     public int Gold => gold;
 
-    [Header("Buffs")]
-    [SerializeField] int buffStatAmount;
-
     private int currentSceneIndex;
     private int originalSceneIndex;
     private List<ItemParameter> parameters;
+    private Camera cam;
 
     [Header("Weapon")] // Weapon
-    [HideInInspector] public int damageAmount;
+    [SerializeField] GameObject weapon;
+    [SerializeField] Transform shootPos;
+     public int damageAmount;
     [HideInInspector] public float shootRate;
     [HideInInspector] public int shootDist;
     [SerializeField] int damageWithoutAWeapon;
-    [SerializeField] GameObject weapon;
+    private int allTimeDamageBuffAmount;
 
     [Header("Inventory")]
     [SerializeField] GameObject itemModel;
@@ -64,26 +64,26 @@ public class playerController : MonoBehaviour, IDamage
     int jumpCount;
     float shootTimer;
 
-    [SerializeField] Animator mainCamAnimator;
-   // [SerializeField] Animator weaponCamAnimator;
+    private Animator animator;
     [SerializeField] float animTransSpeed;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        cam = Camera.main;
+        animator = GetComponent<Animator>();
         speedOG = speed;
         damage = gameObject.GetComponentInChildren<Damage>();
         maxHP = HP;
         maxShield = Shield;
         weaponAgent = gameObject.GetComponent<agentWeapon>();
         damageAmount = damageWithoutAWeapon;
-        shootRate = 0;
-        shootDist = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
+        shootTimer += Time.deltaTime;
         Movement();
         Sprint();
         item = GetComponent<inventoryController>().inventoryData.inventoryItems.Last();
@@ -148,12 +148,12 @@ public class playerController : MonoBehaviour, IDamage
 
             playerVel.y = jumpForce;
 
-            mainCamAnimator.SetBool("isJumping", true);
+            animator.SetBool("isJumping", true);
         }
 
         if (Input.GetButtonUp("Jump"))
         {
-            mainCamAnimator.SetBool("isJumping", false);
+            animator.SetBool("isJumping", false);
         }
     }
 
@@ -186,13 +186,15 @@ public class playerController : MonoBehaviour, IDamage
 
     IEnumerator flashShieldDamageScreen()
     {
-        gamemanager.instance.playerDMGScreen.SetActive(true);
+        gamemanager.instance.playerShieldDMGScreen.SetActive(true);
         yield return new WaitForSeconds(0.1f);
-        gamemanager.instance.playerDMGScreen.SetActive(false);
+        gamemanager.instance.playerShieldDMGScreen.SetActive(false);
     }
 
     public void gainHealth(int amount)
     {
+        Debug.Log("HEALTH UP");
+
         // check if player is damaged
         if (HP < maxHP)
         {
@@ -208,6 +210,8 @@ public class playerController : MonoBehaviour, IDamage
 
     public void gainShield(int amount)
     {
+        Debug.Log("SHIELD UP");
+
         // check if player needs shield
         if (Shield < maxShield)
         {
@@ -223,15 +227,19 @@ public class playerController : MonoBehaviour, IDamage
 
     public void gainDamage(int amount)
     {
+        Debug.Log("DAMAGE UP");
+
         if (damage != null)
         {
-            Debug.Log("HAHAHA");
-            damage.damageAmount += amount;
+            allTimeDamageBuffAmount += amount;
+            damageWithoutAWeapon += amount;
         }
     }
 
     public void gainSpeed(int amount)
     {
+        Debug.Log("SPEED UP");
+
         speed += amount;
     }
 
@@ -259,28 +267,61 @@ public class playerController : MonoBehaviour, IDamage
         itemModel.GetComponent<MeshFilter>().sharedMesh = null;
         itemModel.GetComponent<MeshRenderer>().sharedMaterial = null;
         damageAmount = damageWithoutAWeapon;
-        shootRate = 0;
-        shootDist = 0;
     }
 
     private void getItemStats()
     {
-        damageAmount = item.item.damage;
-        shootRate = item.item.shotRate;
-        shootDist = item.item.shootDistance;
-
+        damageAmount = (int)weaponAgent.FindParameterValue("Damage") + allTimeDamageBuffAmount;
+        if (item.item.IType == ItemSO.ItemType.ranged)
+        {
+            shootRate = weaponAgent.FindParameterValue("Shoot Rate");
+            shootDist = (int)weaponAgent.FindParameterValue("Range");
+        }
         //weaponAgent.ModifyParameters();
+    }
+    public void weaponColOn()
+    {
+        weapon.GetComponent<Collider>().enabled = true;
+    }
+
+    public void weaponColOff()
+    {
+        weapon.GetComponent<Collider>().enabled = false;
+    }
+
+    public void shoot()
+    {
+        Instantiate(item.item.projectile, shootPos.position, Camera.main.transform.rotation);
     }
 
     private void setAnimParams()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            mainCamAnimator.SetTrigger("attack");
+            if(item.isEmpty)
+            {
+                animator.SetTrigger("attack");
+                return;
+            }
+
+            if(shootTimer >= shootRate)
+            {
+                if (item.item.IType == ItemSO.ItemType.ranged)
+                {
+                    animator.SetTrigger("shoot");
+                }
+                shootTimer = 0;
+            }
+           
+
+            if(item.item.IType == ItemSO.ItemType.melee)
+            {
+                animator.SetTrigger("attack");
+            }
         }
 
-        float animSpeedCur = mainCamAnimator.GetFloat("speed");
-        mainCamAnimator.SetFloat("speed", Mathf.Lerp(animSpeedCur, moveDir.magnitude, Time.deltaTime * animTransSpeed));
+        float animSpeedCur = animator.GetFloat("speed");
+        animator.SetFloat("speed", Mathf.Lerp(animSpeedCur, moveDir.magnitude, Time.deltaTime * animTransSpeed));
     }
 
     public bool BuyItem(int cost)
@@ -300,14 +341,5 @@ public class playerController : MonoBehaviour, IDamage
     {
         gold += amount;
         Debug.Log($"Sold item for {amount} gold. Total now: {gold}");
-    }
-
-    public void weaponColOn()
-    {
-        weapon.GetComponent<Collider>().enabled = true;
-    }
-    public void weaponColOff()
-    {
-        weapon.GetComponent<Collider>().enabled = false;
     }
 }

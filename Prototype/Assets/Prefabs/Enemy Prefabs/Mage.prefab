@@ -2513,7 +2513,7 @@ GameObject:
   - component: {fileID: 1732158058451945410}
   - component: {fileID: 8082434625240997406}
   - component: {fileID: 4896878928031260443}
-  - component: {fileID: -5533022023371723211}
+  - component: {fileID: 5706461295745113045}
   m_Layer: 6
   m_Name: Mage
   m_TagString: Enemy
@@ -2690,7 +2690,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!54 &-5533022023371723211
+--- !u!54 &5706461295745113045
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2710,8 +2710,8 @@ Rigidbody:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_ImplicitCom: 0
-  m_ImplicitTensor: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0

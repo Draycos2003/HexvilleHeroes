@@ -39,7 +39,7 @@ public class agentWeapon : MonoBehaviour
 
     public void ModifyParameter(string parameterName)
     {
-        foreach (var parameter in parametersToModify)
+        foreach (var parameter in itemCurrentState)
         {
             if (itemCurrentState.Contains(parameter) && (parameter.itemParameter.ParameterName == parameterName))
             {
@@ -52,5 +52,18 @@ public class agentWeapon : MonoBehaviour
                 };
             }
         }
+    }
+
+    public float FindParameterValue(string parameterName)
+    {
+        foreach (var parameter in itemCurrentState)
+        {
+            if (itemCurrentState.Contains(parameter) && (parameter.itemParameter.ParameterName == parameterName))
+            {
+                int index = itemCurrentState.IndexOf(parameter);
+                return itemCurrentState[index].value;
+            }
+        }
+        return 0f;
     }
 }

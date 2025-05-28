@@ -2041,6 +2041,7 @@ GameObject:
   - component: {fileID: 6216803852321860532}
   - component: {fileID: 2880133444527489860}
   - component: {fileID: 5826871637390038085}
+  - component: {fileID: 5776059620481407453}
   m_Layer: 0
   m_Name: Barbarian (2H Axe)
   m_TagString: Enemy
@@ -2077,22 +2078,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a916b528e6f2244ba6ff1ede11ee90f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 0
+  HP: 70
+  Shield: 0
+  model: {fileID: 4900018668980020941}
+  faceTargetSpeed: 500
+  attackRange: 4
   headPos: {fileID: 3140083378018056899}
   FOV: 180
   agent: {fileID: 4314274080986970200}
   anim: {fileID: 5826871637390038085}
   animTransSpeed: 1
-  attackRange: 4
-  HP: 70
-  Shield: 0
-  model: {fileID: 4900018668980020941}
-  faceTargetSpeed: 500
   shootPos: {fileID: 0}
   projectile: {fileID: 0}
   shootRate: 0
-  attackSpeed: 1.5
+  attackRate: 0
   weapon: {fileID: 7050249809132320786}
-  hitPos: {fileID: 6302572787112924705}
 --- !u!114 &6829252568232147257
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2211,6 +2212,33 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!54 &5776059620481407453
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7205600995067848402}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &7241358927672131137
 GameObject:
   m_ObjectHideFlags: 0

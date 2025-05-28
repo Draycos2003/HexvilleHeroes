@@ -1,11 +1,7 @@
-using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Linq;
 using System.Text;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.Windows;
 
 public class inventoryController : MonoBehaviour
 {
@@ -18,6 +14,8 @@ public class inventoryController : MonoBehaviour
 
     [SerializeField] AudioClip dropClip;
     [SerializeField] AudioSource audioSource;
+
+    private gamemanager gm = gamemanager.instance;
 
     public void Start()
     {
@@ -144,9 +142,10 @@ public class inventoryController : MonoBehaviour
     public void Update()
     {
         // press I to open/close inventory
-        if (Input.GetKeyDown(KeyCode.I))
+        if (UnityEngine.Input.GetKeyDown(KeyCode.I))
         {
-            gamemanager.instance.openInventory(invUI.gameObject);
+            invUI.gameObject.SetActive(true);
+            gamemanager.instance.setActiveMenu(invUI.gameObject);
             Show();
         }
     }
