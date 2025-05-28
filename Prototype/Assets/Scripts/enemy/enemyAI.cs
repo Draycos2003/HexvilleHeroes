@@ -224,10 +224,11 @@ public class enemyAI : MonoBehaviour, IDamage
         {
             pathUpdateDely = 0.2f;
             updatePathDeadline = Time.time + pathUpdateDely;
-            if(target != null)
-            {
+
+            if (target != null)
                 agent.SetDestination(target.transform.position);
-            }
+            
+            Debug.Log("Updating Path");
         }
     }
     private void OnTriggerEnter(Collider other)
