@@ -79,7 +79,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         maxHP = HP;
         maxShield = Shield;
         weaponAgent = gameObject.GetComponent<agentWeapon>();
-        damageAmount = damageWithoutAWeapon;
+        damageAmount = damageWithoutAWeapon;   
     }
 
     // Update is called once per frame
