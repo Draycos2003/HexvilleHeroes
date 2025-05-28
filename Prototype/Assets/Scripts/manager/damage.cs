@@ -71,7 +71,7 @@ public class Damage : MonoBehaviour
         {
             if (playerController!=null)
             {
-                damageAmount += playerController.damageAmount;
+                damageAmount = playerController.damageAmount;
             }
             damage.TakeDamage(damageAmount);
         }

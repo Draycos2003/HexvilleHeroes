@@ -66,6 +66,9 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     int jumpCount;
     float shootTimer;
 
+    public int MAXShieldOrig => maxShield;
+    public int MAXHPOrig => maxHP;
+
     private Animator animator;
     [SerializeField] float animTransSpeed;
 
@@ -245,6 +248,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         speed += amount;
     }
 
+
     private void equip()
     {
         if (!item.isEmpty)
@@ -326,7 +330,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         animator.SetFloat("speed", Mathf.Lerp(animSpeedCur, moveDir.magnitude, Time.deltaTime * animTransSpeed));
     }
 
-    public bool BuyItem(int cost)
+    public bool RemoveGold(int cost)
     {
         if (gold < cost)
         {
@@ -339,7 +343,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         return true;
     }
 
-    public void SellItem(int amount)
+    public void AddGold(int amount)
     {
         gold += amount;
         Debug.Log($"Sold item for {amount} gold. Total now: {gold}");

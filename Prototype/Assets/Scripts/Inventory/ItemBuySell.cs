@@ -11,7 +11,7 @@ public class ItemBuySell : MonoBehaviour
 
     public void AttemptPurchase()
     {
-        if (player.BuyItem(itemCost))
+        if (player.RemoveGold(itemCost))
             Debug.Log($"Bought item for {itemCost} gold. You now have {player.Gold}.");
         else
             Debug.Log("Not enough gold!");
@@ -19,7 +19,7 @@ public class ItemBuySell : MonoBehaviour
 
     public void AttemptSell()
     {
-        player.SellItem(sellValue);
+        player.AddGold(sellValue);
         Debug.Log($"Sold item for {sellValue} gold. You now have {player.Gold}.");
     }
 }

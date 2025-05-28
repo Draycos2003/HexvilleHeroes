@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class buttonfunctions : MonoBehaviour
 {
+    GameObject player = gamemanager.instance.Player;
 
     private static readonly string teleportTargetName = "SpawnPoint";
 
@@ -51,6 +52,18 @@ public class buttonfunctions : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         gamemanager.instance.stateUnpause();
+
+        playerController pc = player.GetComponent<playerController>();
+        if (pc != null)
+        {
+            //Debug.Log($"[ButtonFunctions] HP before reset: {pc.HP}, Shield before reset: {pc.Shield}");
+            //Debug.Log($"[ButtonFunctions] HPOrig: {pc.MAXHPOrig}, ShieldOrig: {pc.MAXShieldOrig}");
+
+            pc.HP = pc.MAXHPOrig;
+            pc.Shield = pc.MAXShieldOrig;
+
+            //Debug.Log($"[ButtonFunctions] HP after reset: {pc.HP}, Shield after reset: {pc.Shield}");
+        }
     }
 
     public void Quit()
@@ -105,6 +118,8 @@ public class buttonfunctions : MonoBehaviour
             int originalScene = gm.PlayerScript.GetOriginalSceneIndex();
             SceneManager.LoadScene(originalScene);
             gm.stateUnpause();
+
+
         }
     }
 
