@@ -68,9 +68,6 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     int jumpCount;
     float shootTimer;
 
-    public int MAXShieldOrig => maxShield;
-    public int MAXHPOrig => maxHP;
-
     private Animator animator;
     [SerializeField] float animTransSpeed;
 
