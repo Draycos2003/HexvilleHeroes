@@ -23,7 +23,6 @@ public class gamemanager : MonoBehaviour
     public GameObject playerShieldDMGScreen;
     public GameObject Player;
     public playerController PlayerScript;
-    public inventorySO playerInventroy;
 
     public GameObject TextPopup;
     public TMP_Text PopupText;
