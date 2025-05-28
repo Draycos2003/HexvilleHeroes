@@ -7,6 +7,8 @@ using System.Linq;
 
 public class playerController : MonoBehaviour, IDamage, IPickup
 {
+    public static playerController instance;
+
     // Player
     [Header("Controllers")]
     [SerializeField] CharacterController controller;
