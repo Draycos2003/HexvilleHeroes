@@ -247,6 +247,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         speed += amount;
     }
 
+
     private void equip()
     {
         if (!item.isEmpty)

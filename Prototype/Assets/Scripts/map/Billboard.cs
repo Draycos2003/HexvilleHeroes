@@ -11,8 +11,11 @@ public class UIFaceCamera : MonoBehaviour
 
     void LateUpdate()
     {
-        Vector3 toCam = mainCam.transform.position - transform.position;
+        if (mainCam != null)
+        {
+            Vector3 toCam = mainCam.transform.position - transform.position;
 
-        transform.rotation = Quaternion.LookRotation(-toCam, Vector3.up);
+            transform.rotation = Quaternion.LookRotation(-toCam, Vector3.up);
+        }
     }
 }
