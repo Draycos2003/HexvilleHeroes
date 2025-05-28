@@ -1,48 +1,50 @@
 using System.Collections;
 using UnityEngine;
 
-public class collectiblePickup : MonoBehaviour
+enum Type
 {
-    [Header("For Buffs")]
-    [SerializeField] Transform respawnPos;
-    [SerializeField] GameObject item;
-
-    [Header("For Weapons")]
-    [SerializeField] ItemSO weapon;
-    [SerializeField] float respawnRate;
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        spawn();
+    health,
+    shield,
+    damage,
+    speed
 }
 
-    // Update is called once per frame
-    void Update()
-    {
+public class collectiblePickup : MonoBehaviour
+{
+    [Header("Collectible")]
+    [SerializeField] Type type;
+    [SerializeField] int amountToBuff;
+    [SerializeField] float respawnRate;
+    [SerializeField] AudioClip pickupSound;
 
-    }
 
     private void OnTriggerEnter(Collider other)
     {
+        soundFXmanager.instance.PlaySoundFXClip(pickupSound, transform, 0.1f);
         IPickup pickup = other.GetComponent<IPickup>();
         if (pickup != null)
         {
-            pickup.getItemStats(weapon);
-
+            playerController pc = other.GetComponent<playerController>();
+            if (pc != null)
+            {
+                switch (type)
+                {
+                    case Type.health:
+                        pc.gainHealth(amountToBuff);
+                        break;
+                    case Type.shield:
+                        pc.gainShield(amountToBuff);
+                        break;
+                    case Type.damage:
+                        pc.gainDamage(amountToBuff);
+                        break;
+                    case Type.speed:
+                        pc.gainSpeed(amountToBuff);
+                        break;
+                }
+            }
             Destroy(gameObject);
         }
-    }
 
-    void spawn()
-    {
-        Instantiate(item, respawnPos.position, transform.rotation);
-    }
-
-    IEnumerator respawn()
-    {
-        Destroy(gameObject);
-        yield return new WaitForSeconds(respawnRate);
-        spawn();
     }
 }

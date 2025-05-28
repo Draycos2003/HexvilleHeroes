@@ -571,6 +571,7 @@ GameObject:
   - component: {fileID: 3041783577186957198}
   - component: {fileID: 6486081775810264497}
   - component: {fileID: 4131588264166440193}
+  - component: {fileID: 3231009981358220727}
   m_Layer: 6
   m_Name: Enemy
   m_TagString: Enemy
@@ -607,22 +608,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a916b528e6f2244ba6ff1ede11ee90f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 0
+  HP: 3
+  Shield: 0
+  model: {fileID: 1446108844673453709}
+  faceTargetSpeed: 8
+  attackRange: 0
   headPos: {fileID: 0}
   FOV: 0
   agent: {fileID: 7634246050115131204}
   anim: {fileID: 0}
   animTransSpeed: 0
-  attackRange: 0
-  HP: 3
-  Shield: 0
-  model: {fileID: 1446108844673453709}
-  faceTargetSpeed: 8
   shootPos: {fileID: 5479580584653053533}
   projectile: {fileID: 5313342752221936860, guid: a4b6539581182aa4a8d37e6a64d8c48b, type: 3}
   shootRate: 0.5
-  attackSpeed: 0
+  attackRate: 0
   weapon: {fileID: 0}
-  hitPos: {fileID: 0}
 --- !u!195 &7634246050115131204
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -711,6 +712,33 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 15
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &3231009981358220727
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4581545004156872030}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &4844010720326331484
 GameObject:
   m_ObjectHideFlags: 0

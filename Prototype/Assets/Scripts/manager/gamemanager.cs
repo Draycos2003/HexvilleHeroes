@@ -12,6 +12,7 @@ public class gamemanager : MonoBehaviour
     [SerializeField] GameObject MenuPaused;
     [SerializeField] GameObject MenuWin;
     [SerializeField] GameObject MenuLose;
+    public GameObject OptionsMenu;
 
     [Header("Match Timer")]
     [SerializeField] TMP_Text winMessageText;
@@ -23,7 +24,6 @@ public class gamemanager : MonoBehaviour
     public GameObject playerShieldDMGScreen;
     public GameObject Player;
     public playerController PlayerScript;
-    public inventorySO playerInventroy;
 
     public GameObject TextPopup;
     public TMP_Text PopupText;
@@ -116,6 +116,7 @@ public class gamemanager : MonoBehaviour
         }
     }
 
+
     public void statePause()
     {
         isPaused = !isPaused;
@@ -130,9 +131,13 @@ public class gamemanager : MonoBehaviour
         isPaused = !isPaused;
 
         Time.timeScale = timeScaleOrig;
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
 
+        if (SceneManager.GetActiveScene().buildIndex != 0)
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+           
         if(MenuActive != null)
         {
             MenuActive.SetActive(false);
@@ -182,17 +187,16 @@ public class gamemanager : MonoBehaviour
         return string.Format("{0}:{1:00}:{2:00}", hours, minutes, seconds);
     }
 
-    public void openInventory(GameObject inventoryMenu)
+    public void setActiveMenu(GameObject menu)
     {
         if (MenuActive == null)
         {
             statePause();
-            MenuActive = inventoryMenu;
+            MenuActive = menu;
             MenuActive.SetActive(isPaused);
         }
-        else if (MenuActive == inventoryMenu)
+        else if (MenuActive == menu)
         {
-            Debug.Log("INVOPEN");
             stateUnpause();
         }
     }
