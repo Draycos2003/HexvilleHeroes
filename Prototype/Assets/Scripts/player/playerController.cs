@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using System.Linq;
 
-public class playerController : MonoBehaviour, IDamage
+public class playerController : MonoBehaviour, IDamage, IPickup
 {
     // Player
     [Header("Controllers")]
@@ -47,10 +47,11 @@ public class playerController : MonoBehaviour, IDamage
     [Header("Weapon")] // Weapon
     [SerializeField] GameObject weapon;
     [SerializeField] Transform shootPos;
-    [HideInInspector] public int damageAmount;
+     public int damageAmount;
     [HideInInspector] public float shootRate;
     [HideInInspector] public int shootDist;
     [SerializeField] int damageWithoutAWeapon;
+    private int allTimeDamageBuffAmount;
 
     [Header("Inventory")]
     [SerializeField] GameObject itemModel;
@@ -77,8 +78,6 @@ public class playerController : MonoBehaviour, IDamage
         maxShield = Shield;
         weaponAgent = gameObject.GetComponent<agentWeapon>();
         damageAmount = damageWithoutAWeapon;
-        shootRate = 0;
-        shootDist = 0;
     }
 
     // Update is called once per frame
@@ -194,6 +193,8 @@ public class playerController : MonoBehaviour, IDamage
 
     public void gainHealth(int amount)
     {
+        Debug.Log("HEALTH UP");
+
         // check if player is damaged
         if (HP < maxHP)
         {
@@ -209,6 +210,8 @@ public class playerController : MonoBehaviour, IDamage
 
     public void gainShield(int amount)
     {
+        Debug.Log("SHIELD UP");
+
         // check if player needs shield
         if (Shield < maxShield)
         {
@@ -224,15 +227,19 @@ public class playerController : MonoBehaviour, IDamage
 
     public void gainDamage(int amount)
     {
+        Debug.Log("DAMAGE UP");
+
         if (damage != null)
         {
-            Debug.Log("HAHAHA");
-            damage.damageAmount += amount;
+            allTimeDamageBuffAmount += amount;
+            damageWithoutAWeapon += amount;
         }
     }
 
     public void gainSpeed(int amount)
     {
+        Debug.Log("SPEED UP");
+
         speed += amount;
     }
 
@@ -260,13 +267,11 @@ public class playerController : MonoBehaviour, IDamage
         itemModel.GetComponent<MeshFilter>().sharedMesh = null;
         itemModel.GetComponent<MeshRenderer>().sharedMaterial = null;
         damageAmount = damageWithoutAWeapon;
-        shootRate = 0;
-        shootDist = 0;
     }
 
     private void getItemStats()
     {
-        damageAmount = (int)weaponAgent.FindParameterValue("Damage");
+        damageAmount = (int)weaponAgent.FindParameterValue("Damage") + allTimeDamageBuffAmount;
         if (item.item.IType == ItemSO.ItemType.ranged)
         {
             shootRate = weaponAgent.FindParameterValue("Shoot Rate");

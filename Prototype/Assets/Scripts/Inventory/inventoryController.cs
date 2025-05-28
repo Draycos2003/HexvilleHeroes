@@ -145,7 +145,7 @@ public class inventoryController : MonoBehaviour
         if (UnityEngine.Input.GetKeyDown(KeyCode.I))
         {
             invUI.gameObject.SetActive(true);
-            gamemanager.instance.openInventory(invUI.gameObject);
+            gamemanager.instance.setActiveMenu(invUI.gameObject);
             Show();
         }
     }
