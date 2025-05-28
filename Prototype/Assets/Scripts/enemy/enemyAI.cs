@@ -153,7 +153,8 @@ public class enemyAI : MonoBehaviour, IDamage
         // check for death
         if (HP <= 0)
         {
-            gamemanager.instance.youLose();
+            gamemanager.instance.updateGameGoal(-1);
+            Destroy(gameObject);
         }
     }
 

@@ -10,24 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1ad75af9e813d894ea1d1a5dfdd7e3d2, type: 3}
-  m_Name: Sword
+  m_Name: Crossbow
   m_EditorClassIdentifier: 
-  IType: 0
-  model: {fileID: 6027890719350567407, guid: 86a4182e24e8ac14993a877e25f1b983, type: 3}
-  description: Cuts Things Hehe
+  IType: 1
+  model: {fileID: 4583817792804778230, guid: 0f5529db56ae98246919e02d83029656, type: 3}
+  description: 'One - Handed
+
+'
   quantity: 1
   isStackable: 0
   maxStack: 1
-  itemIcon: {fileID: 21300000, guid: 789e518168d493d4396ec984b1b5bcb3, type: 3}
-  damage: 0
-  shotRate: 0
-  shootDistance: 0
+  itemIcon: {fileID: 21300000, guid: c6b96b87adbd25343b9079d963ffb637, type: 3}
+  projectile: {fileID: 7491260429865876031, guid: c1de29d6c186c1344b4b56ad1993f7a6, type: 3}
   hitFX: {fileID: 0}
   hitSound: []
   volume: 0
   <defaultParameterList>k__BackingField:
   - itemParameter: {fileID: 11400000, guid: d0e95a598cf959746835999c58248441, type: 2}
-    value: 100
-  - itemParameter: {fileID: 11400000, guid: c81528de9c1c32b43873a54d7d84a2da, type: 2}
     value: 50
+  - itemParameter: {fileID: 11400000, guid: c81528de9c1c32b43873a54d7d84a2da, type: 2}
+    value: 20
+  - itemParameter: {fileID: 11400000, guid: c002f2183bf5b01498f0343b58305e1a, type: 2}
+    value: 200
+  - itemParameter: {fileID: 11400000, guid: 84ece05b3e5416d48a09de90ae265330, type: 2}
+    value: 2
   isEquipped: 1

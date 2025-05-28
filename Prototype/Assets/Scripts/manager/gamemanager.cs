@@ -8,7 +8,7 @@ public class gamemanager : MonoBehaviour
     public static gamemanager instance;
 
     [Header("Menues")]
-    [SerializeField] GameObject MenuActive;
+    [SerializeField] public GameObject MenuActive;
     [SerializeField] GameObject MenuPaused;
     [SerializeField] GameObject MenuWin;
     [SerializeField] GameObject MenuLose;
@@ -40,7 +40,7 @@ public class gamemanager : MonoBehaviour
     [SerializeField] inventoryController invController;
 
     float timeScaleOrig;
-    int gameGoalCount;
+    public int gameGoalCount;
 
     public int GameGoalCount => gameGoalCount;
 
@@ -184,16 +184,16 @@ public class gamemanager : MonoBehaviour
 
     public void openInventory(GameObject inventoryMenu)
     {
-            if (MenuActive == null)
-            {
-                statePause();
-                MenuActive = inventoryMenu;
-                MenuActive.SetActive(isPaused);
-            }
-            else if (MenuActive == inventoryMenu)
-            {
-                invUI.ResetDraggedItem();
-                stateUnpause();
-            }
+        if (MenuActive == null)
+        {
+            statePause();
+            MenuActive = inventoryMenu;
+            MenuActive.SetActive(isPaused);
+        }
+        else if (MenuActive == inventoryMenu)
+        {
+            Debug.Log("INVOPEN");
+            stateUnpause();
+        }
     }
 }

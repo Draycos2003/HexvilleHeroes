@@ -39,15 +39,14 @@ public class playerController : MonoBehaviour, IDamage
     [SerializeField] private int gold;
     public int Gold => gold;
 
-    [Header("Buffs")]
-    [SerializeField] int buffStatAmount;
-
     private int currentSceneIndex;
     private int originalSceneIndex;
     private List<ItemParameter> parameters;
+    private Camera cam;
 
     [Header("Weapon")] // Weapon
     [SerializeField] GameObject weapon;
+    [SerializeField] Transform shootPos;
     [HideInInspector] public int damageAmount;
     [HideInInspector] public float shootRate;
     [HideInInspector] public int shootDist;
@@ -64,12 +63,13 @@ public class playerController : MonoBehaviour, IDamage
     int jumpCount;
     float shootTimer;
 
-    [SerializeField] Animator animator;
+    private Animator animator;
     [SerializeField] float animTransSpeed;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        cam = Camera.main;
         animator = GetComponent<Animator>();
         speedOG = speed;
         damage = gameObject.GetComponentInChildren<Damage>();
@@ -84,6 +84,7 @@ public class playerController : MonoBehaviour, IDamage
     // Update is called once per frame
     void Update()
     {
+        shootTimer += Time.deltaTime;
         Movement();
         Sprint();
         item = GetComponent<inventoryController>().inventoryData.inventoryItems.Last();
@@ -186,9 +187,9 @@ public class playerController : MonoBehaviour, IDamage
 
     IEnumerator flashShieldDamageScreen()
     {
-        gamemanager.instance.playerDMGScreen.SetActive(true);
+        gamemanager.instance.playerShieldDMGScreen.SetActive(true);
         yield return new WaitForSeconds(0.1f);
-        gamemanager.instance.playerDMGScreen.SetActive(false);
+        gamemanager.instance.playerShieldDMGScreen.SetActive(false);
     }
 
     public void gainHealth(int amount)
@@ -265,27 +266,53 @@ public class playerController : MonoBehaviour, IDamage
 
     private void getItemStats()
     {
-        damageAmount = item.item.damage;
-        shootRate = item.item.shotRate;
-        shootDist = item.item.shootDistance;
-
+        damageAmount = (int)weaponAgent.FindParameterValue("Damage");
+        if (item.item.IType == ItemSO.ItemType.ranged)
+        {
+            shootRate = weaponAgent.FindParameterValue("Shoot Rate");
+            shootDist = (int)weaponAgent.FindParameterValue("Range");
+        }
         //weaponAgent.ModifyParameters();
     }
     public void weaponColOn()
     {
         weapon.GetComponent<Collider>().enabled = true;
     }
+
     public void weaponColOff()
     {
         weapon.GetComponent<Collider>().enabled = false;
     }
 
+    public void shoot()
+    {
+        Instantiate(item.item.projectile, shootPos.position, Camera.main.transform.rotation);
+    }
 
     private void setAnimParams()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            animator.SetTrigger("attack");
+            if(item.isEmpty)
+            {
+                animator.SetTrigger("attack");
+                return;
+            }
+
+            if(shootTimer >= shootRate)
+            {
+                if (item.item.IType == ItemSO.ItemType.ranged)
+                {
+                    animator.SetTrigger("shoot");
+                }
+                shootTimer = 0;
+            }
+           
+
+            if(item.item.IType == ItemSO.ItemType.melee)
+            {
+                animator.SetTrigger("attack");
+            }
         }
 
         float animSpeedCur = animator.GetFloat("speed");
