@@ -3,7 +3,17 @@ using UnityEngine.SceneManagement;
 
 public class buttonfunctions : MonoBehaviour
 {
-    GameObject player = gamemanager.instance.Player;
+    private GameObject Player;
+
+    void Start()
+    {
+        Player = gamemanager.instance?.Player;
+
+        if (Player == null)
+        {
+            Debug.LogError("[Currency] Player not found from GameManager.");
+        }
+    }
 
     private static readonly string teleportTargetName = "SpawnPoint";
     private playerController playerControl;
@@ -51,7 +61,7 @@ public class buttonfunctions : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         gamemanager.instance.stateUnpause();
 
-        playerController pc = player.GetComponent<playerController>();
+        playerController pc = Player.GetComponent<playerController>();
         if (pc != null)
         {
             //Debug.Log($"[ButtonFunctions] HP before reset: {pc.HP}, Shield before reset: {pc.Shield}");
