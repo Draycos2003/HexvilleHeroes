@@ -33,6 +33,7 @@ public class enemyAI : MonoBehaviour, IDamage
     [SerializeField] NavMeshAgent agent;
     [SerializeField] Animator anim;
     [SerializeField] float animTransSpeed;
+    [SerializeField] Transform lootSpawnPos;
 
     public int CurrentHP => HP;
     public int currentShield => Shield;
@@ -53,7 +54,6 @@ public class enemyAI : MonoBehaviour, IDamage
     float pathUpdateDely;
     private float dist;
     Coroutine co;
-    Vector3 lootSpawnPos;
 
     private void Start()
     {
@@ -154,7 +154,8 @@ public class enemyAI : MonoBehaviour, IDamage
            {
                 Destroy(gameObject);
                 StopCoroutine(co);
-                loot.InstantiateLoot(lootSpawnPos = new Vector3(transform.position.x, 6.5f, transform.position.z));
+                loot.InstantiateLoot(lootSpawnPos.position);
+                gamemanager.instance.updateGameGoal(-1);
            }
        }
     }
