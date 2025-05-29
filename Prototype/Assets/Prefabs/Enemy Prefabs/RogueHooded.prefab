@@ -147,7 +147,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 1
   HP: 20
-  Shield: 5
+  Shield: 0
   model: {fileID: 3572308494894061630}
   faceTargetSpeed: 50
   attackRange: 10
@@ -156,6 +156,7 @@ MonoBehaviour:
   agent: {fileID: 686957030658663308}
   anim: {fileID: 6770496911590430363}
   animTransSpeed: 1
+  lootSpawnPos: {fileID: 7535289912286388790}
   shootPos: {fileID: 2021521228802724177}
   projectile: {fileID: 6107948728500391942, guid: ac49740b51eb4464fbbe16eb7ccd55cd, type: 3}
   shootRate: 5
