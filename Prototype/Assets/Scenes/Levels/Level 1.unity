@@ -2385,24 +2385,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 360595155}
   m_SourcePrefab: {fileID: 100100000, guid: ff3dd0863e800db45b8c118547376677, type: 3}
---- !u!1 &325613981
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 2072241761294475703, guid: 07e98a81b34658a4aba1421417a7f72f, type: 3}
-  m_PrefabInstance: {fileID: 406065618}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 406065619}
-  - component: {fileID: 406065621}
-  - component: {fileID: 406065620}
-  m_Layer: 0
-  m_Name: RespawnLocationShield
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!1001 &335268593
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8710,10 +8692,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1614127103}
     m_Modifications:
-    - target: {fileID: 8855280108015326162, guid: 01b56a5e184590a48b04f972db1f0e07, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 614201525049001044, guid: 671163a3eff3ccf418b2330e4dc0e155, type: 3}
       propertyPath: m_Name
       value: ProximityPrompt (Single Key)
@@ -8840,6 +8818,10 @@ PrefabInstance:
       objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 9197171795951235849, guid: 671163a3eff3ccf418b2330e4dc0e155, type: 3}
       propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8855280108015326162, guid: 01b56a5e184590a48b04f972db1f0e07, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -11193,24 +11175,6 @@ PrefabInstance:
       addedObject: {fileID: 907886238}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b636de08fdea29840bca101291514d4f, type: 3}
---- !u!1 &1684838316
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 4037655201389779994, guid: e3d7c850007a72e448bf55decae86207, type: 3}
-  m_PrefabInstance: {fileID: 1844809008}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1844809009}
-  - component: {fileID: 1844809011}
-  - component: {fileID: 1844809010}
-  m_Layer: 0
-  m_Name: RespawnLocationHealth
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!1001 &1694441006
 PrefabInstance:
   m_ObjectHideFlags: 0

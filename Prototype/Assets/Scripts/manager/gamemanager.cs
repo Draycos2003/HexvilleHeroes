@@ -203,5 +203,11 @@ public class gamemanager : MonoBehaviour
         {
             stateUnpause();
         }
+
+        if(MenuActive = MenuPaused)
+        {
+            MenuActive = menu;
+            MenuActive.SetActive(isPaused);
+        }
     }
 }

@@ -114,6 +114,7 @@ public class Damage : MonoBehaviour
             if (other.CompareTag("Player") && gamemanager.instance.Player != null)
             {
                 obj.transform.SetParent(gamemanager.instance.Player.transform);
+
                 body.linearVelocity = Vector3.zero;
                 GetComponent<Renderer>().enabled = false;
            

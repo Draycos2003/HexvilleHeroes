@@ -1,8 +1,6 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.AI;
-using UnityEngine.Rendering;
-using Unity.VisualScripting;
 
 
 
@@ -35,6 +33,7 @@ public class enemyAI : MonoBehaviour, IDamage
     [SerializeField] NavMeshAgent agent;
     [SerializeField] Animator anim;
     [SerializeField] float animTransSpeed;
+    [SerializeField] Transform lootSpawnPos;
 
     public int CurrentHP => HP;
     public int currentShield => Shield;
@@ -54,7 +53,7 @@ public class enemyAI : MonoBehaviour, IDamage
     bool inRange;
     float pathUpdateDely;
     private float dist;
-    
+    Coroutine co;
 
     private void Start()
     {
@@ -62,10 +61,12 @@ public class enemyAI : MonoBehaviour, IDamage
             weapon.GetComponent<Collider>().enabled = false;
         
         setAnimPara();
+
+        loot = GetComponent<LootBag>();
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
-        colorOrig = model.material.color; // Starter color
-        //gamemanager.instance.updateGameGoal(1); // total enemy count
+        colorOrig = model.material.color;
+
     }
 
     // Update is called once per frame
@@ -140,27 +141,23 @@ public class enemyAI : MonoBehaviour, IDamage
 
     public void TakeDamage(int Amount)
     {
-        if (CurrentHP > 0)
-        {
-            TakeDamage(Amount);
-
-            if (HP < 1)
-            {
-                loot.InstantiateLoot(target.transform.position);
-                Destroy(gameObject);
-                gamemanager.instance.updateGameGoal(-1);
-
-            }
-            else
-            {
-                StartCoroutine(flashRed());
-            }
-        }
-        else
-        {
+       if(Shield > 0)
+       {
             Shield -= Amount;
-            StartCoroutine(flashBlue());
-        }
+       }
+       else
+       {
+           HP -= Amount;
+            co = StartCoroutine(flashRed());
+
+           if(HP <= 0)
+           {
+                Destroy(gameObject);
+                StopCoroutine(co);
+                loot.InstantiateLoot(lootSpawnPos.position);
+                gamemanager.instance.updateGameGoal(-1);
+           }
+       }
     }
 
     private IEnumerator flashRed()
@@ -225,15 +222,14 @@ public class enemyAI : MonoBehaviour, IDamage
             pathUpdateDely = 0.2f;
             updatePathDeadline = Time.time + pathUpdateDely;
 
-            if (target != null)
+            if (target != null && agent != null)
                 agent.SetDestination(target.transform.position);
-            
-            Debug.Log("Updating Path");
+                Debug.Log("Updating Path");
         }
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == ("Player"))
+        if (other.tag == ("Player") && gamemanager.instance.Player != null)
         {
             target = other.transform; // grabs the targets transform once inside the collider
             inRange = true;
