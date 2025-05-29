@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Windows;
 
 public class inventoryController : MonoBehaviour
@@ -144,9 +145,12 @@ public class inventoryController : MonoBehaviour
         // press I to open/close inventory
         if (UnityEngine.Input.GetKeyDown(KeyCode.I))
         {
-            invUI.gameObject.SetActive(true);
-            gamemanager.instance.setActiveMenu(invUI.gameObject);
-            Show();
+            if (SceneManager.GetActiveScene().buildIndex != 0)
+            {
+                invUI.gameObject.SetActive(true);
+                gamemanager.instance.setActiveMenu(invUI.gameObject);
+                Show();
+            }
         }
     }
 
