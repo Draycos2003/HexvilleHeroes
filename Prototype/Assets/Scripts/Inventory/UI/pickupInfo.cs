@@ -128,6 +128,7 @@ public class pickupInfo : MonoBehaviour
                 onPrimaryPressed?.Invoke();
                 inventory.AddItem(item, item.quantity);
                 UpdateInfo();
+                Destroy(gameObject);
             }
 
             if (secondaryKey != KeyCode.None && Input.GetKeyDown(secondaryKey))
