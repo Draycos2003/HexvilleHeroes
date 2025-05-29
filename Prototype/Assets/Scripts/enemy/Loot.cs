@@ -5,7 +5,7 @@ public class Loot : ScriptableObject
 {
     public int dropChance;
     public string lootName;
-    public Sprite lootSprite;
+    public GameObject lootObject;
 
     public Loot(int dropChance, string lootName)
     {
