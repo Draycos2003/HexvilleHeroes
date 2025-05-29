@@ -12,7 +12,9 @@ public class gamemanager : MonoBehaviour
     [SerializeField] GameObject MenuPaused;
     [SerializeField] GameObject MenuWin;
     [SerializeField] GameObject MenuLose;
-    public GameObject OptionsMenu;
+    [SerializeField] GameObject OptionsMenu;
+    public GameObject PauseMenu => MenuPaused;
+    public GameObject MenuOptions => OptionsMenu;
 
     [Header("Match Timer")]
     [SerializeField] TMP_Text winMessageText;

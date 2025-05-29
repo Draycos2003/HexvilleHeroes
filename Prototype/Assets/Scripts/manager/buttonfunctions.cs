@@ -135,6 +135,21 @@ public class buttonfunctions : MonoBehaviour
 
     public void onClickOptions()
     {
-        gamemanager.instance.setActiveMenu(gamemanager.instance.OptionsMenu);
+        var gm = gamemanager.instance;
+        if (gm.MenuOptions != null && gm.PauseMenu != null)
+        {
+            bool optionsActive = gm.MenuOptions.activeSelf;
+
+            if (!optionsActive)
+            {
+                gm.PauseMenu.SetActive(false);
+                gm.setActiveMenu(gm.MenuOptions);
+            }
+            else
+            {
+                gm.MenuOptions.SetActive(false);
+                gm.setActiveMenu(gm.PauseMenu);
+            }
+        }
     }
 }
