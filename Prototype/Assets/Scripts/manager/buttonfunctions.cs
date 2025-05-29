@@ -128,14 +128,14 @@ public class buttonfunctions : MonoBehaviour
             int originalScene = gm.PlayerScript.GetOriginalSceneIndex();
             SceneManager.LoadScene(originalScene);
             gm.stateUnpause();
-
-
         }
     }
 
     public void onClickOptions()
     {
         var gm = gamemanager.instance;
+        int sceneIndex = SceneManager.GetActiveScene().buildIndex;
+
         if (gm.MenuOptions != null && gm.PauseMenu != null)
         {
             bool optionsActive = gm.MenuOptions.activeSelf;
@@ -148,7 +148,16 @@ public class buttonfunctions : MonoBehaviour
             else
             {
                 gm.MenuOptions.SetActive(false);
-                gm.setActiveMenu(gm.PauseMenu);
+
+                if (sceneIndex != 0)
+                {
+                    gm.setActiveMenu(gm.PauseMenu);
+                }
+                else
+                {
+                    gm.MenuActive = null;
+                    gm.stateUnpause();
+                }
             }
         }
     }

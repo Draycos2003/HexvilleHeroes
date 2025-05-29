@@ -88,7 +88,6 @@ public class gamemanager : MonoBehaviour
 
     void Start()
     {
-        
         if(Player != null)
         {
             DontDestroyOnLoad(Player);
@@ -203,13 +202,17 @@ public class gamemanager : MonoBehaviour
         }
         else if (MenuActive == menu)
         {
+            MenuActive.SetActive(false);
+            MenuActive = null;
             stateUnpause();
         }
-
-        if(MenuActive = MenuPaused)
+        else
         {
+            // Switching between menus
+            MenuActive.SetActive(false);
             MenuActive = menu;
-            MenuActive.SetActive(isPaused);
+            MenuActive.SetActive(true);
         }
     }
+
 }
