@@ -15,6 +15,16 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     [SerializeField] LayerMask ignoreLayer;
     [SerializeField] Damage damage;
 
+    [SerializeField] AudioClip walkAudio;
+    [SerializeField] AudioClip jumpAudio;
+    [SerializeField] AudioClip attackAudio;
+    [SerializeField] AudioClip damageAudio;
+    [SerializeField] float walkVolume;
+    [SerializeField] float jumpVolume;
+    [SerializeField] float attackVolume;
+    [SerializeField] float damageVolume;
+
+
     [Header("World")] // World 
     [SerializeField] int gravity;
     [SerializeField] AudioSource switchWeaponSoundSource;
@@ -51,7 +61,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     [Header("Weapon")] // Weapon
     [SerializeField] GameObject weapon;
     [SerializeField] Transform shootPos;
-     public int damageAmount;
+    public int damageAmount;
     [HideInInspector] public float shootRate;
     [HideInInspector] public int shootDist;
     [SerializeField] int damageWithoutAWeapon;
@@ -81,7 +91,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         maxHP = HP;
         maxShield = Shield;
         weaponAgent = gameObject.GetComponent<agentWeapon>();
-        damageAmount = damageWithoutAWeapon;   
+        damageAmount = damageWithoutAWeapon;
     }
 
     // Update is called once per frame
@@ -152,6 +162,8 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
             playerVel.y = jumpForce;
 
+            soundFXmanager.instance.PlaySoundFXClip(jumpAudio, transform, jumpVolume);
+
             animator.SetBool("isJumping", true);
         }
 
@@ -167,11 +179,13 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         {
             Shield -= amount;
             StartCoroutine(flashShieldDamageScreen());
+            soundFXmanager.instance.PlaySoundFXClip(damageAudio, transform, damageVolume);
         }
         else
         {
             HP -= amount;
             StartCoroutine(flashDamageScreen());
+            soundFXmanager.instance.PlaySoundFXClip(damageAudio, transform, damageVolume);
         }
 
         // check for death
@@ -303,13 +317,13 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     {
         if (Input.GetMouseButtonDown(0))
         {
-            if(item.isEmpty)
+            if (item.isEmpty)
             {
                 animator.SetTrigger("attack");
                 return;
             }
 
-            if(shootTimer >= shootRate)
+            if (shootTimer >= shootRate)
             {
                 if (item.item.IType == ItemSO.ItemType.ranged)
                 {
@@ -317,9 +331,9 @@ public class playerController : MonoBehaviour, IDamage, IPickup
                 }
                 shootTimer = 0;
             }
-           
 
-            if(item.item.IType == ItemSO.ItemType.melee)
+
+            if (item.item.IType == ItemSO.ItemType.melee)
             {
                 animator.SetTrigger("attack");
             }
@@ -346,5 +360,10 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     {
         gold += amount;
         Debug.Log($"Sold item for {amount} gold. Total now: {gold}");
+    }
+
+    public void WalkSound()
+    {
+        soundFXmanager.instance.PlaySoundFXClip(walkAudio, transform, walkVolume);
     }
 }
