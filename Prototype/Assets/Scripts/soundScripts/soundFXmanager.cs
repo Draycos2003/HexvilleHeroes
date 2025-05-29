@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 
 public class soundFXmanager : MonoBehaviour
 {
@@ -20,14 +21,8 @@ public class soundFXmanager : MonoBehaviour
         // spawn in gam object 
         AudioSource audioSource = Instantiate(soundFXObject, spawnTransform.position, Quaternion.identity);
 
-        // assign the cilp
-        audioSource.clip = clip;
-
-        //assign volume 
-        audioSource.volume = volume;
-
         // play sound 
-        audioSource.Play();
+        audioSource.PlayOneShot(clip, volume);
 
         // get length of sound FX clip
         float clipLength = audioSource.clip.length;
@@ -44,14 +39,8 @@ public class soundFXmanager : MonoBehaviour
         // spawn in gam object 
         AudioSource audioSource = Instantiate(soundFXObject, spawnTransform.position, Quaternion.identity);
 
-        // assign the cilp
-        audioSource.clip = clip[rand];
-
-        //assign volume 
-        audioSource.volume = volume;
-
         // play sound 
-        audioSource.Play();
+        audioSource.PlayOneShot(clip[rand], volume);
 
         // get length of sound FX clip
         float clipLength = audioSource.clip.length;
