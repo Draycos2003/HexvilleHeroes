@@ -25,7 +25,9 @@ public class soundFXmanager : MonoBehaviour
         audioSource.PlayOneShot(clip, volume);
 
         // get length of sound FX clip
-        float clipLength = audioSource.clip.length;
+        float clipLength = clip.length;
+
+        Debug.Log("SOUND");
 
         // destroy clip after it's done playing 
         Destroy(audioSource.gameObject, clipLength);
