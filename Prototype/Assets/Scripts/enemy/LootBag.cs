@@ -37,8 +37,6 @@ public class LootBag : MonoBehaviour
         if(droppedItem != null)
         {
             GameObject lootobj = Instantiate(droppedItemPrefab, spawnPos, Quaternion.identity);
-
-
             float dropForce = 300f;
             Vector3 dropDir = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
             lootobj.GetComponent<Rigidbody>().AddForce(dropDir * dropForce);
