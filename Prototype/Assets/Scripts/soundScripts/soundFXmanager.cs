@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Experimental.GlobalIllumination;
@@ -15,39 +16,22 @@ public class soundFXmanager : MonoBehaviour
             instance = this;
         }
     }
-
     public void PlaySoundFXClip(AudioClip clip, Transform spawnTransform, float volume)
     {
-        // spawn in gam object 
-        AudioSource audioSource = Instantiate(soundFXObject, spawnTransform.position, Quaternion.identity);
+        if (clip == null) return;
 
-        // play sound 
-        audioSource.PlayOneShot(clip, volume);
+        GameObject temp = new GameObject("TempAudio");
+        temp.transform.position = spawnTransform.position;
 
-        // get length of sound FX clip
-        float clipLength = clip.length;
-
-        Debug.Log("SOUND");
-
-        // destroy clip after it's done playing 
-        Destroy(audioSource.gameObject, clipLength);
+        AutoDestroyAudio auto = temp.AddComponent<AutoDestroyAudio>();
+        auto.Init(clip, volume);
     }
 
-    public void PlayRandomSoundFXClip(AudioClip[] clip, Transform spawnTransform, float volume)
+    public void PlayRandomSoundFXClip(AudioClip[] clips, Transform spawnTransform, float volume)
     {
-        // assign a random index
-        int rand = Random.Range(0, clip.Length);
-        
-        // spawn in gam object 
-        AudioSource audioSource = Instantiate(soundFXObject, spawnTransform.position, Quaternion.identity);
+        if (clips == null || clips.Length == 0) return;
 
-        // play sound 
-        audioSource.PlayOneShot(clip[rand], volume);
-
-        // get length of sound FX clip
-        float clipLength = audioSource.clip.length;
-
-        // destroy clip after it's done playing 
-        Destroy(audioSource.gameObject, clipLength);
+        int rand = Random.Range(0, clips.Length);
+        PlaySoundFXClip(clips[rand], spawnTransform, volume);
     }
 }
