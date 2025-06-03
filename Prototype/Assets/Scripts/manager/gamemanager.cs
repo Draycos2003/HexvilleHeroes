@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class gamemanager : MonoBehaviour
 {
@@ -40,6 +41,8 @@ public class gamemanager : MonoBehaviour
     [Header("InventoryUI")]
     [SerializeField] inventoryUI invUI;
     [SerializeField] inventoryController invController;
+    [SerializeField] inventorySO inventory;
+    [SerializeField] inventorySO saveInv;
 
     float timeScaleOrig;
     public int gameGoalCount;
@@ -83,12 +86,12 @@ public class gamemanager : MonoBehaviour
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
         }
-        
+
     }
 
     void Start()
     {
-        if(Player != null)
+        if (Player != null)
         {
             DontDestroyOnLoad(Player);
             PlayerScript = Player.GetComponent<playerController>();
@@ -119,6 +122,18 @@ public class gamemanager : MonoBehaviour
                 }
             }
         }
+
+
+        if (Input.GetKeyDown(KeyCode.F5))
+        {
+            Save();
+        }
+
+        if (Input.GetKeyUp(KeyCode.F6))
+        {
+            Load();
+
+        }
     }
 
 
@@ -142,8 +157,8 @@ public class gamemanager : MonoBehaviour
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
         }
-           
-        if(MenuActive != null)
+
+        if (MenuActive != null)
         {
             MenuActive.SetActive(false);
             MenuActive = null;
@@ -215,4 +230,40 @@ public class gamemanager : MonoBehaviour
         }
     }
 
+    public void Save()
+    {
+        SaveData data = new SaveData();
+        data.currentInv = saveInv;
+        data.playerX = Player.transform.position.x;
+        data.playerY = Player.transform.position.y;
+        data.playerZ = Player.transform.position.z;
+        data.playerHP = PlayerScript.HP;
+        data.playerShield = PlayerScript.Shield;
+        data.currentScene = SceneManager.GetActiveScene().name;
+
+        SaveSystem.SaveGame(data);
+    }
+
+    public void Load()
+    {
+        SaveData data = SaveSystem.LoadGame();
+        if (data != null)
+        {
+            StartCoroutine(RestorePlayer(data));
+            SceneManager.LoadScene(data.currentScene);
+        }
+    }
+
+    private System.Collections.IEnumerator RestorePlayer(SaveData data)
+    {
+        yield return new WaitForSeconds(0.5f);
+        Player = GameObject.FindWithTag("Player");
+        if (Player != null)
+        {
+            Player.transform.position = new Vector3(data.playerX, data.playerY, data.playerZ);
+            playerController.instance.HP = data.playerHP;
+            playerController.instance.Shield = data.playerShield;
+            inventory = data.currentInv;
+        }
+    }
 }

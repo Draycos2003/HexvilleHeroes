@@ -32,7 +32,6 @@ public class buttonfunctions : MonoBehaviour
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         GameObject target = GameObject.Find(teleportTargetName);
-        
         if (target != null && gamemanager.instance.Player != null)
         {
             Transform player = gamemanager.instance.Player.transform;
@@ -59,7 +58,7 @@ public class buttonfunctions : MonoBehaviour
     }
 
     public void Restart()
-    {        
+    {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         gamemanager.instance.stateUnpause();
 
@@ -106,7 +105,7 @@ public class buttonfunctions : MonoBehaviour
         }
 
         playerControl = gamemanager.instance.PlayerScript;
-        if(playerControl.inventoryCanvas != null)
+        if (playerControl.inventoryCanvas != null)
         {
             playerControl.inventoryCanvas.SetActive(true);
         }
@@ -160,5 +159,10 @@ public class buttonfunctions : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void onLoadGame()
+    {
+        gamemanager.instance.Load();
     }
 }
