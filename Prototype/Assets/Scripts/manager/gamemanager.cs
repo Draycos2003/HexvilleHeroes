@@ -266,4 +266,5 @@ public class gamemanager : MonoBehaviour
             inventory = data.currentInv;
         }
     }
+
 }
