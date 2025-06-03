@@ -133,7 +133,11 @@ public class enemyAI : MonoBehaviour, IDamage
                     }
                 }
                 return true;
-            }       
+            }
+        }
+        else
+        {
+            // roam
         }
         return false;   
     }
