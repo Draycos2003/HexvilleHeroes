@@ -10,6 +10,6 @@ public class SaveData
     public float playerZ;
     public int playerHP;
     public int playerShield;
-    public inventorySO currentInv;
+    public List<InventoryItem> inventory;
     public string currentScene;
 }

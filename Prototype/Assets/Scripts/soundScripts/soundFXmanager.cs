@@ -34,4 +34,15 @@ public class soundFXmanager : MonoBehaviour
         int rand = Random.Range(0, clips.Length);
         PlaySoundFXClip(clips[rand], spawnTransform, volume);
     }
+
+    public void PlaySoundMusic(AudioClip clip, Transform spawnTransform, float volume)
+    {
+        if (clip == null) return;
+
+        GameObject temp = new GameObject("TempAudio");
+        temp.transform.position = spawnTransform.position;
+
+        AutoDestroyAudio auto = temp.AddComponent<AutoDestroyAudio>();
+        auto.Init(clip, volume);
+    }
 }

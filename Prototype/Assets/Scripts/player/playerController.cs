@@ -7,8 +7,6 @@ using UnityEngine.SceneManagement;
 
 public class playerController : MonoBehaviour, IDamage, IPickup
 {
-    public static playerController instance;
-
     // Player
     [Header("Controllers")]
     [SerializeField] CharacterController controller;
@@ -67,11 +65,11 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     [SerializeField] int damageWithoutAWeapon;
     private int allTimeDamageBuffAmount;
 
-    [Header("Inventory")]
+    [Header("Inventory")] // Inventory
     [SerializeField] GameObject itemModel;
     [SerializeField] GameObject equipSlot;
     public InventoryItem item;
-    agentWeapon weaponAgent;
+    [HideInInspector] public agentWeapon weaponAgent;
 
     Vector3 moveDir;
     Vector3 playerVel;
