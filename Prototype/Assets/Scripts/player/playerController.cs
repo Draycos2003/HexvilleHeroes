@@ -1,10 +1,8 @@
 using UnityEngine;
 using System.Collections;
-using NUnit.Framework;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using System.Linq;
-using System.ComponentModel;
+using UnityEngine.SceneManagement;
 
 public class playerController : MonoBehaviour, IDamage, IPickup
 {
@@ -70,7 +68,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     [Header("Inventory")]
     [SerializeField] GameObject itemModel;
-    [SerializeField] GameObject equipSlot;;
+    [SerializeField] GameObject equipSlot;
     public InventoryItem item;
     agentWeapon weaponAgent;
 
@@ -133,7 +131,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
             playerVel = Vector3.zero;
         }
 
-        moveDir = (Input.GetAxis("Horizontal") * transform.right) + (Input.GetAxis("Vertical") * transform.forward);
+        moveDir = (Input.GetAxis("Horizontal") * transform.right) + (UnityEngine.Input.GetAxis("Vertical") * transform.forward);
         controller.Move(moveDir * speed * Time.deltaTime);
 
         Jump();
@@ -266,6 +264,11 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     private void equip()
     {
+        if (SceneManager.GetActiveScene().buildIndex != 0 && (equipSlot.activeSelf == false))
+        {
+            equipSlot.SetActive(true);
+        }
+
         if (!item.isEmpty)
         {
             changeEquippedItem();
