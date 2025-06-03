@@ -2508,7 +2508,6 @@ GameObject:
   - component: {fileID: 7102026276897674469}
   - component: {fileID: 1402859412297038860}
   - component: {fileID: 8244766482805876538}
-  - component: {fileID: 6611929196161088186}
   - component: {fileID: 605727590103480670}
   - component: {fileID: 2391165978338036449}
   - component: {fileID: 1732158058451945410}
@@ -2589,21 +2588,6 @@ MonoBehaviour:
   healthBarFill: {fileID: 5456158360691233485}
   shieldBarFill: {fileID: 9039418953249215590}
   hpText: {fileID: 3845336872085968946}
---- !u!114 &6611929196161088186
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8855280108015326162}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2b139113de3e1c4f9e7cb3977f78ab3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  navMesh: {fileID: 2391165978338036449}
-  animate: {fileID: 4896878928031260443}
-  pathUpdateDely: 0.2
 --- !u!114 &605727590103480670
 MonoBehaviour:
   m_ObjectHideFlags: 0
