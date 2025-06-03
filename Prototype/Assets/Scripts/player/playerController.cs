@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel;
 using UnityEngine.SceneManagement;
 
 public class playerController : MonoBehaviour, IDamage, IPickup
