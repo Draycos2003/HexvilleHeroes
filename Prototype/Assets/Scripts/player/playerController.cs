@@ -4,7 +4,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using System.Linq;
-using UnityEngine.SceneManagement;
+using System.ComponentModel;
 
 public class playerController : MonoBehaviour, IDamage, IPickup
 {
@@ -16,15 +16,14 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     [SerializeField] LayerMask ignoreLayer;
     [SerializeField] Damage damage;
 
-    [SerializeField] AudioClip walkAudio;
-    [SerializeField] AudioClip jumpAudio;
-    [SerializeField] AudioClip attackAudio;
-    [SerializeField] AudioClip damageAudio;
+    [SerializeField] AudioClip[] walkAudio;
+    [SerializeField] AudioClip[] jumpAudio;
+    [SerializeField] AudioClip[] attackAudio;
+    [SerializeField] AudioClip[] damageAudio;
     [SerializeField] float walkVolume;
     [SerializeField] float jumpVolume;
     [SerializeField] float attackVolume;
     [SerializeField] float damageVolume;
-
 
     [Header("World")] // World 
     [SerializeField] int gravity;
@@ -50,6 +49,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     [SerializeField] int jumpMax;
     [SerializeField] int jumpForce;
 
+    bool isPlayerStep;
     [Header("Currency")] // Currency
     [SerializeField] private int gold;
     public int Gold => gold;
@@ -72,7 +72,6 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     [SerializeField] GameObject itemModel;
     public InventoryItem item;
     agentWeapon weaponAgent;
-    [SerializeField] inventoryUI invUI;
 
     Vector3 moveDir;
     Vector3 playerVel;
@@ -164,7 +163,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
             playerVel.y = jumpForce;
 
-            soundFXmanager.instance.PlaySoundFXClip(jumpAudio, transform, jumpVolume);
+            soundFXmanager.instance.PlaySoundFXClip(jumpAudio[Random.Range(0, jumpAudio.Length)], transform, jumpVolume);
 
             animator.SetBool("isJumping", true);
         }
@@ -181,13 +180,13 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         {
             Shield -= amount;
             StartCoroutine(flashShieldDamageScreen());
-            soundFXmanager.instance.PlaySoundFXClip(damageAudio, transform, damageVolume);
+            soundFXmanager.instance.PlaySoundFXClip(damageAudio[Random.Range(0, damageAudio.Length)], transform, damageVolume);
         }
         else
         {
             HP -= amount;
             StartCoroutine(flashDamageScreen());
-            soundFXmanager.instance.PlaySoundFXClip(damageAudio, transform, damageVolume);
+            soundFXmanager.instance.PlaySoundFXClip(damageAudio[Random.Range(0, damageAudio.Length)], transform, damageVolume);
         }
 
         // check for death
@@ -266,11 +265,6 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     private void equip()
     {
-        if (SceneManager.GetActiveScene().buildIndex != 0 && (invUI.equipPanel.gameObject.activeSelf == false))
-        {
-            invUI.equipPanel.gameObject.SetActive(true);
-        }
-
         if (!item.isEmpty)
         {
             changeEquippedItem();
@@ -283,14 +277,8 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     private void changeEquippedItem()
     {
-        if (item.item.IType == ItemSO.ItemType.melee)
-        {
-            Debug.Log("ROTATE");
-            itemModel.transform.Rotate(new Vector3(0, 1, 0), 180);
-        }
-
         itemModel.GetComponent<MeshFilter>().sharedMesh = item.item.model.GetComponent<MeshFilter>().sharedMesh;
-        itemModel.GetComponent<MeshRenderer>().sharedMaterials = item.item.model.GetComponent<MeshRenderer>().sharedMaterials;
+        itemModel.GetComponent<MeshRenderer>().sharedMaterial = item.item.model.GetComponent<MeshRenderer>().sharedMaterial;
         getItemStats();
     }
 
@@ -345,6 +333,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
                 shootTimer = 0;
             }
 
+
             if (item.item.IType == ItemSO.ItemType.melee)
             {
                 animator.SetTrigger("attack");
@@ -374,8 +363,28 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         Debug.Log($"Sold item for {amount} gold. Total now: {gold}");
     }
 
+
     public void WalkSound()
     {
-        soundFXmanager.instance.PlaySoundFXClip(walkAudio, transform, walkVolume);
+        // Due to the way the bobbing and animationEvents are handled currently, this will do nothing other than check if the player is grounded and moving over a 
+        // certain velocity, and if it is, to call the sound, this needs to be changed so that the SFX will trigger at different speeds depending on if the player is          
+        // running or not, as given inside playStep()
+
+        if (controller.isGrounded && moveDir.normalized.magnitude > 0.3f && !isPlayerStep)
+            StartCoroutine(playStep());
+    }
+
+    IEnumerator playStep()
+    {
+        isPlayerStep = true;
+
+        soundFXmanager.instance.PlaySoundFXClip(walkAudio[Random.Range(0, walkAudio.Length)], transform, walkVolume);
+
+        if (isSprinting)
+            yield return new WaitForSeconds(0.3f);
+        else
+            yield return new WaitForSeconds(0.5f);
+
+        isPlayerStep = false;
     }
 }
