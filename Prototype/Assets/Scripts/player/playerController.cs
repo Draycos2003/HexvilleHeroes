@@ -266,10 +266,8 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     private void equip()
     {
-
         if (SceneManager.GetActiveScene().buildIndex != 0 && (invUI.equipPanel.gameObject.activeSelf == false))
         {
-            Debug.Log("ACTIVE");
             invUI.equipPanel.gameObject.SetActive(true);
         }
 
@@ -285,6 +283,12 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     private void changeEquippedItem()
     {
+        if (item.item.IType == ItemSO.ItemType.melee)
+        {
+            Debug.Log("ROTATE");
+            itemModel.transform.Rotate(new Vector3(0, 1, 0), 180);
+        }
+
         itemModel.GetComponent<MeshFilter>().sharedMesh = item.item.model.GetComponent<MeshFilter>().sharedMesh;
         itemModel.GetComponent<MeshRenderer>().sharedMaterials = item.item.model.GetComponent<MeshRenderer>().sharedMaterials;
         getItemStats();
