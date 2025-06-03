@@ -4,6 +4,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class playerController : MonoBehaviour, IDamage, IPickup
 {
@@ -71,6 +72,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     [SerializeField] GameObject itemModel;
     public InventoryItem item;
     agentWeapon weaponAgent;
+    [SerializeField] inventoryUI invUI;
 
     Vector3 moveDir;
     Vector3 playerVel;
@@ -264,6 +266,13 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     private void equip()
     {
+
+        if (SceneManager.GetActiveScene().buildIndex != 0 && (invUI.equipPanel.gameObject.activeSelf == false))
+        {
+            Debug.Log("ACTIVE");
+            invUI.equipPanel.gameObject.SetActive(true);
+        }
+
         if (!item.isEmpty)
         {
             changeEquippedItem();
@@ -277,7 +286,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     private void changeEquippedItem()
     {
         itemModel.GetComponent<MeshFilter>().sharedMesh = item.item.model.GetComponent<MeshFilter>().sharedMesh;
-        itemModel.GetComponent<MeshRenderer>().sharedMaterial = item.item.model.GetComponent<MeshRenderer>().sharedMaterial;
+        itemModel.GetComponent<MeshRenderer>().sharedMaterials = item.item.model.GetComponent<MeshRenderer>().sharedMaterials;
         getItemStats();
     }
 
@@ -331,7 +340,6 @@ public class playerController : MonoBehaviour, IDamage, IPickup
                 }
                 shootTimer = 0;
             }
-
 
             if (item.item.IType == ItemSO.ItemType.melee)
             {

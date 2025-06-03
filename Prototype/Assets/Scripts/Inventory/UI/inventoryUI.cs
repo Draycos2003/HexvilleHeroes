@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 public class inventoryUI : MonoBehaviour
@@ -12,7 +13,7 @@ public class inventoryUI : MonoBehaviour
 
     [SerializeField] RectTransform contentPanel;
 
-    [SerializeField] RectTransform equipPanel;
+    public RectTransform equipPanel;
 
     [SerializeField] inventoryItemDescription description;
 
