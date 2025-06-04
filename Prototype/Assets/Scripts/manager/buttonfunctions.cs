@@ -163,6 +163,12 @@ public class buttonfunctions : MonoBehaviour
 
     public void onLoadGame()
     {
+        playerControl = gamemanager.instance.PlayerScript;
+        if (playerControl.playerMenu != null)
+        {
+            playerControl.playerMenu.SetActive(true);
+        }
+
         gamemanager.instance.Load();
     }
 }

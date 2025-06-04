@@ -8,7 +8,7 @@ public class agentWeapon : MonoBehaviour
 {
     [SerializeField] private EquippableSO weapon;
     [SerializeField] private InventoryItem item;
-    [SerializeField] private inventorySO inventoryData;
+    [SerializeField] public inventorySO inventoryData;
 
     [SerializeField] private List<ItemParameter> parametersToModify, itemCurrentState;
 

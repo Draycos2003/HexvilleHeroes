@@ -41,7 +41,6 @@ public class gamemanager : MonoBehaviour
     [Header("InventoryUI")]
     [SerializeField] inventoryUI invUI;
     [SerializeField] inventoryController invController;
-    [SerializeField] inventorySO inventory;
     [SerializeField] inventorySO saveInv;
 
     float timeScaleOrig;
@@ -132,7 +131,6 @@ public class gamemanager : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.F6))
         {
             Load();
-
         }
     }
 
@@ -233,13 +231,13 @@ public class gamemanager : MonoBehaviour
     public void Save()
     {
         SaveData data = new SaveData();
-        data.currentInv = saveInv;
         data.playerX = Player.transform.position.x;
         data.playerY = Player.transform.position.y;
         data.playerZ = Player.transform.position.z;
         data.playerHP = PlayerScript.HP;
         data.playerShield = PlayerScript.Shield;
         data.currentScene = SceneManager.GetActiveScene().name;
+        data.inventory = PlayerScript.weaponAgent.inventoryData.SaveInventory(PlayerScript.weaponAgent.inventoryData.inventoryItems);
 
         SaveSystem.SaveGame(data);
     }
@@ -256,15 +254,14 @@ public class gamemanager : MonoBehaviour
 
     private System.Collections.IEnumerator RestorePlayer(SaveData data)
     {
-        yield return new WaitForSeconds(0.5f);
-        Player = GameObject.FindWithTag("Player");
-        if (Player != null)
+        Player.transform.position = new Vector3(data.playerX, data.playerY, data.playerZ);
+        PlayerScript.HP = data.playerHP;
+        PlayerScript.Shield = data.playerShield;
+        for (int i = 0; i < (data.inventory.Count - 1); i++)
         {
-            Player.transform.position = new Vector3(data.playerX, data.playerY, data.playerZ);
-            playerController.instance.HP = data.playerHP;
-            playerController.instance.Shield = data.playerShield;
-            inventory = data.currentInv;
+            PlayerScript.weaponAgent.inventoryData.inventoryItems[i] = data.inventory[i];
         }
-    }
 
+        yield return new WaitForSeconds(0.5f);
+    }
 }

@@ -3,7 +3,7 @@ using UnityEngine.Audio;
 
 public class soundMixerManager : MonoBehaviour
 {
-    [SerializeField] private AudioMixer audioMixer;
+    [SerializeField] public AudioMixer audioMixer;
 
     public void SetMasterVolume(float level)
     {
