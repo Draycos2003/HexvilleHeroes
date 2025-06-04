@@ -565,6 +565,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1091750513259122177, guid: e7c91b1a5d5e786469bb2139749de4c0, type: 3}
+      propertyPath: lockVertMin
+      value: -90
+      objectReference: {fileID: 0}
     - target: {fileID: 1634703420996761044, guid: e7c91b1a5d5e786469bb2139749de4c0, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -710,10 +714,6 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4383099305921821728, guid: e7c91b1a5d5e786469bb2139749de4c0, type: 3}
-      propertyPath: equipSlot
-      value: 
-      objectReference: {fileID: 485531999}
-    - target: {fileID: 4383099305921821728, guid: e7c91b1a5d5e786469bb2139749de4c0, type: 3}
       propertyPath: jumpAudio
       value: 
       objectReference: {fileID: 8300000, guid: dfa3ab4123c43bd6fae58d0ed5b8e713, type: 3}
@@ -817,6 +817,10 @@ PrefabInstance:
       propertyPath: 'damageAudio.Array.data[2]'
       value: 
       objectReference: {fileID: 8300000, guid: 44712f855edf4afb8a9ed2169d89bf72, type: 3}
+    - target: {fileID: 4559365895739801291, guid: e7c91b1a5d5e786469bb2139749de4c0, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4705415026680242166, guid: e7c91b1a5d5e786469bb2139749de4c0, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -929,6 +933,18 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7290641553917673323, guid: e7c91b1a5d5e786469bb2139749de4c0, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7290641553917673323, guid: e7c91b1a5d5e786469bb2139749de4c0, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7290641553917673323, guid: e7c91b1a5d5e786469bb2139749de4c0, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8156979066772815192, guid: e7c91b1a5d5e786469bb2139749de4c0, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -989,11 +1005,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 370811796}
   m_SourcePrefab: {fileID: 100100000, guid: e7c91b1a5d5e786469bb2139749de4c0, type: 3}
---- !u!1 &485531999 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5441691092716414744, guid: e7c91b1a5d5e786469bb2139749de4c0, type: 3}
-  m_PrefabInstance: {fileID: 485531998}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

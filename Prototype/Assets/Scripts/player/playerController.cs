@@ -1,151 +1,130 @@
 using UnityEngine;
 using System.Collections;
+using NUnit.Framework;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using System.Linq;
 using System.ComponentModel;
 
 public class playerController : MonoBehaviour, IDamage, IPickup
 {
-    #region Singleton
     public static playerController instance;
-    #endregion
 
-    #region Inspector Fields
-
+    // Player
     [Header("Controllers")]
-    [SerializeField] private CharacterController controller;
-    [SerializeField] private LayerMask ignoreLayer;
-    [SerializeField] private Damage damage;
+    [SerializeField] CharacterController controller;
+    [SerializeField] LayerMask ignoreLayer;
+    [SerializeField] Damage damage;
 
-    [Header("Audio Clips")]
-    [SerializeField] private AudioClip[] walkAudio;
-    [SerializeField] private AudioClip[] jumpAudio;
-    [SerializeField] private AudioClip[] attackAudio;
-    [SerializeField] private AudioClip[] damageAudio;
-    [SerializeField] private float walkVolume;
-    [SerializeField] private float jumpVolume;
-    [SerializeField] private float attackVolume;
-    [SerializeField] private float damageVolume;
+    [SerializeField] AudioClip[] walkAudio;
+    [SerializeField] AudioClip[] jumpAudio;
+    [SerializeField] AudioClip[] attackAudio;
+    [SerializeField] AudioClip[] damageAudio;
+    [SerializeField] float walkVolume;
+    [SerializeField] float jumpVolume;
+    [SerializeField] float attackVolume;
+    [SerializeField] float damageVolume;
 
-    [Header("World Settings")]
-    [SerializeField] private int gravity;
-    [SerializeField] private AudioSource switchWeaponSoundSource;
+    [Header("World")] // World 
+    [SerializeField] int gravity;
+    [SerializeField] AudioSource switchWeaponSoundSource;
 
-    [Header("Player Stats")]
+    [Header("Player")] // Player
     public int HP;
     public int Shield;
-    [SerializeField] private int speed;
-    [SerializeField] private int sprintMod;
-    [SerializeField] private int jumpMax;
-    [SerializeField] private int jumpForce;
-    [SerializeField] private int gold;
-
-    [Header("Player UI")]
     public GameObject playerMenu;
     public GameObject inventoryCanvas;
 
-    [Header("Weapon")]
-    [SerializeField] private GameObject weapon;
-    [SerializeField] private Transform shootPos;
-    [SerializeField] private int damageWithoutAWeapon;
+    public int HPOrig => HP;
+    private int maxHP;
+    public int MAXHPOrig => maxHP;
+    public int ShieldOrig => Shield;
+    private int maxShield;
+    public int MAXShieldOrig => maxShield;
+
+    public int speed;
+    public int speedOG;
+    [SerializeField] int sprintMod;
+
+    [SerializeField] int jumpMax;
+    [SerializeField] int jumpForce;
+
+    bool isPlayerStep;
+    [Header("Currency")] // Currency
+    [SerializeField] private int gold;
+    public int Gold => gold;
+
+    private int currentSceneIndex;
+    private int originalSceneIndex;
+    private List<ItemParameter> parameters;
+    private Camera cam;
+
+    [Header("Weapon")] // Weapon
+    [SerializeField] GameObject weapon;
+    [SerializeField] Transform shootPos;
     public int damageAmount;
     [HideInInspector] public float shootRate;
     [HideInInspector] public int shootDist;
-
-    [Header("Inventory")]
-    [SerializeField] private GameObject itemModel;
-    [SerializeField] private GameObject equipSlot;
-
-    [Header("Animation")]
-    [SerializeField] private float animTransSpeed;
-
-    #endregion
-
-    #region Public Properties
-
-    public int Gold => gold;
-    public int HPOrig => HP;
-    public int MAXHPOrig => maxHP;
-    public int ShieldOrig => Shield;
-    public int MAXShieldOrig => maxShield;
-    public int speedOG { get; private set; }
-    public InventoryItem item { get; private set; }
-
-    #endregion
-
-    #region Private Fields
-
-    private int maxHP;
-    private int maxShield;
-    private int currentSceneIndex;
-    private int originalSceneIndex;
-
-    private List<ItemParameter> parameters;
-    private Camera cam;
-    private agentWeapon weaponAgent;
-
-    private Vector3 moveDir;
-    private Vector3 playerVel;
-    private bool isSprinting;
-    private int jumpCount;
-    private float shootTimer;
-    private bool isPlayerStep;
-
-    private Animator animator;
+    [SerializeField] int damageWithoutAWeapon;
     private int allTimeDamageBuffAmount;
 
-    #endregion
+    [Header("Inventory")]
+    [SerializeField] GameObject itemModel;
+    public InventoryItem item;
+    agentWeapon weaponAgent;
 
-    #region Unity Callbacks
+    Vector3 moveDir;
+    Vector3 playerVel;
+    bool isSprinting;
+    int jumpCount;
+    float shootTimer;
 
-    private void Awake()
-    {
-        if (instance == null)
-        {
-            instance = this;
-        }
-    }
+    private Animator animator;
+    [SerializeField] float animTransSpeed;
 
-    private void Start()
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
     {
         cam = Camera.main;
         animator = GetComponent<Animator>();
         speedOG = speed;
-        damage = GetComponentInChildren<Damage>();
+        damage = gameObject.GetComponentInChildren<Damage>();
         maxHP = HP;
         maxShield = Shield;
-        weaponAgent = GetComponent<agentWeapon>();
+        weaponAgent = gameObject.GetComponent<agentWeapon>();
         damageAmount = damageWithoutAWeapon;
     }
 
-    private void Update()
+    // Update is called once per frame
+    void Update()
     {
         shootTimer += Time.deltaTime;
         Movement();
         Sprint();
-        UpdateInventoryItem();
-        SetAnimParams();
+        item = GetComponent<inventoryController>().inventoryData.inventoryItems.Last();
+        equip();
+        setAnimParams();
     }
-
-    #endregion
-
-    #region Scene Management
 
     public void SetSceneIndex(int newSceneIndex)
     {
         originalSceneIndex = currentSceneIndex;
         currentSceneIndex = newSceneIndex;
+
         Debug.Log($"[Player] Scene changed: from {originalSceneIndex} to {currentSceneIndex}");
     }
 
-    public int GetCurrentSceneIndex() => currentSceneIndex;
-    public int GetOriginalSceneIndex() => originalSceneIndex;
+    public int GetCurrentSceneIndex()
+    {
+        return currentSceneIndex;
+    }
 
-    #endregion
+    public int GetOriginalSceneIndex()
+    {
+        return originalSceneIndex;
+    }
 
-    #region Movement
-
-    private void Movement()
+    void Movement()
     {
         if (controller.isGrounded && jumpCount != 0)
         {
@@ -162,7 +141,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         playerVel.y -= gravity * Time.deltaTime;
     }
 
-    private void Sprint()
+    void Sprint()
     {
         if (Input.GetButtonDown("Sprint"))
         {
@@ -171,18 +150,21 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         }
         else if (Input.GetButtonUp("Sprint"))
         {
-            speed = speedOG;
+            speed /= sprintMod;
             isSprinting = false;
         }
     }
 
-    private void Jump()
+    void Jump()
     {
         if (Input.GetButtonDown("Jump") && jumpCount < jumpMax)
         {
             jumpCount++;
+
             playerVel.y = jumpForce;
+
             soundFXmanager.instance.PlaySoundFXClip(jumpAudio[Random.Range(0, jumpAudio.Length)], transform, jumpVolume);
+
             animator.SetBool("isJumping", true);
         }
 
@@ -192,39 +174,36 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         }
     }
 
-    #endregion
-
-    #region Damage & Health
-
     public void TakeDamage(int amount)
     {
         if (Shield > 0)
         {
             Shield -= amount;
-            StartCoroutine(FlashShieldDamageScreen());
+            StartCoroutine(flashShieldDamageScreen());
             soundFXmanager.instance.PlaySoundFXClip(damageAudio[Random.Range(0, damageAudio.Length)], transform, damageVolume);
         }
         else
         {
             HP -= amount;
-            StartCoroutine(FlashDamageScreen());
+            StartCoroutine(flashDamageScreen());
             soundFXmanager.instance.PlaySoundFXClip(damageAudio[Random.Range(0, damageAudio.Length)], transform, damageVolume);
         }
 
+        // check for death
         if (HP <= 0)
         {
             gamemanager.instance.youLose();
         }
     }
 
-    private IEnumerator FlashDamageScreen()
+    IEnumerator flashDamageScreen()
     {
         gamemanager.instance.playerDMGScreen.SetActive(true);
         yield return new WaitForSeconds(0.1f);
         gamemanager.instance.playerDMGScreen.SetActive(false);
     }
 
-    private IEnumerator FlashShieldDamageScreen()
+    IEnumerator flashShieldDamageScreen()
     {
         gamemanager.instance.playerShieldDMGScreen.SetActive(true);
         yield return new WaitForSeconds(0.1f);
@@ -233,18 +212,42 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     public void gainHealth(int amount)
     {
-        if (HP < maxHP) HP += amount;
-        if (HP > maxHP) HP = maxHP;
+        Debug.Log("HEALTH UP");
+
+        // check if player is damaged
+        if (HP < maxHP)
+        {
+            HP += amount;
+        }
+
+        // make sure health doesn't exceed max
+        if (HP > maxHP)
+        {
+            HP = maxHP;
+        }
     }
 
     public void gainShield(int amount)
     {
-        if (Shield < maxShield) Shield += amount;
-        if (Shield > maxShield) Shield = maxShield;
+        Debug.Log("SHIELD UP");
+
+        // check if player needs shield
+        if (Shield < maxShield)
+        {
+            Shield += amount;
+        }
+
+        // make sure shield doesn't exceed max
+        if (Shield > maxShield)
+        {
+            Shield = maxShield;
+        }
     }
 
     public void gainDamage(int amount)
     {
+        Debug.Log("DAMAGE UP");
+
         if (damage != null)
         {
             allTimeDamageBuffAmount += amount;
@@ -254,51 +257,39 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     public void gainSpeed(int amount)
     {
+        Debug.Log("SPEED UP");
+
         speed += amount;
     }
 
-    #endregion
 
-    #region Inventory & Equipment
-
-    private void UpdateInventoryItem()
+    private void equip()
     {
-        item = GetComponent<inventoryController>().inventoryData.inventoryItems.Last();
-        Equip();
-    }
-
-    private void Equip()
-    {
-        if (SceneManager.GetActiveScene().buildIndex != 0 && !equipSlot.activeSelf)
-        {
-            equipSlot.SetActive(true);
-        }
-
         if (!item.isEmpty)
         {
-            ChangeEquippedItem();
+            changeEquippedItem();
         }
         else
         {
-            NoItemEquipped();
+            noItemEquipped();
         }
     }
 
-    private void ChangeEquippedItem()
+    private void changeEquippedItem()
     {
         itemModel.GetComponent<MeshFilter>().sharedMesh = item.item.model.GetComponent<MeshFilter>().sharedMesh;
         itemModel.GetComponent<MeshRenderer>().sharedMaterial = item.item.model.GetComponent<MeshRenderer>().sharedMaterial;
-        GetItemStats();
+        getItemStats();
     }
 
-    private void NoItemEquipped()
+    private void noItemEquipped()
     {
         itemModel.GetComponent<MeshFilter>().sharedMesh = null;
         itemModel.GetComponent<MeshRenderer>().sharedMaterial = null;
         damageAmount = damageWithoutAWeapon;
     }
 
-    private void GetItemStats()
+    private void getItemStats()
     {
         damageAmount = (int)weaponAgent.FindParameterValue("Damage") + allTimeDamageBuffAmount;
         if (item.item.IType == ItemSO.ItemType.ranged)
@@ -306,12 +297,8 @@ public class playerController : MonoBehaviour, IDamage, IPickup
             shootRate = weaponAgent.FindParameterValue("Shoot Rate");
             shootDist = (int)weaponAgent.FindParameterValue("Range");
         }
+        //weaponAgent.ModifyParameters();
     }
-
-    #endregion
-
-    #region Weapon & Shooting
-
     public void weaponColOn()
     {
         weapon.GetComponent<Collider>().enabled = true;
@@ -327,11 +314,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         Instantiate(item.item.projectile, shootPos.position, Camera.main.transform.rotation);
     }
 
-    #endregion
-
-    #region Animation
-
-    private void SetAnimParams()
+    private void setAnimParams()
     {
         if (Input.GetMouseButtonDown(0))
         {
@@ -341,24 +324,25 @@ public class playerController : MonoBehaviour, IDamage, IPickup
                 return;
             }
 
-            if (shootTimer >= shootRate && item.item.IType == ItemSO.ItemType.ranged)
+            if (shootTimer >= shootRate)
             {
-                animator.SetTrigger("shoot");
+                if (item.item.IType == ItemSO.ItemType.ranged)
+                {
+                    animator.SetTrigger("shoot");
+                }
                 shootTimer = 0;
             }
-            else if (item.item.IType == ItemSO.ItemType.melee)
+
+
+            if (item.item.IType == ItemSO.ItemType.melee)
             {
                 animator.SetTrigger("attack");
             }
         }
 
-        float currentSpeed = animator.GetFloat("speed");
-        animator.SetFloat("speed", Mathf.Lerp(currentSpeed, moveDir.magnitude, Time.deltaTime * animTransSpeed));
+        float animSpeedCur = animator.GetFloat("speed");
+        animator.SetFloat("speed", Mathf.Lerp(animSpeedCur, moveDir.magnitude, Time.deltaTime * animTransSpeed));
     }
-
-    #endregion
-
-    #region Currency
 
     public bool RemoveGold(int cost)
     {
@@ -379,21 +363,21 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         Debug.Log($"Sold item for {amount} gold. Total now: {gold}");
     }
 
-    #endregion
-
-    #region Audio
 
     public void WalkSound()
     {
+        // Due to the way the bobbing and animationEvents are handled currently, this will do nothing other than check if the player is grounded and moving over a 
+        // certain velocity, and if it is, to call the sound, this needs to be changed so that the SFX will trigger at different speeds depending on if the player is          
+        // running or not, as given inside playStep()
+
         if (controller.isGrounded && moveDir.normalized.magnitude > 0.3f && !isPlayerStep)
-        {
-            StartCoroutine(PlayStep());
-        }
+            StartCoroutine(playStep());
     }
 
-    private IEnumerator PlayStep()
+    IEnumerator playStep()
     {
         isPlayerStep = true;
+
         soundFXmanager.instance.PlaySoundFXClip(walkAudio[Random.Range(0, walkAudio.Length)], transform, walkVolume);
 
         if (isSprinting)
@@ -403,6 +387,4 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
         isPlayerStep = false;
     }
-
-    #endregion
 }

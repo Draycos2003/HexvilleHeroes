@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Windows;
 
 public class inventoryController : MonoBehaviour
 {
@@ -142,7 +143,7 @@ public class inventoryController : MonoBehaviour
     public void Update()
     {
         // press I to open/close inventory
-        if (Input.GetKeyDown(KeyCode.I))
+        if (UnityEngine.Input.GetKeyDown(KeyCode.I))
         {
             if (SceneManager.GetActiveScene().buildIndex != 0)
             {
