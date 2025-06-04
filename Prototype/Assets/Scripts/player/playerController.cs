@@ -51,6 +51,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     public int damageAmount;
     [HideInInspector] public float shootRate;
     [HideInInspector] public int shootDist;
+    [HideInInspector] public agentWeapon weaponAgent;
 
     [Header("Inventory")]
     [SerializeField] private GameObject itemModel;
@@ -82,7 +83,6 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     private List<ItemParameter> parameters;
     private Camera cam;
-    private agentWeapon weaponAgent;
 
     private Vector3 moveDir;
     private Vector3 playerVel;
