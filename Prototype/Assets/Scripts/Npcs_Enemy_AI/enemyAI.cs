@@ -1,12 +1,14 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.AI;
+using System.Collections.Generic;
 
 
 
 public class enemyAI : MonoBehaviour, IDamage
 {
     LootBag loot;
+    gamemanager gm;
 
     enum EnemyType
     {
@@ -23,6 +25,7 @@ public class enemyAI : MonoBehaviour, IDamage
     private Vector3 targetPos;
 
     [Header("Enemy Fields")]
+    public GameObject enemy;
     public int HP;
     public int Shield;
     public Renderer model;
@@ -54,6 +57,10 @@ public class enemyAI : MonoBehaviour, IDamage
     float pathUpdateDely;
     private float dist;
     Coroutine co;
+    public bool enemyAggro;
+    public bool isDead;
+
+    public List<GameObject> AggroList = new List<GameObject>();
 
     private void Start()
     {
@@ -61,7 +68,6 @@ public class enemyAI : MonoBehaviour, IDamage
             weapon.GetComponent<Collider>().enabled = false;
         
         setAnimPara();
-
         loot = GetComponent<LootBag>();
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
@@ -77,9 +83,17 @@ public class enemyAI : MonoBehaviour, IDamage
         
         setAnimPara();
         
-        if (inRange)//player is in the collider
+        if (inRange
+            && enemyAggro)
         {
-            CanSeePlayer(); // can we see the player?
+            if(AggroList.Contains(enemy))
+            {
+                return;
+            }
+            else
+            {
+                AggroList.Add(enemy);
+            }   
         }
         else
         {
@@ -95,10 +109,11 @@ public class enemyAI : MonoBehaviour, IDamage
         anim.SetFloat("Speed", Mathf.Lerp(animSpeedCur, agentSpeedCur, Time.deltaTime * animTransSpeed));
     }
 
-    bool CanSeePlayer()
+    public bool CanSeePlayer()
     {
-        targetPos = (target.transform.position - headPos.position);
-        
+        if (headPos != null)
+            targetPos = (target.transform.position - headPos.position);
+
         angleToPlayer = Vector3.Angle(new Vector3(targetPos.x, 0, targetPos.z), transform.forward);
         
         Debug.DrawRay(headPos.position, new Vector3(targetPos.x, 0, targetPos.z));
@@ -115,6 +130,7 @@ public class enemyAI : MonoBehaviour, IDamage
                 }
                 else
                 {
+                    enemyAggro = true;
                     faceTarget();
                     
                     if(type == EnemyType.range)
@@ -132,6 +148,7 @@ public class enemyAI : MonoBehaviour, IDamage
                         }
                     }
                 }
+                
                 return true;
             }
         }
@@ -139,6 +156,7 @@ public class enemyAI : MonoBehaviour, IDamage
         {
             // roam
         }
+        enemyAggro = false;
         return false;   
     }
 
@@ -157,6 +175,7 @@ public class enemyAI : MonoBehaviour, IDamage
            if(HP <= 0)
            {
                 Destroy(gameObject);
+                isDead = true;
                 StopCoroutine(co);
                 loot.InstantiateLoot(lootSpawnPos.position);
                 gamemanager.instance.updateGameGoal(-1);
@@ -194,16 +213,15 @@ public class enemyAI : MonoBehaviour, IDamage
 
     private void attack()
     {
-        Debug.Log("Trigger was set"); // works
         anim.SetTrigger("attack");
         attackTimer = 0;
     }
 
-    public void weaponColOn()
+    public void WeaponColOn()
     {
         weapon.GetComponent<Collider>().enabled = true;
     }
-    public void weaponColOff()
+    public void WeaponColOff()
     {
         weapon.GetComponent<Collider>().enabled = false;
     }
@@ -233,9 +251,9 @@ public class enemyAI : MonoBehaviour, IDamage
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == ("Player") && gamemanager.instance.Player != null)
+        if (other.tag == ("Player") && gamemanager.instance != null && gamemanager.instance.Player != null)
         {
-            target = other.transform; // grabs the targets transform once inside the collider
+            target = other.transform;// grabs the targets transform once inside the collider
             inRange = true;
         }
     }

@@ -1,54 +1,139 @@
+
 using UnityEngine;
+using UnityEngine.AI;
 
 public class NpcFollwerScript : MonoBehaviour
 {
-    public Transform player; // who he/she is following
+    // Everything works beisdes damaging enemys.
+
+    enemyAI enemy;
+
+    public Transform target;  // who he/she is following
     public GameObject Npc; 
-    public float PlayerDistance; // how far the player is 
     public float allowedDistances; // how far the npc can be before he/she starts chasing after the player
     public float followerSpeed; // npc speed
-    public RaycastHit hit;
+    public NavMeshAgent agent;
+    public Animator anim;
+    public float animTransSpeed;
+    public float attackRate;
+    public GameObject weapon;
+    
+    RaycastHit hit;
+    float attackTimer;
+    float PlayerDistance; // how far the player is 
+    bool inRange;
+
+
+    private void Start()
+    {
+        setAnimPara();
+        weapon.GetComponent<Collider>().enabled = false;
+        enemy = Object.FindAnyObjectByType<enemyAI>();
+        agent = GetComponent<NavMeshAgent>();  
+        anim = GetComponent<Animator>();
+    }
 
     private void Update()
     {
-
-        transform.LookAt(player.transform.position);
+        attackTimer += Time.deltaTime;
         
-        // Us navmesh instead of distance checking
+        Follow();
+    }
 
-        if (Physics.Raycast(Npc.transform.position, transform.TransformDirection(Vector3.forward), out hit)) {
+    void Follow() {
+
+        transform.LookAt(target);
+        setAnimPara();
+
+        if (Physics.Raycast(Npc.transform.position, transform.TransformDirection(Vector3.forward), out hit))
+        {
 
             PlayerDistance = hit.distance;
 
-            if(PlayerDistance > allowedDistances)
+            if (PlayerDistance > allowedDistances)
             {
-                followerSpeed = 0.02f;
-                //Speed will be the animatior's speed
-                transform.position = Vector3.MoveTowards(transform.position, player.transform.position, followerSpeed);
-                // Play running animation 
-            }
 
-            else
-            {
-                followerSpeed = 0;
-                // Play idle animation 
+                agent.SetDestination(target.position);
+                 
+                if(enemy.CanSeePlayer() == true)
+                {
+                    DefendPlayer();
+                    transform.LookAt(enemy.transform.position);
+
+                    if(inRange == true && attackTimer >= attackRate)
+                    {
+                        
+                        Attack();
+                        
+                    }
+                }
             }
         }
     }
 
     void DefendPlayer()
     {
-        // if player is being attacked
-        // Get enemy attacking player
-        // attack that enemy till death and move to the next one
+        // if enemy is aggro on player
+
+        if (enemy.enemyAggro)
+        {
+            for (int i = 0; i < enemy.AggroList.Count; i++)
+            {
+                agent.SetDestination(enemy.AggroList[i].transform.position);
+            }
+
+            if (agent.remainingDistance == 0)
+            {
+                inRange = true;
+            }
+
+
+            if (enemy.isDead)
+            { 
+                for (int i = 0; i < enemy.AggroList.Count; i++)
+                {
+                    if(enemy.HP != 0 && enemy.AggroList[i] != null)
+                    {
+                        agent.SetDestination(enemy.AggroList[i].transform.position);
+                    }
+                    else
+                    {
+                        DefendPlayer();
+                    }
+                }
+
+            }
+        }
+        else
+        {
+            Follow();
+        }
     }
 
     void Attack()
     {
-        // if hurt
-        // Get enemy transform
-        // attack!!
+        anim.SetTrigger("attack");
+        attackTimer = 0;
     }
+
+    void setAnimPara()
+    {
+        float agentSpeedCur = agent.velocity.normalized.magnitude;
+        float animSpeedCur = anim.GetFloat("Speed");
+
+        anim.SetFloat("Speed", Mathf.Lerp(animSpeedCur, agentSpeedCur, Time.deltaTime * animTransSpeed));
+    }
+
+    public void WeaponColOn()
+    {
+        weapon.GetComponent<Collider>().enabled = true;
+    }
+    public void WeaponColOff()
+    {
+        weapon.GetComponent<Collider>().enabled = false;
+    }
+  
 }
+
 
 
