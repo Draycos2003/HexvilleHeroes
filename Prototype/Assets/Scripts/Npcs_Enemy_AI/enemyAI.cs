@@ -82,7 +82,10 @@ public class enemyAI : MonoBehaviour, IDamage
         attackTimer += Time.deltaTime;
         
         setAnimPara();
-        
+
+        if (target != null)
+            CanSeePlayer();
+
         if (inRange
             && enemyAggro)
         {
