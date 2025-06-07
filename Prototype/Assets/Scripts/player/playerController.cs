@@ -34,8 +34,8 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     [Header("Player Stats")]
     public int HP;
     public int Shield;
-    [SerializeField] private int speed;
-    [SerializeField] private int sprintMod;
+    [SerializeField] private float speed;
+    [SerializeField] private float sprintMod;
     [SerializeField] private int jumpMax;
     [SerializeField] private int jumpForce;
     [SerializeField] private int gold;
@@ -69,7 +69,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     public int MAXHPOrig => maxHP;
     public int ShieldOrig => Shield;
     public int MAXShieldOrig => maxShield;
-    public int speedOG { get; private set; }
+    public float speedOG { get; private set; }
     public InventoryItem item { get; private set; }
 
     #endregion
@@ -255,6 +255,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     public void gainSpeed(int amount)
     {
         speed += amount;
+        speedOG = speed;
     }
 
     #endregion
