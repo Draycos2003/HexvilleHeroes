@@ -1,11 +1,12 @@
 using UnityEngine;
+using System;
 using System.Collections;
 using UnityEngine.AI;
 
-
-
 public class enemyAI : MonoBehaviour, IDamage
 {
+    public event Action<GameObject> OnDeath;
+
     LootBag loot;
 
     enum EnemyType
@@ -156,6 +157,7 @@ public class enemyAI : MonoBehaviour, IDamage
 
            if(HP <= 0)
            {
+                OnDeath?.Invoke(gameObject);
                 Destroy(gameObject);
                 StopCoroutine(co);
                 loot.InstantiateLoot(lootSpawnPos.position);
