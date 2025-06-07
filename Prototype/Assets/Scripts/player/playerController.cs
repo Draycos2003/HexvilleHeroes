@@ -405,5 +405,4 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     }
 
     #endregion
-    // why
 }
