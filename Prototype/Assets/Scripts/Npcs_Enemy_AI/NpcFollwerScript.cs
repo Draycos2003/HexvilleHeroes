@@ -42,9 +42,7 @@ public class NpcFollwerScript : MonoBehaviour
         attackTimer += Time.deltaTime;
 
         // [Added] Find all alive, aggroed enemies each frame using non-deprecated API
-        var aggroed = Object.FindObjectsByType<enemyAI>(FindObjectsSortMode.None)
-                       .Where(e => !e.isDead && e.enemyAggro)
-                       .ToArray();
+        var aggroed = Object.FindObjectsByType<enemyAI>(FindObjectsSortMode.None).Where(e => !e.isDead && e.enemyAggro).ToArray();
 
         if (aggroed.Length > 0)
         {
