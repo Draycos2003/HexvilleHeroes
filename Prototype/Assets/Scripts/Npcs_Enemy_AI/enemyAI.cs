@@ -161,7 +161,7 @@ public class enemyAI : MonoBehaviour, IDamage
                 Destroy(gameObject);
                 StopCoroutine(co);
                 loot.InstantiateLoot(lootSpawnPos.position);
-                gamemanager.instance.updateGameGoal(-1);
+                //gamemanager.instance.updateGameGoal(-1);
            }
        }
     }

@@ -1,41 +1,44 @@
 using UnityEngine;
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Collider))]
 public class WaveSpawner : MonoBehaviour
 {
     [Header("Spawn Settings")]
+    [SerializeField] private int bossCheckpointOffset = 0;
     [SerializeField] private GameObject[] spawnObjects;
     [SerializeField] private int spawnAmount = 5;
     [SerializeField] private float spawnRate = 1f;
     [SerializeField] private Transform[] spawnPositions;
 
     [Header("Boss Arena Settings")]
-    [Tooltip("Check to seal off the arena when spawning starts")]
     [SerializeField] private bool isBossArena = false;
-    [Tooltip("Walls to raise/lower during the boss wave")]
     [SerializeField] private List<GameObject> wallObjects;
 
     [Header("Gameplay")]
-    [Tooltip("Notify game manager of total enemies to defeat")]
     [SerializeField] private bool notifyGameGoal = false;
 
+    // runtime
     private bool spawnTriggered;
     private int spawnCount;
-    private List<GameObject> spawnedEnemies = new List<GameObject>();
     private int remaining;
+    private List<GameObject> spawnedEnemies = new List<GameObject>();
+    private PlayerProgression progression;
 
     private void Awake()
     {
-        // Ensure this collider is a trigger
-        Collider col = GetComponent<Collider>();
+        // make sure this collider is a trigger
+        var col = GetComponent<Collider>();
         col.isTrigger = true;
 
-        // Hide walls at start if in boss mode
+        // hide walls until wave starts
         if (isBossArena)
             wallObjects.ForEach(w => w.SetActive(false));
+
+        // cache progression component
+        progression = Object.FindFirstObjectByType<PlayerProgression>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -45,10 +48,11 @@ public class WaveSpawner : MonoBehaviour
 
         spawnTriggered = true;
 
+        // tell game manager how many to expect
         if (notifyGameGoal)
             gamemanager.instance.updateGameGoal(spawnAmount);
 
-        // Seal arena
+        // seal the arena
         if (isBossArena)
             wallObjects.ForEach(w => w.SetActive(true));
 
@@ -60,39 +64,52 @@ public class WaveSpawner : MonoBehaviour
         spawnCount = 0;
         spawnedEnemies.Clear();
 
-        // Spawn loop
+        // spawn loop
         while (spawnCount < spawnAmount)
         {
-            foreach (Transform pos in spawnPositions)
+            foreach (var pos in spawnPositions)
             {
                 if (spawnCount >= spawnAmount) break;
-                GameObject prefab = spawnObjects[UnityEngine.Random.Range(0, spawnObjects.Length)];
-                GameObject enemy = Instantiate(prefab, pos.position, pos.rotation);
+
+                var prefab = spawnObjects[Random.Range(0, spawnObjects.Length)];
+                var enemy = Instantiate(prefab, pos.position, pos.rotation);
+
                 spawnCount++;
                 spawnedEnemies.Add(enemy);
 
-                // Subscribe to enemy death event
                 var ai = enemy.GetComponent<enemyAI>();
                 if (ai != null)
                     ai.OnDeath += OnEnemyDeath;
                 else
                     Debug.LogWarning($"Enemy '{enemy.name}' missing enemyAI.OnDeath event.");
             }
+
             yield return new WaitForSeconds(spawnRate);
         }
 
-        // Monitor until all enemies are dead
+        // wait until they're all dead
         remaining = spawnedEnemies.Count;
         while (remaining > 0)
             yield return null;
 
-        // Wave complete, lower walls
+        // lower walls
         if (isBossArena)
             wallObjects.ForEach(w => w.SetActive(false));
+
+        // mark the progression flag
+        if (progression != null)
+        {
+            int idx = SceneManager.GetActiveScene().buildIndex - 1 + bossCheckpointOffset;
+            progression.CollectCheckpoint(idx);
+        }
+
+        // re-call win-check now that both conditions are met
+        gamemanager.instance.updateGameGoal(0);
     }
 
     private void OnEnemyDeath(GameObject enemy)
     {
         remaining--;
+        gamemanager.instance.updateGameGoal(-1);
     }
 }

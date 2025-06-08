@@ -175,18 +175,28 @@ public class gamemanager : MonoBehaviour
         gameGoalCount += amount;
         gameGoalCountText.text = gameGoalCount.ToString("F0");
         if (gameGoalCount <= 0)
-        {
-            matchEnded = true;
-            statePause();
-            MenuActive = MenuWin;
-            MenuActive.SetActive(true);
+            TryWin();
+    }
 
-            // update win text
-            if (winMessageText != null)
-            {
-                winMessageText.text = "You have clear this room in " + MatchTime() + "!\n\nPlease proceed to the next room";
-            }
-        }
+    private void TryWin()
+    {
+        // map Scene.buildIndex to the checkpoints list, so that:
+        // if scene 1 -> checkpoints[0], scene 2 -> checkpoints[1]
+        int checkpointIndex = SceneManager.GetActiveScene().buildIndex - 1;
+        var prog = Player.GetComponent<PlayerProgression>();
+        if (prog != null && prog.HasCheckpoint(checkpointIndex))
+            Win();
+    }
+
+    private void Win()
+    {
+        matchEnded = true;
+        statePause();
+        MenuActive = MenuWin;
+        MenuActive.SetActive(true);
+        if (winMessageText != null)
+            winMessageText.text =
+                $"You cleared this room in {MatchTime()}!\n\nPlease proceed to the next room";
     }
 
     public void SetMatchTime(int time)
