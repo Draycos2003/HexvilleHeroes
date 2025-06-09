@@ -34,7 +34,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     [Header("Player Stats")]
     public int HP;
     public int Shield;
-    [SerializeField] private int speed;
+    [SerializeField] public int speed;
     [SerializeField] private int sprintMod;
     [SerializeField] private int jumpMax;
     [SerializeField] private int jumpForce;
@@ -58,6 +58,10 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     [Header("Animation")]
     [SerializeField] private float animTransSpeed;
+
+    [Header("States")]
+    [SerializeField]
+    private Player player;
 
     #endregion
 
@@ -121,7 +125,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     private void Update()
     {
         shootTimer += Time.deltaTime;
-        Movement();
+        if (!Movement()) player.ChangeState(PlayerState.moving);
         Sprint();
         UpdateInventoryItem();
         SetAnimParams();
@@ -145,7 +149,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     #region Movement
 
-    private void Movement()
+    private bool Movement()
     {
         if (controller.isGrounded && jumpCount != 0)
         {
@@ -154,12 +158,15 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         }
 
         moveDir = (Input.GetAxis("Horizontal") * transform.right) + (Input.GetAxis("Vertical") * transform.forward);
-        controller.Move(moveDir * speed * Time.deltaTime);
+        controller.Move(moveDir * speed * Time.deltaTime); 
+        player.ChangeState(PlayerState.moving);
 
         Jump();
 
         controller.Move(playerVel * Time.deltaTime);
         playerVel.y -= gravity * Time.deltaTime;
+
+        return true;
     }
 
     private void Sprint()

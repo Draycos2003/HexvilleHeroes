@@ -57,10 +57,7 @@ public class enemyAI : MonoBehaviour, IDamage
     float pathUpdateDely;
     private float dist;
     Coroutine co;
-    public bool enemyAggro;
-    public bool isDead;
 
-    public List<GameObject> AggroList = new List<GameObject>();
 
     private void Start()
     {
@@ -83,17 +80,9 @@ public class enemyAI : MonoBehaviour, IDamage
         
         setAnimPara();
         
-        if (inRange
-            && enemyAggro)
+        if (inRange)
         {
-            if(AggroList.Contains(enemy))
-            {
-                return;
-            }
-            else
-            {
-                AggroList.Add(enemy);
-            }   
+            CanSeePlayer();
         }
         else
         {
@@ -130,7 +119,7 @@ public class enemyAI : MonoBehaviour, IDamage
                 }
                 else
                 {
-                    enemyAggro = true;
+                    
                     faceTarget();
                     
                     if(type == EnemyType.range)
@@ -156,7 +145,7 @@ public class enemyAI : MonoBehaviour, IDamage
         {
             // roam
         }
-        enemyAggro = false;
+       
         return false;   
     }
 
@@ -175,7 +164,7 @@ public class enemyAI : MonoBehaviour, IDamage
            if(HP <= 0)
            {
                 Destroy(gameObject);
-                isDead = true;
+              
                 StopCoroutine(co);
                 loot.InstantiateLoot(lootSpawnPos.position);
                 gamemanager.instance.updateGameGoal(-1);
