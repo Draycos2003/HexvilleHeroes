@@ -32,16 +32,16 @@ public class ChestItem : ScriptableObject
     private GameObject PickOneFrom(List<DropEntry> list)
     {
         float total = 0f;
-        foreach (var e in list) total += e.dropChance;
+        foreach (var item in list) total += item.dropChance;
         if (total <= 0f) return null;
 
         float roll = Random.Range(0f, total);
         float cum = 0f;
-        foreach (var e in list)
+        foreach (var item in list)
         {
-            cum += e.dropChance;
-            if (roll <= cum && e.prefab != null)
-                return e.prefab;
+            cum += item.dropChance;
+            if (roll <= cum && item.prefab != null)
+                return item.prefab;
         }
         return list[0].prefab;
     }
