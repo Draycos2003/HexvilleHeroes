@@ -13,9 +13,6 @@ public class CompanionMoevement : MonoBehaviour
     private Player Player;
 
     [SerializeField]
-    private Transform playerPosition;
-
-    [SerializeField]
     private Companion Companion;
 
     [Header("Idle Configs")]
@@ -27,27 +24,45 @@ public class CompanionMoevement : MonoBehaviour
     [SerializeField]
     private float followRadius = 2f;
 
-    private Coroutine movementCo;
-    private Coroutine StateChangeCo;
+    private Coroutine RoutateCo;
+    //private Coroutine StateChangeCo;
+
+    private bool inRange;
 
     private void Awake()
     {
+        inRange = true;
         agent = GetComponent<NavMeshAgent>();
         Player.OnStateChange += HandleStateChange;
     }
 
+    private void Update()
+    {
+        if (!inRange)
+        {
+            Vector3 playerPos = (playerController.transform.position - transform.position); // normalized to get movement direction
+            float playerDist = Vector3.Distance(playerPos, transform.position);
+
+
+            if (playerDist > followRadius)
+            {
+               Vector3.MoveTowards(transform.position,playerPos, followRadius);
+            }
+        }
+    }
+
     private void HandleStateChange(PlayerState oldState, PlayerState newState) {
 
-        if (StateChangeCo != null) {
+        //if (StateChangeCo != null) {
 
-            StopCoroutine(StateChangeCo);
+        //    StopCoroutine(StateChangeCo);
 
-        }
+        //}
 
         switch (newState) {
 
             case PlayerState.idle:
-                StateChangeCo = StartCoroutine(HandleIdlePlayer());
+                HandleIdlePlayer();
                 break;
             case PlayerState.moving:
                 HandleMovingPlayer();
@@ -59,17 +74,29 @@ public class CompanionMoevement : MonoBehaviour
     private void HandleMovingPlayer() {
 
         Companion.ChangeState(CompanionState.follow);
-        if (movementCo != null) {
+        //if (movementCo != null) {
 
-            StopCoroutine(movementCo);
+        //    StopCoroutine(movementCo);
+        //}
+
+        //if (agent != null) {
+
+        //    agent.enabled = true;
+        //    agent.Warp(transform.position); 
+        //}
+        //movementCo = StartCoroutine(FollowPlayer());
+        inRange = false;
+
+        Vector3 playerPos = (playerController.transform.position - transform.position).normalized; // normalized to get movement direction
+        float playerDist = Vector3.Distance(transform.position, playerPos);
+
+
+        if(playerDist > followRadius)
+        {
+            Vector3.MoveTowards(transform.position, playerPos, agent.stoppingDistance);
         }
 
-        if (agent != null) {
 
-            agent.enabled = true;
-            agent.Warp(transform.position);
-        }
-        movementCo = StartCoroutine(FollowPlayer());
     }
 
     private IEnumerator RotateCompanion() {
@@ -77,7 +104,7 @@ public class CompanionMoevement : MonoBehaviour
         WaitForFixedUpdate Wait = new WaitForFixedUpdate();
         while (true) {
 
-            transform.RotateAround(playerPosition.transform.position, Vector3.up, rotationSpeed);
+            transform.RotateAround(playerController.transform.position, Vector3.up, rotationSpeed);
             yield return Wait;
         }
     }
@@ -90,11 +117,9 @@ public class CompanionMoevement : MonoBehaviour
             Mathf.Cos(2 * Mathf.PI * Random.value), 
             0,
             Mathf.Sin(2 * Mathf.PI * Random.value)).normalized;
-
-        agent.SetDestination(playerPosition.transform.position);
-        Debug.Log("Moving");
-
-
+      
+        Debug.Log(agent.SetDestination(playerController.transform.position + offSet));
+       
         yield return null; // wait for agent's desination
         yield return new WaitUntil(() => agent.remainingDistance <= agent.stoppingDistance);
 
@@ -108,17 +133,19 @@ public class CompanionMoevement : MonoBehaviour
             case CompanionState.follow:
                 yield return null;
                 yield return null;
+                //StopCoroutine(RoutateCo);
                 yield return new WaitUntil(() => Companion.State == CompanionState.idle);
                 goto case CompanionState.idle;
             
             case CompanionState.idle:
-                if (movementCo != null)   {
+                //if ( != null)   {
 
-                    StopCoroutine(movementCo);
+                //    StopCoroutine(movementCo);
 
-                }
+                //}
                 agent.enabled = false;
-                movementCo = StartCoroutine(RotateCompanion());
+                inRange = true;
+                RoutateCo = StartCoroutine(RotateCompanion());
                 break;
         }
     }
