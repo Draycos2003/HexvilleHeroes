@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(Collider), typeof(AudioSource))]
+[RequireComponent(typeof(Collider))]
 public class Chest : MonoBehaviour
 {
     [SerializeField] private GameObject interactUI;
@@ -20,14 +20,12 @@ public class Chest : MonoBehaviour
 
     private bool playerInRange, isOpen;
     private Quaternion closedRot, openRot;
-    private AudioSource src;
 
     void Awake()
     {
         interactUI?.SetActive(false);
         closedRot = lid.localRotation;
         openRot = Quaternion.Euler(lid.localEulerAngles + Vector3.up * openAngle);
-        src = GetComponent<AudioSource>();
     }
 
     void OnTriggerEnter(Collider other)
@@ -56,22 +54,15 @@ public class Chest : MonoBehaviour
 
     private IEnumerator OpenRoutine()
     {
-        // mark the chest open so it cant be reopened
         isOpen = true;
+        interactUI?.SetActive(false);
 
-        // hide the "Press E" UI prompt
-        if (interactUI != null)
-            interactUI.SetActive(false);
-
-        // play the open sound stretched to match how long the lid takes
         if (openSound != null)
         {
-            src.clip = openSound;
-            src.pitch = openSound.length / openDuration;
-            src.Play();
+            float pitch = openSound.length / openDuration;
+            soundFXmanager.instance.PlayPitched3DClip(openSound, transform, 1f, pitch, 1f, 10f);
         }
 
-        // animate the lid from closedRot to openRot over openDuration
         float elapsedTime = 0f;
         while (elapsedTime < openDuration)
         {
@@ -80,24 +71,19 @@ public class Chest : MonoBehaviour
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-        lid.localRotation = openRot;  // wait for it to finish opening
+        lid.localRotation = openRot;
 
-        // if we have a loot table, spawn loot and currency
         if (chestItem != null)
         {
-            // primary loot
             GameObject loot = chestItem.GetRandomLoot();
             if (loot != null)
                 StartCoroutine(AnimateArc(loot));
-            // bonus loot
             if (chestItem.ShouldDoubleLoot())
                 StartCoroutine(AnimateArc(loot));
 
-            // primary currency
             GameObject money = chestItem.GetRandomCurrency();
             if (money != null)
                 StartCoroutine(AnimateArc(money));
-            // bonus currency
             if (chestItem.ShouldDoubleCurrency())
                 StartCoroutine(AnimateArc(money));
         }
@@ -105,35 +91,20 @@ public class Chest : MonoBehaviour
 
     private IEnumerator AnimateArc(GameObject prefab)
     {
-        // calculate the spawn position in front of the chest
-        Vector3 startPos = transform.position
-                         + transform.forward * spewOffset
-                         + Vector3.up * 0.5f;
-
-        // spawn the item with the chests rotation so its forward is local
+        Vector3 startPos = transform.position + transform.forward * spewOffset + Vector3.up * 0.5f;
         GameObject spawned = Instantiate(prefab, startPos, transform.rotation);
-
-        // calc the end position along the spawned objects forward
         Vector3 endPos = startPos + spawned.transform.forward * lootArcForwardDistance;
 
         float elapsedTime = 0f;
         while (elapsedTime < lootArcDuration)
         {
             float t = elapsedTime / lootArcDuration;
-
-            // move horizontally from start to end
             Vector3 horizontal = Vector3.Lerp(startPos, endPos, t);
-
-            // apply a vertical arc that peaks mid-flight
             float vertical = Mathf.Sin(t * Mathf.PI) * lootArcHeight;
-
             spawned.transform.position = horizontal + Vector3.up * vertical;
-
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-
-        // ensure it lands exactly at endPos
         spawned.transform.position = endPos;
     }
 }
