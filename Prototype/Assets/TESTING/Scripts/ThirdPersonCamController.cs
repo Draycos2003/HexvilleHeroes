@@ -1,6 +1,7 @@
+using FinalController;
 using UnityEngine;
 
-public class camTest : MonoBehaviour
+public class ThirdPersonCamController : MonoBehaviour
 {
     [Header("Camera Follow")]
     public Transform targetTransform; // object the camera will follow
@@ -9,12 +10,15 @@ public class camTest : MonoBehaviour
     public float cameraFollowSpeed = 0.2f;
 
     public float mouseSensitivity = 100.0f;
+    public float lookSensH = 0.1f;
+    public float lookSensV = 0.1f;
     public float clampAngle = 80.0f;
 
     private float rotY = 0.0f; // rotation around the up/y axis
     private float rotX = 0.0f; // rotation around the right/x axis
 
     [Header("Player Look Direction")]
+    [SerializeField] private playerLocomotionInput PLI;
     public Transform player;
     public Transform playerObj;
     public Transform orientation;
@@ -25,7 +29,7 @@ public class camTest : MonoBehaviour
 
     private void Awake()
     {
-        targetTransform = FindFirstObjectByType<playerTEST>().transform;
+        targetTransform = FindFirstObjectByType<playerController>().transform;
         Vector3 rot = transform.localRotation.eulerAngles;
         rotY = rot.y;
         rotX = rot.x;
@@ -39,10 +43,10 @@ public class camTest : MonoBehaviour
         transform.position = targetPos;
     }
 
-    void Update()
+    void LateUpdate()
     {
-        float mouseX = Input.GetAxis("Mouse X");
-        float mouseY = -Input.GetAxis("Mouse Y");
+        float mouseX = PLI.lookInput.x;
+        float mouseY = -PLI.lookInput.y;
 
         rotY += mouseX * mouseSensitivity * Time.deltaTime;
         rotX += mouseY * mouseSensitivity * Time.deltaTime;

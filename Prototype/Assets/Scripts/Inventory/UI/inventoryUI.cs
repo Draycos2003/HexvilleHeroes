@@ -62,7 +62,6 @@ public class inventoryUI : MonoBehaviour
         int index = listOfUIItems.IndexOf(item);
         if (index == -1)
             return;
-        inventoryItemUI.SetItemIndex(index);
         OnDescriptionRequested?.Invoke(index);
     }
 

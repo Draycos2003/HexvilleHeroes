@@ -48,17 +48,10 @@ public class inventoryItemUI : MonoBehaviour, IPointerClickHandler, IBeginDragHa
 
     public void Select()
     {
-        if (playerInv.inventoryItems[itemIndex].item.IType == ItemSO.ItemType.consumable)
-        {
-            actionTxt.text = "Use";
-        }
-        else
-        {
-            actionTxt.text = "Equip";
-        }
+        Debug.Log($"{itemIndex}");
+        
 
         borderImage.enabled = true;
-        actionPanel.SetActive(true);
     }
 
     public static void SetItemIndex(int index)
@@ -88,6 +81,16 @@ public class inventoryItemUI : MonoBehaviour, IPointerClickHandler, IBeginDragHa
     {
         if (data.button == PointerEventData.InputButton.Right)
         {
+            if (playerInv.inventoryItems[itemIndex].item.IType == ItemSO.ItemType.consumable)
+            {
+                actionTxt.text = "Use";
+            }
+            else
+            {
+                actionTxt.text = "Equip";
+            }
+
+            actionPanel.SetActive(true);
             OnRightMouseBtnClick?.Invoke(this);
         }
         else

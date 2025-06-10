@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.SceneManagement;
+using FinalController;
 
 public class playerController : MonoBehaviour, IDamage, IPickup
 {
@@ -34,8 +35,10 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     [Header("Player Stats")]
     public int HP;
     public int Shield;
-    [SerializeField] private float speed;
-    [SerializeField] private float sprintMod;
+    [SerializeField] private int runSpeed = 5;
+    [SerializeField] private int sprintSpeed = 10;
+    [SerializeField] private float rotationSpeed;
+    [SerializeField] private int sprintMod;
     [SerializeField] private int jumpMax;
     [SerializeField] private int jumpForce;
     [SerializeField] private int gold;
@@ -69,7 +72,6 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     public int MAXHPOrig => maxHP;
     public int ShieldOrig => Shield;
     public int MAXShieldOrig => maxShield;
-    public float speedOG { get; private set; }
     public InventoryItem item { get; private set; }
 
     #endregion
@@ -82,17 +84,21 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     private int originalSceneIndex;
 
     private List<ItemParameter> parameters;
-    private Camera cam;
 
     private Vector3 moveDir;
     private Vector3 playerVel;
-    private bool isSprinting;
     private int jumpCount;
     private float shootTimer;
     private bool isPlayerStep;
 
+    Quaternion targetRotation;
+    private ThirdPersonCamController thirdPerson;
+    playerLocomotionInput playerLocomotionInput;
+    playerState playerState;
+
     private Animator animator;
     private int allTimeDamageBuffAmount;
+    private bool isInteracting;
 
     #endregion
 
@@ -108,10 +114,12 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     private void Start()
     {
-        cam = Camera.main;
+        thirdPerson = FindFirstObjectByType<ThirdPersonCamController>();
+        playerLocomotionInput = GetComponent<playerLocomotionInput>();
+        playerState = GetComponent<playerState>();
         animator = GetComponent<Animator>();
-        speedOG = speed;
         damage = GetComponentInChildren<Damage>();
+        controller = GetComponent<CharacterController>();
         maxHP = HP;
         maxShield = Shield;
         weaponAgent = GetComponent<agentWeapon>();
@@ -121,10 +129,15 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     private void Update()
     {
         shootTimer += Time.deltaTime;
-        Movement();
-        Sprint();
+        HandleAllMovement();
         UpdateInventoryItem();
         SetAnimParams();
+
+    }
+
+    private void LateUpdate()
+    {
+        thirdPerson.FollowTarget();
     }
 
     #endregion
@@ -145,35 +158,72 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     #region Movement
 
-    private void Movement()
+    private void HandleAllMovement()
     {
-        if (controller.isGrounded && jumpCount != 0)
+        UpdateMovmentState();
+        LateralMovement();
+        FallingAndLanding();
+    }
+
+    private void UpdateMovmentState()
+    {
+        bool isMovementInput = playerLocomotionInput.movementInput != Vector2.zero;
+        bool isMovingLaterally = IsMovingLaterally();
+        bool isSprinting = playerLocomotionInput.sprintToggledOn && isMovingLaterally;
+
+        PlayerMovementState lateralState =  isSprinting ? PlayerMovementState.Sprinting :
+                               isMovingLaterally || isMovementInput ? PlayerMovementState.Running : PlayerMovementState.Idling;
+
+        playerState.SetPlayerMovementState( lateralState );
+    }
+
+    private bool IsMovingLaterally()
+    {
+        return playerLocomotionInput.movementInput != Vector2.zero;
+    }
+
+    private void FallingAndLanding()
+    {
+        
+    }
+
+    private void LateralMovement()
+    {
+        if (isInteracting)
         {
+            return;
+        }
+        if (controller.isGrounded)
+        {
+            if (this.moveDir.normalized.magnitude > 0.1f && !isPlayerStep)
+            {
+                StartCoroutine(PlayStep());
+            }
+
             jumpCount = 0;
             playerVel = Vector3.zero;
         }
 
-        moveDir = (Input.GetAxis("Horizontal") * transform.right) + (Input.GetAxis("Vertical") * transform.forward);
-        controller.Move(moveDir * speed * Time.deltaTime);
+        // State dependent move speed
+        bool isSprinting = playerState.playerMovementStateCur == PlayerMovementState.Sprinting;
+        float speed = isSprinting ? sprintSpeed : runSpeed;
 
-        Jump();
+        float h = playerLocomotionInput.movementInput.x;
+        float v = playerLocomotionInput.movementInput.y;
 
-        controller.Move(playerVel * Time.deltaTime);
-        playerVel.y -= gravity * Time.deltaTime;
-    }
+        float moveAmount = Mathf.Abs(h) + Mathf.Abs(v);
 
-    private void Sprint()
-    {
-        if (Input.GetButtonDown("Sprint"))
+        Vector3 moveInput = new Vector3(h, 0, v).normalized;
+
+        moveDir = (thirdPerson.PlanarRotation * moveInput);
+
+        if (moveAmount > 0)
         {
-            speed *= sprintMod;
-            isSprinting = true;
+            controller.Move(speed * Time.deltaTime * moveDir);
+            targetRotation = Quaternion.LookRotation(new Vector3(thirdPerson.transform.forward.x, 0f, thirdPerson.transform.forward.z));
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
-        else if (Input.GetButtonUp("Sprint"))
-        {
-            speed = speedOG;
-            isSprinting = false;
-        }
+
     }
 
     private void Jump()
@@ -183,12 +233,9 @@ public class playerController : MonoBehaviour, IDamage, IPickup
             jumpCount++;
             playerVel.y = jumpForce;
             soundFXmanager.instance.PlaySoundFXClip(jumpAudio[Random.Range(0, jumpAudio.Length)], transform, jumpVolume);
-            animator.SetBool("isJumping", true);
-        }
 
-        if (Input.GetButtonUp("Jump"))
-        {
-            animator.SetBool("isJumping", false);
+            controller.Move(playerVel * Time.deltaTime);
+            playerVel.y -= gravity * Time.deltaTime;
         }
     }
 
@@ -254,8 +301,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     public void gainSpeed(int amount)
     {
-        speed += amount;
-        speedOG = speed;
+        runSpeed += amount;
     }
 
     #endregion
@@ -334,26 +380,8 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     private void SetAnimParams()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (item.isEmpty)
-            {
-                animator.SetTrigger("attack");
-                return;
-            }
-
-            if (shootTimer >= shootRate && item.item.IType == ItemSO.ItemType.ranged)
-            {
-                animator.SetTrigger("shoot");
-                shootTimer = 0;
-            }
-            else if (item.item.IType == ItemSO.ItemType.melee)
-            {
-                animator.SetTrigger("attack");
-            }
-        }
-
         float currentSpeed = animator.GetFloat("speed");
+        Mathf.Clamp01(currentSpeed);
         animator.SetFloat("speed", Mathf.Lerp(currentSpeed, moveDir.magnitude, Time.deltaTime * animTransSpeed));
     }
 
@@ -384,23 +412,17 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     #region Audio
 
-    public void WalkSound()
-    {
-        if (controller.isGrounded && moveDir.normalized.magnitude > 0.3f && !isPlayerStep)
-        {
-            StartCoroutine(PlayStep());
-        }
-    }
-
     private IEnumerator PlayStep()
     {
         isPlayerStep = true;
         soundFXmanager.instance.PlaySoundFXClip(walkAudio[Random.Range(0, walkAudio.Length)], transform, walkVolume);
 
-        if (isSprinting)
+        if (true)
             yield return new WaitForSeconds(0.3f);
-        else
-            yield return new WaitForSeconds(0.5f);
+        //else if (animator.GetFloat("speed") > 0.9f)
+        //    yield return new WaitForSeconds(0.4f);
+        //else
+        //    yield return new WaitForSeconds(0.5f);
 
         isPlayerStep = false;
     }
