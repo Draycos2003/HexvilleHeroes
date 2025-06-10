@@ -29,7 +29,10 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     [SerializeField] private float damageVolume;
 
     [Header("World Settings")]
-    [SerializeField] private int gravity;
+    [SerializeField] private float gravity = -9.81f;
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private float groundDistance = 0.4f;
+    [SerializeField] private LayerMask groundMask;
     [SerializeField] private AudioSource switchWeaponSoundSource;
 
     [Header("Player Stats")]
@@ -37,10 +40,9 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     public int Shield;
     [SerializeField] private int runSpeed = 5;
     [SerializeField] private int sprintSpeed = 10;
-    [SerializeField] private float rotationSpeed;
     [SerializeField] private int sprintMod;
     [SerializeField] private int jumpMax;
-    [SerializeField] private int jumpForce;
+    [SerializeField] private int jumpHeight;
     [SerializeField] private int gold;
 
     [Header("Player UI")]
@@ -62,6 +64,9 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     [Header("Animation")]
     [SerializeField] private float animTransSpeed;
+    [SerializeField] private float rotationTolerance = 90f;
+    [SerializeField] private float rotationSpeed = 200f;
+    [SerializeField] private float rotationTime = 0.25f;
 
     #endregion
 
@@ -73,6 +78,8 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     public int ShieldOrig => Shield;
     public int MAXShieldOrig => maxShield;
     public InventoryItem item { get; private set; }
+    public float rotationMismatch { get; private set; } = 0f;
+    public bool isRotating { get; private set; } = false;
 
     #endregion
 
@@ -86,10 +93,12 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     private List<ItemParameter> parameters;
 
     private Vector3 moveDir;
-    private Vector3 playerVel;
+    private Vector3 velocity;
     private int jumpCount;
     private float shootTimer;
     private bool isPlayerStep;
+    private bool isGrounded;
+    private bool topOfJump;
 
     Quaternion targetRotation;
     private ThirdPersonCamController thirdPerson;
@@ -97,8 +106,8 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     playerState playerState;
 
     private Animator animator;
+    private float rotationTimer;
     private int allTimeDamageBuffAmount;
-    private bool isInteracting;
 
     #endregion
 
@@ -110,6 +119,10 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         {
             instance = this;
         }
+
+        controller = GetComponent<CharacterController>();
+
+        
     }
 
     private void Start()
@@ -119,7 +132,6 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         playerState = GetComponent<playerState>();
         animator = GetComponent<Animator>();
         damage = GetComponentInChildren<Damage>();
-        controller = GetComponent<CharacterController>();
         maxHP = HP;
         maxShield = Shield;
         weaponAgent = GetComponent<agentWeapon>();
@@ -132,7 +144,6 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         HandleAllMovement();
         UpdateInventoryItem();
         SetAnimParams();
-
     }
 
     private void LateUpdate()
@@ -160,9 +171,9 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     private void HandleAllMovement()
     {
-        UpdateMovmentState();
         LateralMovement();
-        FallingAndLanding();
+        VerticalMovement();
+        UpdateMovmentState();
     }
 
     private void UpdateMovmentState()
@@ -170,43 +181,45 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         bool isMovementInput = playerLocomotionInput.movementInput != Vector2.zero;
         bool isMovingLaterally = IsMovingLaterally();
         bool isSprinting = playerLocomotionInput.sprintToggledOn && isMovingLaterally;
+        bool isGrounded = controller.isGrounded;
 
         PlayerMovementState lateralState =  isSprinting ? PlayerMovementState.Sprinting :
                                isMovingLaterally || isMovementInput ? PlayerMovementState.Running : PlayerMovementState.Idling;
 
-        playerState.SetPlayerMovementState( lateralState );
-    }
+        playerState.SetPlayerMovementState(lateralState);
 
-    private bool IsMovingLaterally()
-    {
-        return playerLocomotionInput.movementInput != Vector2.zero;
-    }
+        float peak = jumpHeight / 2;
 
-    private void FallingAndLanding()
-    {
-        
+        if(velocity.y <= peak) { topOfJump = true; }
+
+        // control airborn state
+        if (!isGrounded && velocity.y > 0 && !topOfJump)
+        {
+            playerState.SetPlayerMovementState(PlayerMovementState.Jumping);
+        }
+        else if(!isGrounded && (velocity.y > 0 || velocity.y < 0))
+        {
+            playerState.SetPlayerMovementState(PlayerMovementState.Falling);
+        }
     }
 
     private void LateralMovement()
     {
-        if (isInteracting)
-        {
-            return;
-        }
+        // State dependent move speed
+        bool isSprinting = playerState.playerMovementStateCur == PlayerMovementState.Sprinting;
+        float speed = isSprinting ? sprintSpeed : runSpeed;
+
         if (controller.isGrounded)
         {
-            if (this.moveDir.normalized.magnitude > 0.1f && !isPlayerStep)
+            if (moveDir.normalized.magnitude > 0.1f && !isPlayerStep)
             {
                 StartCoroutine(PlayStep());
             }
 
+            topOfJump = false;
             jumpCount = 0;
-            playerVel = Vector3.zero;
+            velocity = Vector3.zero;
         }
-
-        // State dependent move speed
-        bool isSprinting = playerState.playerMovementStateCur == PlayerMovementState.Sprinting;
-        float speed = isSprinting ? sprintSpeed : runSpeed;
 
         float h = playerLocomotionInput.movementInput.x;
         float v = playerLocomotionInput.movementInput.y;
@@ -217,26 +230,68 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
         moveDir = (thirdPerson.PlanarRotation * moveInput);
 
+        UpdatePlayerRotation();
+
         if (moveAmount > 0)
         {
-            controller.Move(speed * Time.deltaTime * moveDir);
-            targetRotation = Quaternion.LookRotation(new Vector3(thirdPerson.transform.forward.x, 0f, thirdPerson.transform.forward.z));
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            controller.Move(moveDir * Time.deltaTime * speed);
         }
-
     }
 
-    private void Jump()
+    private void VerticalMovement()
     {
-        if (Input.GetButtonDown("Jump") && jumpCount < jumpMax)
-        {
-            jumpCount++;
-            playerVel.y = jumpForce;
-            soundFXmanager.instance.PlaySoundFXClip(jumpAudio[Random.Range(0, jumpAudio.Length)], transform, jumpVolume);
+        // Ground check
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
-            controller.Move(playerVel * Time.deltaTime);
-            playerVel.y -= gravity * Time.deltaTime;
+        if (isGrounded && velocity.y < 0)
+        {
+            velocity.y = -2f; // small downward force to stay grounded
         }
+
+        // Jump input
+        if (playerLocomotionInput.jumpPressed && isGrounded)
+        {
+            Debug.Log("JUMP");
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+        }
+
+        // Apply gravity
+        velocity.y += gravity * Time.deltaTime;
+        controller.Move(velocity * Time.deltaTime);
+    }
+
+    private void UpdatePlayerRotation()
+    {
+        // if rotation mismatch is not within tolerance. or rotation timer is active, rotate
+        // also rotate if moving
+        bool isIdling = playerState.playerMovementStateCur == PlayerMovementState.Idling;
+        isRotating = rotationTimer > 0;
+
+        if(!isIdling || Mathf.Abs(rotationMismatch) > rotationTolerance || isRotating)
+        {
+            targetRotation = Quaternion.LookRotation(new Vector3(thirdPerson.transform.forward.x, 0f, thirdPerson.transform.forward.z));
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+
+            if(Mathf.Abs(rotationMismatch) > rotationTolerance)
+            {
+                rotationTimer = rotationTime;
+            }
+            rotationTimer -= Time.deltaTime;
+        }
+
+        Vector3 camForwardProjectedXZ = new Vector3(thirdPerson.transform.forward.x, 0f, thirdPerson.transform.forward.z).normalized;
+        Vector3 crossProduct = Vector3.Cross(transform.forward, camForwardProjectedXZ);
+        float sign = Mathf.Sign(Vector3.Dot(crossProduct, transform.up));
+        rotationMismatch = sign * Vector3.Angle(transform.forward, camForwardProjectedXZ);
+    }
+
+    #endregion
+
+    #region State Checks
+
+    private bool IsMovingLaterally()
+    {
+        return playerLocomotionInput.movementInput != Vector2.zero;
     }
 
     #endregion

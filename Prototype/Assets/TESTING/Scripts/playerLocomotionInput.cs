@@ -6,12 +6,16 @@ namespace FinalController
     [DefaultExecutionOrder(-2)]
     public class playerLocomotionInput : MonoBehaviour, InputSystem_Actions.IPlayerActions
     {
+        #region Class Variables
         [SerializeField] private bool holdToSprint = true; 
         public bool sprintToggledOn { get; private set; }
         public InputSystem_Actions Action { get; private set; }
         public Vector2 movementInput { get; private set; }
         public Vector2 lookInput { get; private set; }
+        public bool jumpPressed { get; private set; }
+        #endregion
 
+        #region StartUp
         private void OnEnable()
         {
             Action = new InputSystem_Actions();
@@ -26,13 +30,22 @@ namespace FinalController
             Action.Player.Disable();
             Action.Player.RemoveCallbacks(this);
         }
+        #endregion
+
+        #region LateUpdate Logic
+        private void LateUpdate()
+        {
+            jumpPressed = false;
+        }
 
         public void OnMove(InputAction.CallbackContext context)
         {
             movementInput = context.ReadValue<Vector2>();
             print(movementInput);
         }
+        #endregion
 
+        #region Input Callbacks
         public void OnSprint(InputAction.CallbackContext context)
         {
             if(context.performed)
@@ -56,6 +69,13 @@ namespace FinalController
             lookInput = context.ReadValue<Vector2>();
         }
 
+        public void OnJump(InputAction.CallbackContext context)
+        {
+            if(!context.performed) { return; }
+
+            jumpPressed = true;
+        }
+
         public void OnAttack1(InputAction.CallbackContext context)
         {
         }
@@ -72,10 +92,6 @@ namespace FinalController
         {
         }
 
-        public void OnJump(InputAction.CallbackContext context)
-        {
-        }
-
         public void OnNewaction(InputAction.CallbackContext context)
         {
         }
@@ -87,6 +103,7 @@ namespace FinalController
         public void OnPrevious(InputAction.CallbackContext context)
         {
         }
+        #endregion
     }
 
 

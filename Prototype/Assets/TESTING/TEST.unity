@@ -858,6 +858,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1741913172}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &2028308565
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2028308566}
+  m_Layer: 0
+  m_Name: GroundCheck
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2028308566
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2028308565}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6105335951971383052}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &58622910546548261
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1794,12 +1825,6 @@ MonoBehaviour:
   lookSensV: 0.1
   clampAngle: 80
   PLI: {fileID: 7611836897901660080}
-  player: {fileID: 0}
-  playerObj: {fileID: 6105335951971383052}
-  orientation: {fileID: 0}
-  body: {fileID: 0}
-  rotationSpeed: 7
-  inputDir: {x: 0, y: 0, z: 0}
 --- !u!222 &1109448732551418347
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3952,7 +3977,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   minDistance: 0.2
-  maxDistance: 4
+  maxDistance: 4.5
   smooth: 10
   dollyDir: {x: 0, y: 0, z: 0}
   dollyDirAdjusted: {x: 0, y: 0, z: 0}
@@ -4693,16 +4718,20 @@ MonoBehaviour:
   jumpVolume: 0.2
   attackVolume: 0.2
   damageVolume: 0.2
-  gravity: 10
+  gravity: -9.81
+  groundCheck: {fileID: 2028308566}
+  groundDistance: 0.4
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 1
   switchWeaponSoundSource: {fileID: 0}
   HP: 100
   Shield: 20
   runSpeed: 10
   sprintSpeed: 20
-  rotationSpeed: 500
   sprintMod: 2
-  jumpMax: 1
-  jumpForce: 9
+  jumpMax: 2
+  jumpHeight: 9
   gold: 0
   playerMenu: {fileID: 0}
   inventoryCanvas: {fileID: 0}
@@ -4716,7 +4745,9 @@ MonoBehaviour:
   itemModel: {fileID: 2241840047601381626}
   equipSlot: {fileID: 1259853654572089393}
   animTransSpeed: 2
-  movingThreshold: 0.1
+  rotationTolerance: 90
+  rotationSpeed: 500
+  rotationTime: 0.67
 --- !u!222 &5410449554658403796
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5094,12 +5125,12 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 2.35
+  m_Height: 2.5
   m_Radius: 0.75
   m_SlopeLimit: 45
   m_StepOffset: 0.5
-  m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.1
+  m_SkinWidth: 0.0001
+  m_MinMoveDistance: 0.00001
   m_Center: {x: 0, y: 1.25, z: 0}
 --- !u!1 &6025401832069349393
 GameObject:
@@ -5192,7 +5223,7 @@ Transform:
   m_GameObject: {fileID: 6686092820374432773}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.6608646, z: -0, w: -0.7505052}
-  m_LocalPosition: {x: 1.3045793, y: 11.110002, z: -13.382423}
+  m_LocalPosition: {x: 1.3045793, y: 14, z: -19}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5201,6 +5232,7 @@ Transform:
   - {fileID: 7773825243576049728}
   - {fileID: 3888433720835846510}
   - {fileID: 139696036024019382}
+  - {fileID: 2028308566}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6181160965295532472
@@ -6806,6 +6838,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 5218578598279785600}
   locomotionBlendSpeed: 4
+  pc: {fileID: 0}
 --- !u!223 &9153284874548406089
 Canvas:
   m_ObjectHideFlags: 0

@@ -10,6 +10,14 @@ namespace FinalController
         {
             playerMovementStateCur = playerMovementState;
         }
+
+        public bool isGroundedState()
+        {
+            return playerMovementStateCur == PlayerMovementState.Idling ||
+                playerMovementStateCur == PlayerMovementState.Walking ||
+                playerMovementStateCur == PlayerMovementState.Running ||
+                playerMovementStateCur == PlayerMovementState.Sprinting;
+        }
     }
 
     public enum PlayerMovementState

@@ -19,12 +19,6 @@ public class ThirdPersonCamController : MonoBehaviour
 
     [Header("Player Look Direction")]
     [SerializeField] private playerLocomotionInput PLI;
-    public Transform player;
-    public Transform playerObj;
-    public Transform orientation;
-    public Rigidbody body;
-    public float rotationSpeed;
-    [HideInInspector] public Vector3 inputDir;
 
 
     private void Awake()
@@ -55,6 +49,7 @@ public class ThirdPersonCamController : MonoBehaviour
 
         Quaternion localRotation = Quaternion.Euler(rotX, rotY, 0.0f);
         transform.rotation = localRotation;
+
     }
 
     public Quaternion PlanarRotation => Quaternion.Euler(0, rotY, 0);
