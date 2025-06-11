@@ -1,15 +1,17 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class CommandHandler
 {
     private Dictionary<string, IConsoleCommand> commands = new();
+    private Action<string> log;
 
-    public CommandHandler()
+    // For any of my classmates, this is where you will add (Register) new commands to run scripts or log something, after you make the script for your command.
+    public CommandHandler(Action<string> outputLogger)
     {
-        Register(new ShowcaseCommand());
-        Register(new HelpCommand(commands));
+        log = outputLogger;
+        Register(new ShowcaseCommand(log));
+        Register(new HelpCommand(commands, log));
     }
 
     public void Register(IConsoleCommand cmd)
@@ -21,17 +23,17 @@ public class CommandHandler
     {
         if (string.IsNullOrWhiteSpace(input)) return;
 
-        string[] parts = input.Trim().ToLower().Split(' ');
-        string cmdName = parts[0];
+        string[] parts = input.Trim().Split(' ');
+        string cmd = parts[0].ToLower();
         string[] args = parts.Length > 1 ? parts[1..] : Array.Empty<string>();
 
-        if (commands.TryGetValue(cmdName, out var command))
+        if (commands.TryGetValue(cmd, out var command))
         {
             command.Execute(args);
         }
         else
         {
-            Debug.LogWarning("Unknown command: " + cmdName);
+            log($"Unknown command: {cmd}");
         }
     }
 }
