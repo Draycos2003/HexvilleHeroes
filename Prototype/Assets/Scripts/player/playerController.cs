@@ -159,15 +159,6 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
         moveDir = (Input.GetAxis("Horizontal") * transform.right) + (Input.GetAxis("Vertical") * transform.forward);
         controller.Move(moveDir * speed * Time.deltaTime); 
-        
-        if(Input.GetAxis("Horizontal") == 0 && Input.GetAxis("Vertical") == 0)
-        {
-            player.ChangeState(PlayerState.idle);
-        }
-        else
-        {
-            player.ChangeState((PlayerState.moving));
-        }
 
             Jump();
 
