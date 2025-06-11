@@ -38,6 +38,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     [Header("Player Stats")]
     public int HP;
     public int Shield;
+    [SerializeField] private int walkSpeed = 3;
     [SerializeField] private int runSpeed = 5;
     [SerializeField] private int sprintSpeed = 10;
     [SerializeField] private int sprintMod;
@@ -107,6 +108,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     private Animator animator;
     private float rotationTimer;
+    private bool isRotatingClockwise;
     private int allTimeDamageBuffAmount;
 
     #endregion
@@ -178,12 +180,15 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     private void UpdateMovmentState()
     {
+        bool canRun = CanRun();
         bool isMovementInput = playerLocomotionInput.movementInput != Vector2.zero;
         bool isMovingLaterally = IsMovingLaterally();
         bool isSprinting = playerLocomotionInput.sprintToggledOn && isMovingLaterally;
+        bool isWalking = (isMovingLaterally && !canRun) || playerLocomotionInput.walkToggledOn;
         bool isGrounded = controller.isGrounded;
 
-        PlayerMovementState lateralState =  isSprinting ? PlayerMovementState.Sprinting :
+        PlayerMovementState lateralState =  isWalking ? PlayerMovementState.Walking :
+                                isSprinting ? PlayerMovementState.Sprinting :
                                isMovingLaterally || isMovementInput ? PlayerMovementState.Running : PlayerMovementState.Idling;
 
         playerState.SetPlayerMovementState(lateralState);
@@ -207,7 +212,10 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     {
         // State dependent move speed
         bool isSprinting = playerState.playerMovementStateCur == PlayerMovementState.Sprinting;
-        float speed = isSprinting ? sprintSpeed : runSpeed;
+        bool isWalking = playerState.playerMovementStateCur == PlayerMovementState.Walking;
+
+        float speed = isWalking ? walkSpeed :
+                      isSprinting ? sprintSpeed : runSpeed;
 
         if (controller.isGrounded)
         {
@@ -267,22 +275,41 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         bool isIdling = playerState.playerMovementStateCur == PlayerMovementState.Idling;
         isRotating = rotationTimer > 0;
 
-        if(!isIdling || Mathf.Abs(rotationMismatch) > rotationTolerance || isRotating)
+        if (!isIdling)
         {
-            targetRotation = Quaternion.LookRotation(new Vector3(thirdPerson.transform.forward.x, 0f, thirdPerson.transform.forward.z));
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-
-            if(Mathf.Abs(rotationMismatch) > rotationTolerance)
-            {
-                rotationTimer = rotationTime;
-            }
-            rotationTimer -= Time.deltaTime;
+            RotatePlayerToTarget();
+        }
+        else if( Mathf.Abs(rotationMismatch) > rotationTolerance || isRotating)
+        {
+            UpdateIdleRotation(rotationTolerance);
         }
 
         Vector3 camForwardProjectedXZ = new Vector3(thirdPerson.transform.forward.x, 0f, thirdPerson.transform.forward.z).normalized;
         Vector3 crossProduct = Vector3.Cross(transform.forward, camForwardProjectedXZ);
         float sign = Mathf.Sign(Vector3.Dot(crossProduct, transform.up));
         rotationMismatch = sign * Vector3.Angle(transform.forward, camForwardProjectedXZ);
+    }
+
+    private void UpdateIdleRotation(float rotationTolerence)
+    {
+        // initiate new rotation direction
+        if (Mathf.Abs(rotationMismatch) > rotationTolerance)
+        {
+            rotationTimer = rotationTime;
+            isRotatingClockwise = rotationMismatch > rotationTolerance;
+        }
+        rotationTimer -= Time.deltaTime;
+
+        if((isRotatingClockwise && rotationMismatch > 0f) || (!isRotatingClockwise && rotationMismatch < 0f))
+        {
+            RotatePlayerToTarget();
+        }
+    }
+
+    private void RotatePlayerToTarget()
+    {
+        targetRotation = Quaternion.LookRotation(new Vector3(thirdPerson.transform.forward.x, 0f, thirdPerson.transform.forward.z));
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
     }
 
     #endregion
@@ -292,6 +319,12 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     private bool IsMovingLaterally()
     {
         return playerLocomotionInput.movementInput != Vector2.zero;
+    }
+
+    private bool CanRun()
+    {
+       // this means player is moving diagonally at 45 degrees or forward, if so, player can run
+       return playerLocomotionInput.movementInput.y >= Mathf.Abs(playerLocomotionInput.movementInput.x);
     }
 
     #endregion

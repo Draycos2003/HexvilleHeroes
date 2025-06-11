@@ -8,11 +8,12 @@ namespace FinalController
     {
         #region Class Variables
         [SerializeField] private bool holdToSprint = true; 
-        public bool sprintToggledOn { get; private set; }
         public InputSystem_Actions Action { get; private set; }
         public Vector2 movementInput { get; private set; }
         public Vector2 lookInput { get; private set; }
         public bool jumpPressed { get; private set; }
+        public bool sprintToggledOn { get; private set; }
+        public bool walkToggledOn { get; private set; }
         #endregion
 
         #region StartUp
@@ -74,6 +75,13 @@ namespace FinalController
             if(!context.performed) { return; }
 
             jumpPressed = true;
+        }
+
+        public void OnToggleWalk(InputAction.CallbackContext context)
+        {
+            if (!context.performed) { return; }
+
+            walkToggledOn = !walkToggledOn;
         }
 
         public void OnAttack1(InputAction.CallbackContext context)
