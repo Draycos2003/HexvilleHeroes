@@ -16,6 +16,6 @@ public class ShowcaseCommand : IConsoleCommand
     public void Execute(string[] args)
     {
         _log("Loading Showcase scene...");
-        SceneManager.LoadScene("Showcase");
+        SceneManager.LoadScene("Tutorial");
     }
 }
