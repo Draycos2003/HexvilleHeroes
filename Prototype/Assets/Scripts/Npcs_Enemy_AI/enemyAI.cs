@@ -1,12 +1,13 @@
 using UnityEngine;
+using System;
 using System.Collections;
 using UnityEngine.AI;
 using System.Collections.Generic;
 
-
-
 public class enemyAI : MonoBehaviour, IDamage
 {
+    public event Action<GameObject> OnDeath;
+
     LootBag loot;
     gamemanager gm;
 
@@ -163,11 +164,12 @@ public class enemyAI : MonoBehaviour, IDamage
 
            if(HP <= 0)
            {
+                OnDeath?.Invoke(gameObject);
                 Destroy(gameObject);
               
                 StopCoroutine(co);
                 loot.InstantiateLoot(lootSpawnPos.position);
-                gamemanager.instance.updateGameGoal(-1);
+                //gamemanager.instance.updateGameGoal(-1);
            }
        }
     }

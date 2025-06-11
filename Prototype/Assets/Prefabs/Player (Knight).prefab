@@ -310,6 +310,7 @@ GameObject:
   - component: {fileID: 3028662335168938656}
   - component: {fileID: 4039291389668957640}
   - component: {fileID: 4383099305921821728}
+  - component: {fileID: 1279706340052365945}
   - component: {fileID: 6011799365913549139}
   - component: {fileID: 4750980571733533065}
   - component: {fileID: 2496165548454204625}
@@ -499,50 +500,58 @@ MonoBehaviour:
     m_Bits: 8
   damage: {fileID: 0}
   walkAudio:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 8300000, guid: 687652ba7e602a140af891d9a5a4facb, type: 3}
+  - {fileID: 8300000, guid: e13163c314fb2fd609b55cc38cb3efaf, type: 3}
+  - {fileID: 8300000, guid: a696cd67748dc2e898b03289e7348039, type: 3}
   jumpAudio:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 8300000, guid: d95bc57d46a79a2e9ad32883943a7edc, type: 3}
+  - {fileID: 8300000, guid: 537152fffe826f65dac34bf793529bf8, type: 3}
   attackAudio:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 8300000, guid: c2b42106beb01ab6ebb2671fd56affec, type: 3}
+  - {fileID: 8300000, guid: 58fd64c35b57bdf5baa84bf1e4a0a4c2, type: 3}
   damageAudio:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 8300000, guid: 5b24af6220de802aabac259142ba6356, type: 3}
+  - {fileID: 8300000, guid: dd2ad21970d28a472ba342bf971cb9b2, type: 3}
+  - {fileID: 8300000, guid: 44712f855edf4afb8a9ed2169d89bf72, type: 3}
   walkVolume: 0.2
   jumpVolume: 0.2
   attackVolume: 0.2
   damageVolume: 0.2
-  gravity: 35
+  gravity: 30
   switchWeaponSoundSource: {fileID: 0}
   HP: 100
   Shield: 20
-  playerMenu: {fileID: 6823852909827024015}
-  inventoryCanvas: {fileID: 4705415026680242166}
   speed: 5
-  speedOG: 0
-  sprintMod: 2
-  jumpMax: 2
-  jumpForce: 12
+  sprintMod: 1.7
+  jumpMax: 1
+  jumpForce: 9
   gold: 0
+  playerMenu: {fileID: 6823852909827024015}
+  inventoryCanvas: {fileID: 0}
   weapon: {fileID: 8652175422321857031}
   shootPos: {fileID: 809476278034311346}
+  damageWithoutAWeapon: 3
   damageAmount: 0
   shootRate: 0
   shootDist: 0
-  damageWithoutAWeapon: 3
+  weaponAgent: {fileID: 0}
   itemModel: {fileID: 3156905106024963235}
-  equipSlot: {fileID: 0}
-  item:
-    quantity: 0
-    item: {fileID: 0}
-    itemState: []
+  equipSlot: {fileID: 5441691092716414744}
   animTransSpeed: 8
+--- !u!114 &1279706340052365945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 927872996529673029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ff930c01aa38ab42961dc619a8d2d93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  keys: 00000000
+  checkpoints: 00000000
 --- !u!114 &6011799365913549139
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1561,7 +1570,7 @@ Transform:
   m_GameObject: {fileID: 3604269068361108430}
   serializedVersion: 2
   m_LocalRotation: {x: 0.13904405, y: -0.0074269124, z: 0.0010428124, w: 0.9902578}
-  m_LocalPosition: {x: 0.009756058, y: 2.1, z: -0.46831274}
+  m_LocalPosition: {x: 0, y: 2.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1650,7 +1659,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3604269068361108430}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: f3892932aaa814049816946bd16cce21, type: 2}
   m_CullingMode: 0
@@ -3713,7 +3722,7 @@ Transform:
   m_GameObject: {fileID: 8640734606835051711}
   serializedVersion: 2
   m_LocalRotation: {x: -0.028444856, y: -0.059939675, z: -0.0017087141, w: 0.9977952}
-  m_LocalPosition: {x: 0, y: 2.1000004, z: 0.000012175298}
+  m_LocalPosition: {x: 0, y: 2.1000004, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

@@ -25,6 +25,15 @@ public class inventorySO : ScriptableObject
         inventoryItems.Add(InventoryItem.GetEmptyItem());
     }
 
+    public List<InventoryItem> SaveInventory(List<InventoryItem> listToSave)
+    {
+        for (int i = 0; i < Size; i++)
+        {
+            listToSave.Add(inventoryItems[i]);
+        }
+        return listToSave;
+    }
+
     public int AddItem(ItemSO item, int quantity, List<ItemParameter> itemState = null)
     {
         if (InventoryFull())

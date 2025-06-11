@@ -34,8 +34,8 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     [Header("Player Stats")]
     public int HP;
     public int Shield;
-    [SerializeField] public int speed;
-    [SerializeField] private int sprintMod;
+    [SerializeField] private float speed;
+    [SerializeField] private float sprintMod;
     [SerializeField] private int jumpMax;
     [SerializeField] private int jumpForce;
     [SerializeField] private int gold;
@@ -51,6 +51,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     public int damageAmount;
     [HideInInspector] public float shootRate;
     [HideInInspector] public int shootDist;
+    [HideInInspector] public agentWeapon weaponAgent;
 
     [Header("Inventory")]
     [SerializeField] private GameObject itemModel;
@@ -58,10 +59,6 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     [Header("Animation")]
     [SerializeField] private float animTransSpeed;
-
-    [Header("States")]
-    [SerializeField]
-    private Player player;
 
     #endregion
 
@@ -72,7 +69,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     public int MAXHPOrig => maxHP;
     public int ShieldOrig => Shield;
     public int MAXShieldOrig => maxShield;
-    public int speedOG { get; private set; }
+    public float speedOG { get; private set; }
     public InventoryItem item { get; private set; }
 
     #endregion
@@ -86,7 +83,6 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     private List<ItemParameter> parameters;
     private Camera cam;
-    private agentWeapon weaponAgent;
 
     private Vector3 moveDir;
     private Vector3 playerVel;
@@ -125,7 +121,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     private void Update()
     {
         shootTimer += Time.deltaTime;
-        if (!Movement()) player.ChangeState(PlayerState.moving);
+        Movement();
         Sprint();
         UpdateInventoryItem();
         SetAnimParams();
@@ -149,7 +145,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     #region Movement
 
-    private bool Movement()
+    private void Movement()
     {
         if (controller.isGrounded && jumpCount != 0)
         {
@@ -158,14 +154,12 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         }
 
         moveDir = (Input.GetAxis("Horizontal") * transform.right) + (Input.GetAxis("Vertical") * transform.forward);
-        controller.Move(moveDir * speed * Time.deltaTime); 
+        controller.Move(moveDir * speed * Time.deltaTime);
 
-            Jump();
+        Jump();
 
         controller.Move(playerVel * Time.deltaTime);
         playerVel.y -= gravity * Time.deltaTime;
-
-        return true;
     }
 
     private void Sprint()
@@ -261,6 +255,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     public void gainSpeed(int amount)
     {
         speed += amount;
+        speedOG = speed;
     }
 
     #endregion

@@ -6,43 +6,69 @@ using TMPro;
 [RequireComponent(typeof(Collider))]
 public class ProximityPrompt : MonoBehaviour
 {
+    #region Inspector Fields
+
+    public enum PromptType
+    {
+        None,
+        KeyPickup
+        // Add more types here as needed
+    }
+
+    [Header("Pickup Type")]
+    [Tooltip("Select 'KeyPickup' if this prompt should collect a key, or 'None' otherwise")]
+    [SerializeField] private PromptType promptType = PromptType.None;
+
+    [ShowIf("promptType", PromptType.KeyPickup)]
+    [Header("Key Pickup Settings")]
+    [Tooltip("Index in PlayerProgression.keys list to set true on pickup")]
+    [SerializeField] private int keyIndex = -1;
+
     [Header("UI References")]
-    [SerializeField] CanvasGroup promptCanvasGroup;
-    [SerializeField] TextMeshProUGUI primaryPromptTextLabel;
-    [SerializeField] TextMeshProUGUI primarykeyTextLabel;
-    [SerializeField] TextMeshProUGUI secondarykeyTextLabel;
-    [SerializeField] TextMeshProUGUI secondaryPromptTextLabel;
+    [SerializeField] private CanvasGroup promptCanvasGroup;
+    [SerializeField] private TextMeshProUGUI primaryPromptTextLabel;
+    [SerializeField] private TextMeshProUGUI primarykeyTextLabel;
+    [SerializeField] private TextMeshProUGUI secondarykeyTextLabel;
+    [SerializeField] private TextMeshProUGUI secondaryPromptTextLabel;
 
     [Header("Prompt Settings")]
-    [SerializeField] KeyCode primaryKey = KeyCode.E;
-    [SerializeField] string primaryPromptMessage;
-    [SerializeField] KeyCode secondaryKey = KeyCode.None;
-    [SerializeField] string secondaryPromptMessage;
+    [SerializeField] private KeyCode primaryKey = KeyCode.E;
+    [SerializeField] private string primaryPromptMessage;
+    [SerializeField] private KeyCode secondaryKey = KeyCode.None;
+    [SerializeField] private string secondaryPromptMessage;
 
     [Header("Item Info Settings")]
-    [SerializeField] TextMeshProUGUI promptItemNameLabel;
-    [SerializeField] TextMeshProUGUI promptItemDescLabel;
-    [SerializeField] TextMeshProUGUI promptItemAmountLabel;
-    [SerializeField] string promptItemName;
-    [SerializeField] string promptDesc;
-    [SerializeField] string promptAmount;
+    [SerializeField] private TextMeshProUGUI promptItemNameLabel;
+    [SerializeField] private TextMeshProUGUI promptItemDescLabel;
+    [SerializeField] private TextMeshProUGUI promptItemAmountLabel;
+    [SerializeField] private string promptItemName;
+    [SerializeField] private string promptDesc;
+    [SerializeField] private string promptAmount;
 
     [Header("Fade Settings")]
-    [SerializeField] float fadeDuration;
+    [SerializeField] private float fadeDuration;
 
     [Header("Sight Settings")]
     [SerializeField, Tooltip("The Renderer on this object (or a child) used for sight checks")]
-    Renderer sightRenderer;
+    private Renderer sightRenderer;
 
     [Header("Events")]
     public UnityEvent onPrimaryPressed;
     public UnityEvent onSecondaryPressed;
 
-    bool playerInRange;
-    bool isVisible;
-    Coroutine fadeRoutine;
+    #endregion
 
-    void Awake()
+    #region Private Fields
+
+    private bool playerInRange;
+    private bool isVisible;
+    private Coroutine fadeRoutine;
+
+    #endregion
+
+    #region Unity Callbacks
+
+    private void Awake()
     {
         var buySell = GetComponent<ItemBuySell>();
         if (buySell != null)
@@ -81,20 +107,19 @@ public class ProximityPrompt : MonoBehaviour
         if (secondarykeyTextLabel != null) secondarykeyTextLabel.text = secondaryKey.ToString();
 
         if (sightRenderer == null)
-            sightRenderer = GetComponent<Renderer>()
-                         ?? GetComponentInChildren<Renderer>();
+            sightRenderer = GetComponent<Renderer>() ?? GetComponentInChildren<Renderer>();
 
         if (sightRenderer == null)
             Debug.LogWarning($"[ProximityPrompt] No Renderer for frustum check on '{name}'");
     }
 
-    void Reset()
+    private void Reset()
     {
         var col = GetComponent<Collider>();
         col.isTrigger = true;
     }
 
-    void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
@@ -103,7 +128,7 @@ public class ProximityPrompt : MonoBehaviour
         }
     }
 
-    void OnTriggerExit(Collider other)
+    private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))
         {
@@ -112,7 +137,7 @@ public class ProximityPrompt : MonoBehaviour
         }
     }
 
-    void Update()
+    private void Update()
     {
         bool nowVisible = IsInCameraFrustum();
         if (nowVisible != isVisible)
@@ -127,6 +152,7 @@ public class ProximityPrompt : MonoBehaviour
             {
                 Debug.Log("Pressed primary key");
                 onPrimaryPressed?.Invoke();
+                TryPickup();
             }
 
             if (secondaryKey != KeyCode.None && Input.GetKeyDown(secondaryKey))
@@ -136,6 +162,10 @@ public class ProximityPrompt : MonoBehaviour
             }
         }
     }
+
+    #endregion
+
+    #region Visibility Methods
 
     private void TryShowOrHide()
     {
@@ -153,6 +183,10 @@ public class ProximityPrompt : MonoBehaviour
         return GeometryUtility.TestPlanesAABB(planes, sightRenderer.bounds);
     }
 
+    #endregion
+
+    #region Coroutines
+
     private IEnumerator FadeCoroutine(float target)
     {
         float start = promptCanvasGroup.alpha;
@@ -166,4 +200,38 @@ public class ProximityPrompt : MonoBehaviour
         promptCanvasGroup.alpha = target;
         fadeRoutine = null;
     }
+
+    #endregion
+
+    #region Pickup Methods
+
+    private void TryPickup()
+    {
+        switch (promptType)
+        {
+            case PromptType.None:
+                // No pickup behavior
+                break;
+            case PromptType.KeyPickup:
+                TryPickupKey();
+                break;
+        }
+    }
+
+    private void TryPickupKey()
+    {
+        // If keyIndex is negative, do nothing
+        if (keyIndex < 0)
+            return;
+
+        PlayerProgression prog = Object.FindFirstObjectByType<PlayerProgression>();
+        if (prog != null)
+        {
+            prog.CollectKey(keyIndex);
+            Debug.Log($"[Progression] Key {keyIndex} set to true");
+            gameObject.SetActive(false); // disable or destroy this object
+        }
+    }
+
+    #endregion
 }
