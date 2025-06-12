@@ -6,7 +6,7 @@ using Unity.VisualScripting;
 
 
 
-public class enemyAI : MonoBehaviour, IDamage
+public class MeleeNRangeAI : MonoBehaviour, IDamage
 {
 
     private float angleToPlayer;
@@ -46,7 +46,7 @@ public class enemyAI : MonoBehaviour, IDamage
     bool inRange;
     float pathUpdateDely;
     private float dist;
-    
+
 
     private void Start()
     {
@@ -61,9 +61,9 @@ public class enemyAI : MonoBehaviour, IDamage
     private void Update()
     {
         shootTimer += Time.deltaTime;
-        
+
         setAnimPara();
-        
+
         if (inRange)//player is in the collider
         {
             CanSeePlayer(); // can we see the player?
@@ -85,31 +85,31 @@ public class enemyAI : MonoBehaviour, IDamage
     bool CanSeePlayer()
     {
         targetPos = (target.transform.position - headPos.position);
-        
+
         angleToPlayer = Vector3.Angle(new Vector3(targetPos.x, 0, targetPos.z), transform.forward);
-        
+
         Debug.DrawRay(headPos.position, new Vector3(targetPos.x, 0, targetPos.z));
 
-        dist = Vector3.Distance(target.position,headPos.position);
+        dist = Vector3.Distance(target.position, headPos.position);
 
         if (Physics.Raycast(headPos.position, targetPos, dist))
         {
             if (angleToPlayer <= FOV)
             {
-                if(dist > attackRange) // dist check. If not in attacking range. Get in attacking range.
+                if (dist > attackRange) // dist check. If not in attacking range. Get in attacking range.
                 {
                     UpdatePath();
                 }
                 else
                 {
-                        faceTarget();
+                    faceTarget();
                     if (shootTimer >= shootRate)
                         shoot();
                 }
                 return true;
-            }       
+            }
         }
-        return false;   
+        return false;
     }
 
 
@@ -118,7 +118,7 @@ public class enemyAI : MonoBehaviour, IDamage
         if (currentShield <= 0)
         {
             HP -= Amount;
-           
+
             if (HP <= 0)
             {
                 Destroy(gameObject);
@@ -127,7 +127,7 @@ public class enemyAI : MonoBehaviour, IDamage
             }
             else
             {
-                StartCoroutine(flashRed()); 
+                StartCoroutine(flashRed());
             }
         }
         else
@@ -174,11 +174,8 @@ public class enemyAI : MonoBehaviour, IDamage
         {
             pathUpdateDely = 0.2f;
             updatePathDeadline = Time.time + pathUpdateDely;
-            if (target == null)
-                return;
-            else
-                agent.SetDestination(target.transform.position);
-                Debug.Log("Updating Path");
+            agent.SetDestination(target.transform.position);
+            Debug.Log("Updating Path");
         }
     }
     private void OnTriggerEnter(Collider other)

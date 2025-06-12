@@ -6,47 +6,41 @@ using Unity.VisualScripting;
 
 
 
-public class enemyAI : MonoBehaviour, IDamage
+public class MeleeAI : MonoBehaviour, IDamage
 {
-
-    private float angleToPlayer;
-    private float shootTimer;
-
-    [SerializeField] Transform headPos;
-    [SerializeField] int FOV;
-    [SerializeField] NavMeshAgent agent;
-    [SerializeField] Animator anim;
-    [SerializeField] float animTransSpeed;
-
-    private Vector3 targetPos;
-    [SerializeField] float attackRange;
-
-    [Header("Enemy Fields")]
-    public int HP;
-    public int Shield;
-    public Renderer model;
-    public float faceTargetSpeed;
-    Transform target;
 
     public int CurrentHP => HP;
     public int currentShield => Shield;
-    private float updatePathDeadline;
 
-    [Header("Range Fields")]
-    public Transform shootPos;
-    public GameObject projectile;
-    public float shootRate;
-
-    [Header("Melee Fields")]
-    public float attackSpeed;
-    public GameObject weapon;
-    public Collider hitPos;
-
+    float attackTimer;
+    float angleToPlayer;
+    Vector3 targetPos;
+    Transform target;
+    float updatePathDeadline;
     Color colorOrig;
     bool inRange;
     float pathUpdateDely;
     private float dist;
-    
+
+
+    [Header("Enemy Fields")]
+    [SerializeField] int HP;
+    [SerializeField] int Shield;
+    [SerializeField] Renderer model;
+    [SerializeField] Transform headPos;
+    [SerializeField] float faceTargetSpeed;
+    [SerializeField] int FOV;
+    [SerializeField] float attackRange;
+    [SerializeField] NavMeshAgent agent;
+    [SerializeField] Animator anim;
+    [SerializeField] float animTransSpeed;
+
+
+    [Header("Melee Fields")]
+    [SerializeField] float attackRate;
+    [SerializeField] Collider hitPos;
+
+
 
     private void Start()
     {
@@ -60,10 +54,10 @@ public class enemyAI : MonoBehaviour, IDamage
     // Update is called once per frame
     private void Update()
     {
-        shootTimer += Time.deltaTime;
-        
+        attackTimer += Time.deltaTime;
+
         setAnimPara();
-        
+
         if (inRange)//player is in the collider
         {
             CanSeePlayer(); // can we see the player?
@@ -85,31 +79,34 @@ public class enemyAI : MonoBehaviour, IDamage
     bool CanSeePlayer()
     {
         targetPos = (target.transform.position - headPos.position);
-        
+
         angleToPlayer = Vector3.Angle(new Vector3(targetPos.x, 0, targetPos.z), transform.forward);
-        
+
         Debug.DrawRay(headPos.position, new Vector3(targetPos.x, 0, targetPos.z));
 
-        dist = Vector3.Distance(target.position,headPos.position);
+        dist = Vector3.Distance(target.position, headPos.position);
 
         if (Physics.Raycast(headPos.position, targetPos, dist))
         {
             if (angleToPlayer <= FOV)
             {
-                if(dist > attackRange) // dist check. If not in attacking range. Get in attacking range.
+                if (dist > attackRange) // dist check. If not in attacking range. Get in attacking range.
                 {
                     UpdatePath();
                 }
                 else
                 {
-                        faceTarget();
-                    if (shootTimer >= shootRate)
-                        shoot();
+                    faceTarget();
+                    if (attackTimer >= attackRate)
+                    {
+                        meleeAttack();
+                    }
+                       
                 }
                 return true;
-            }       
+            }
         }
-        return false;   
+        return false;
     }
 
 
@@ -118,7 +115,7 @@ public class enemyAI : MonoBehaviour, IDamage
         if (currentShield <= 0)
         {
             HP -= Amount;
-           
+
             if (HP <= 0)
             {
                 Destroy(gameObject);
@@ -127,7 +124,7 @@ public class enemyAI : MonoBehaviour, IDamage
             }
             else
             {
-                StartCoroutine(flashRed()); 
+                StartCoroutine(flashRed());
             }
         }
         else
@@ -151,21 +148,21 @@ public class enemyAI : MonoBehaviour, IDamage
         transform.rotation = Quaternion.Slerp(transform.rotation, rotation, faceTargetSpeed * Time.deltaTime);
     }
 
-    private void shoot()
+    void meleeAttack()
     {
-        anim.SetTrigger("shoot");
-        shootTimer = 0;
+        anim.SetTrigger("attack");
+        attackTimer = 0;
     }
 
-    public void createProjectile()
+    public void weaponColOn()
     {
-        if (projectile == null)
-        {
-            Debug.LogWarning("No projectile set");
-            return;
-        }
+        hitPos.enabled = true;
+    }
 
-        Instantiate(projectile, shootPos.position, transform.rotation);
+    public void weaponColOff()
+    {
+        hitPos.enabled = false;
+        
     }
 
     public void UpdatePath()
@@ -174,11 +171,8 @@ public class enemyAI : MonoBehaviour, IDamage
         {
             pathUpdateDely = 0.2f;
             updatePathDeadline = Time.time + pathUpdateDely;
-            if (target == null)
-                return;
-            else
-                agent.SetDestination(target.transform.position);
-                Debug.Log("Updating Path");
+            agent.SetDestination(target.transform.position);
+            Debug.Log("Updating Path");
         }
     }
     private void OnTriggerEnter(Collider other)
