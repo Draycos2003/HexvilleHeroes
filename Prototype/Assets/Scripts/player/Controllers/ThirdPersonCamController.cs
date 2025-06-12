@@ -18,7 +18,7 @@ public class ThirdPersonCamController : MonoBehaviour
     private float rotX = 0.0f; // rotation around the right/x axis
 
     [Header("Player Look Direction")]
-    [SerializeField] private playerLocomotionInput PLI;
+    [SerializeField] private playerInput PLI;
 
 
     private void Awake()

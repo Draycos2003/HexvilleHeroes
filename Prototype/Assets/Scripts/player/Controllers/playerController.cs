@@ -104,7 +104,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     Quaternion targetRotation;
     private ThirdPersonCamController thirdPerson;
-    playerLocomotionInput playerLocomotionInput;
+    playerInput playerLocomotionInput;
     playerState playerState;
 
     private Animator animator;
@@ -132,7 +132,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     private void Start()
     {
         thirdPerson = FindFirstObjectByType<ThirdPersonCamController>();
-        playerLocomotionInput = GetComponent<playerLocomotionInput>();
+        playerLocomotionInput = GetComponent<playerInput>();
         playerState = GetComponent<playerState>();
         animator = GetComponent<Animator>();
         damage = GetComponentInChildren<Damage>();
