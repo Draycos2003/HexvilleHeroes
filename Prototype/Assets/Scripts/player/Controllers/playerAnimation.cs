@@ -25,6 +25,10 @@ namespace FinalController
 
         private Vector3 blendInputCur;
 
+        private float sprintMaxBlendValue = 1.5f;
+        private float runMaxBlendValue = 1f;
+        private float walkMaxBlendValue = 0.5f;
+
         private void Awake()
         {
             playerLocomotionInput = GetComponent<playerLocomotionInput>();
@@ -46,7 +50,10 @@ namespace FinalController
             bool isFalling = playerState.playerMovementStateCur == PlayerMovementState.Falling;
             bool isGrounded = playerState.isGroundedState();
 
-            Vector2 inputTarget = isSprinting ? playerLocomotionInput.movementInput * 1.5f : playerLocomotionInput.movementInput;
+            bool isRunBlendValue = isRunning || isJumping || isFalling;
+            Vector2 inputTarget = isSprinting ? playerLocomotionInput.movementInput * sprintMaxBlendValue :
+                                  isRunBlendValue ? playerLocomotionInput.movementInput * runMaxBlendValue : playerLocomotionInput.movementInput * walkMaxBlendValue;
+
             blendInputCur = Vector3.Lerp(blendInputCur, inputTarget, locomotionBlendSpeed * Time.deltaTime);
 
             animator.SetBool(isIdlingHash, isIdling);

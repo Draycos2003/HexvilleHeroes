@@ -8,7 +8,6 @@ namespace FinalController
     {
         #region Class Variables
         [SerializeField] private bool holdToSprint = true; 
-        public InputSystem_Actions Action { get; private set; }
         public Vector2 movementInput { get; private set; }
         public Vector2 lookInput { get; private set; }
         public bool jumpPressed { get; private set; }
@@ -19,17 +18,20 @@ namespace FinalController
         #region StartUp
         private void OnEnable()
         {
-            Action = new InputSystem_Actions();
-            Action.Enable();
+            if(playerInputManager.Instance?.playerControls == null)
+            {
+                Debug.LogError("Player controls is not initialized - cannot enable");
+                return;
+            }
 
-            Action.Player.Enable();
-            Action.Player.SetCallbacks(this);
+            playerInputManager.Instance.playerControls.Player.Enable();
+            playerInputManager.Instance.playerControls.Player.SetCallbacks(this);
         }
 
         private void OnDisable()
         {
-            Action.Player.Disable();
-            Action.Player.RemoveCallbacks(this);
+            playerInputManager.Instance.playerControls.Player.Disable();
+            playerInputManager.Instance.playerControls.Player.RemoveCallbacks(this);
         }
         #endregion
 
@@ -42,7 +44,6 @@ namespace FinalController
         public void OnMove(InputAction.CallbackContext context)
         {
             movementInput = context.ReadValue<Vector2>();
-            print(movementInput);
         }
         #endregion
 
@@ -51,16 +52,10 @@ namespace FinalController
         {
             if(context.performed)
             {
-                print("sprintONNN");
-
                 sprintToggledOn = holdToSprint || !sprintToggledOn;
-
-                print(sprintToggledOn);
             }
             else if(context.canceled)
             {
-                print("sprintOFFF");
-
                 sprintToggledOn = !holdToSprint && sprintToggledOn;
             }
         }

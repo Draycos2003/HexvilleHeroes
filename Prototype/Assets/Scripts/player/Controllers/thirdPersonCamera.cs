@@ -1,13 +1,13 @@
 using UnityEngine;
 
-public class camCollision : MonoBehaviour
+public class thirdPersonCamera : MonoBehaviour
 {
-
+    public float distance;
     public float minDistance, maxDistance;
+    public float zoomSpeed;
     public float smooth;
     public Vector3 dollyDir;
     public Vector3 dollyDirAdjusted;
-    public float distance;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()

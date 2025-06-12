@@ -94,6 +94,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     private List<ItemParameter> parameters;
 
     private Vector3 moveDir;
+    private float speedCur;
     private Vector3 velocity;
     private int jumpCount;
     private float shootTimer;
@@ -110,6 +111,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     private float rotationTimer;
     private bool isRotatingClockwise;
     private int allTimeDamageBuffAmount;
+    private float stepOffsetOrig;
 
     #endregion
 
@@ -138,6 +140,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         maxShield = Shield;
         weaponAgent = GetComponent<agentWeapon>();
         damageAmount = damageWithoutAWeapon;
+        stepOffsetOrig = controller.stepOffset;
     }
 
     private void Update()
@@ -173,8 +176,8 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     private void HandleAllMovement()
     {
-        LateralMovement();
         VerticalMovement();
+        LateralMovement();
         UpdateMovmentState();
     }
 
@@ -185,7 +188,8 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         bool isMovingLaterally = IsMovingLaterally();
         bool isSprinting = playerLocomotionInput.sprintToggledOn && isMovingLaterally;
         bool isWalking = (isMovingLaterally && !canRun) || playerLocomotionInput.walkToggledOn;
-        bool isGrounded = controller.isGrounded;
+
+        isGrounded = controller.isGrounded;
 
         PlayerMovementState lateralState =  isWalking ? PlayerMovementState.Walking :
                                 isSprinting ? PlayerMovementState.Sprinting :
@@ -195,17 +199,20 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
         float peak = jumpHeight / 2;
 
-        if(velocity.y <= peak) { topOfJump = true; }
+        if(velocity.y <= peak) { topOfJump = true; } else {  topOfJump = false; }
 
         // control airborn state
         if (!isGrounded && velocity.y > 0 && !topOfJump)
         {
             playerState.SetPlayerMovementState(PlayerMovementState.Jumping);
+            controller.stepOffset = 0;
         }
         else if(!isGrounded && (velocity.y > 0 || velocity.y < 0))
         {
             playerState.SetPlayerMovementState(PlayerMovementState.Falling);
+            controller.stepOffset = 0;
         }
+        controller.stepOffset = stepOffsetOrig;
     }
 
     private void LateralMovement()
@@ -213,18 +220,20 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         // State dependent move speed
         bool isSprinting = playerState.playerMovementStateCur == PlayerMovementState.Sprinting;
         bool isWalking = playerState.playerMovementStateCur == PlayerMovementState.Walking;
+        bool isGrounded = controller.isGrounded;
 
-        float speed = isWalking ? walkSpeed :
+        float speed = !isGrounded ? speedCur :
+                      isWalking ? walkSpeed :
                       isSprinting ? sprintSpeed : runSpeed;
 
-        if (controller.isGrounded)
+        speedCur = speed;
+
+        if (isGrounded)
         {
             if (moveDir.normalized.magnitude > 0.1f && !isPlayerStep)
             {
-                StartCoroutine(PlayStep());
+                StartCoroutine(PlayStepSound());
             }
-
-            topOfJump = false;
             jumpCount = 0;
             velocity = Vector3.zero;
         }
@@ -248,23 +257,27 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     private void VerticalMovement()
     {
-        // Ground check
-        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+        // Apply gravity
+        velocity.y += gravity * Time.deltaTime;
 
-        if (isGrounded && velocity.y < 0)
+        if (IsGrounded() && velocity.y <= 0)
         {
-            velocity.y = -2f; // small downward force to stay grounded
+            velocity.y = -3f; // small downward force to stay grounded
         }
 
         // Jump input
-        if (playerLocomotionInput.jumpPressed && isGrounded)
+        if (playerLocomotionInput.jumpPressed && jumpCount < jumpMax)
         {
-            Debug.Log("JUMP");
+            jumpCount++;
+            PlayJumpSound();
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
 
-        // Apply gravity
-        velocity.y += gravity * Time.deltaTime;
+        if (IsGroundedWhileAirborn())
+        {
+            velocity = HandleSteepWalls(velocity);
+        }
+
         controller.Move(velocity * Time.deltaTime);
     }
 
@@ -312,6 +325,19 @@ public class playerController : MonoBehaviour, IDamage, IPickup
         transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
     }
 
+    private Vector3 HandleSteepWalls(Vector3 vel)
+    {
+        Vector3 normal = controllerUtils.GetNormalWithSphereCast(controller, groundMask);
+        float angle = Vector3.Angle(normal, Vector3.up);
+        bool validAngle = angle >= controller.slopeLimit;
+
+        if (validAngle && velocity.y < 0f)
+        {
+            vel = Vector3.ProjectOnPlane(vel, normal);
+        }
+        return vel;
+    }
+
     #endregion
 
     #region State Checks
@@ -325,6 +351,29 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     {
        // this means player is moving diagonally at 45 degrees or forward, if so, player can run
        return playerLocomotionInput.movementInput.y >= Mathf.Abs(playerLocomotionInput.movementInput.x);
+    }
+
+    private bool IsGrounded()
+    {
+        bool grounded = playerState.isGroundedState() ? IsGroundedWhileGrounded() : IsGroundedWhileAirborn();
+
+        return grounded;
+    }
+
+    private bool IsGroundedWhileGrounded()
+    {
+        bool grounded = Physics.CheckSphere(groundCheck.position, controller.radius, groundMask, QueryTriggerInteraction.Ignore);
+
+        return grounded;
+    }
+
+    private bool IsGroundedWhileAirborn()
+    {
+        Vector3 normal = controllerUtils.GetNormalWithSphereCast(controller, groundMask);
+        float angle = Vector3.Angle(normal, Vector3.up);
+        bool validAngle = angle >= controller.slopeLimit;
+
+        return controller.isGrounded && validAngle;
     }
 
     #endregion
@@ -500,19 +549,24 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     #region Audio
 
-    private IEnumerator PlayStep()
+    private IEnumerator PlayStepSound()
     {
         isPlayerStep = true;
         soundFXmanager.instance.PlaySoundFXClip(walkAudio[Random.Range(0, walkAudio.Length)], transform, walkVolume);
 
-        if (true)
+        if (playerState.playerMovementStateCur == PlayerMovementState.Sprinting)
             yield return new WaitForSeconds(0.3f);
-        //else if (animator.GetFloat("speed") > 0.9f)
-        //    yield return new WaitForSeconds(0.4f);
-        //else
-        //    yield return new WaitForSeconds(0.5f);
+        else if (playerState.playerMovementStateCur == PlayerMovementState.Running)
+            yield return new WaitForSeconds(0.4f);
+        else
+            yield return new WaitForSeconds(0.5f);
 
         isPlayerStep = false;
+    }
+
+    private void PlayJumpSound()
+    {
+        soundFXmanager.instance.PlaySoundFXClip(jumpAudio[Random.Range(0, jumpAudio.Length)], transform, jumpVolume);
     }
 
     #endregion

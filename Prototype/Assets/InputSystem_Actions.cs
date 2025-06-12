@@ -1224,6 +1224,34 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""ThirdPerson"",
+            ""id"": ""e3680451-1330-4029-8699-f1a00e7747a1"",
+            ""actions"": [
+                {
+                    ""name"": ""ScrollCamera"",
+                    ""type"": ""Value"",
+                    ""id"": ""c116462f-f6c2-4669-a8f7-ff32b5f3307b"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""bf970db7-3c66-4e34-bee6-7f81ff7b621a"",
+                    ""path"": ""<Mouse>/scroll"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ScrollCamera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -1315,12 +1343,16 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_UI_ScrollWheel = m_UI.FindAction("ScrollWheel", throwIfNotFound: true);
         m_UI_TrackedDevicePosition = m_UI.FindAction("TrackedDevicePosition", throwIfNotFound: true);
         m_UI_TrackedDeviceOrientation = m_UI.FindAction("TrackedDeviceOrientation", throwIfNotFound: true);
+        // ThirdPerson
+        m_ThirdPerson = asset.FindActionMap("ThirdPerson", throwIfNotFound: true);
+        m_ThirdPerson_ScrollCamera = m_ThirdPerson.FindAction("ScrollCamera", throwIfNotFound: true);
     }
 
     ~@InputSystem_Actions()
     {
         UnityEngine.Debug.Assert(!m_Player.enabled, "This will cause a leak and performance issues, InputSystem_Actions.Player.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_UI.enabled, "This will cause a leak and performance issues, InputSystem_Actions.UI.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_ThirdPerson.enabled, "This will cause a leak and performance issues, InputSystem_Actions.ThirdPerson.Disable() has not been called.");
     }
 
     /// <summary>
@@ -1804,6 +1836,102 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="UIActions" /> instance referencing this action map.
     /// </summary>
     public UIActions @UI => new UIActions(this);
+
+    // ThirdPerson
+    private readonly InputActionMap m_ThirdPerson;
+    private List<IThirdPersonActions> m_ThirdPersonActionsCallbackInterfaces = new List<IThirdPersonActions>();
+    private readonly InputAction m_ThirdPerson_ScrollCamera;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "ThirdPerson".
+    /// </summary>
+    public struct ThirdPersonActions
+    {
+        private @InputSystem_Actions m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public ThirdPersonActions(@InputSystem_Actions wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "ThirdPerson/ScrollCamera".
+        /// </summary>
+        public InputAction @ScrollCamera => m_Wrapper.m_ThirdPerson_ScrollCamera;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_ThirdPerson; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="ThirdPersonActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(ThirdPersonActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="ThirdPersonActions" />
+        public void AddCallbacks(IThirdPersonActions instance)
+        {
+            if (instance == null || m_Wrapper.m_ThirdPersonActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_ThirdPersonActionsCallbackInterfaces.Add(instance);
+            @ScrollCamera.started += instance.OnScrollCamera;
+            @ScrollCamera.performed += instance.OnScrollCamera;
+            @ScrollCamera.canceled += instance.OnScrollCamera;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="ThirdPersonActions" />
+        private void UnregisterCallbacks(IThirdPersonActions instance)
+        {
+            @ScrollCamera.started -= instance.OnScrollCamera;
+            @ScrollCamera.performed -= instance.OnScrollCamera;
+            @ScrollCamera.canceled -= instance.OnScrollCamera;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="ThirdPersonActions.UnregisterCallbacks(IThirdPersonActions)" />.
+        /// </summary>
+        /// <seealso cref="ThirdPersonActions.UnregisterCallbacks(IThirdPersonActions)" />
+        public void RemoveCallbacks(IThirdPersonActions instance)
+        {
+            if (m_Wrapper.m_ThirdPersonActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="ThirdPersonActions.AddCallbacks(IThirdPersonActions)" />
+        /// <seealso cref="ThirdPersonActions.RemoveCallbacks(IThirdPersonActions)" />
+        /// <seealso cref="ThirdPersonActions.UnregisterCallbacks(IThirdPersonActions)" />
+        public void SetCallbacks(IThirdPersonActions instance)
+        {
+            foreach (var item in m_Wrapper.m_ThirdPersonActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_ThirdPersonActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="ThirdPersonActions" /> instance referencing this action map.
+    /// </summary>
+    public ThirdPersonActions @ThirdPerson => new ThirdPersonActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     /// <summary>
     /// Provides access to the input control scheme.
@@ -2038,5 +2166,20 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnTrackedDeviceOrientation(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "ThirdPerson" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="ThirdPersonActions.AddCallbacks(IThirdPersonActions)" />
+    /// <seealso cref="ThirdPersonActions.RemoveCallbacks(IThirdPersonActions)" />
+    public interface IThirdPersonActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "ScrollCamera" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnScrollCamera(InputAction.CallbackContext context);
     }
 }
