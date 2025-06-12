@@ -9,13 +9,17 @@ public class CompanionAttack : MonoBehaviour
 {
     [SerializeField]
     private PoolableObject projectile;
-
     [SerializeField]
     private GameObject companion;
+
 
     [SerializeField]
     [Range(0.1f, 1f)]
     private float attackDelay;
+
+    [SerializeField]
+    [Range(3, 5f)]
+    private float projectileSpeed = 3;
 
     private Coroutine attackCo;
 
@@ -78,7 +82,7 @@ public class CompanionAttack : MonoBehaviour
 
             projectile.transform.position = Vector3.Lerp(startPosition, enemies.transform.position, 1 - (dist /startingDist));
 
-            dist -= Time.deltaTime * attackDelay;
+            dist -= Time.deltaTime * projectileSpeed;
 
             yield return null;
         }

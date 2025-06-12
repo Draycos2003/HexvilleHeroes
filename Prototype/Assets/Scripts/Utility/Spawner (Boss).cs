@@ -78,9 +78,9 @@ public class WaveSpawner : MonoBehaviour
                 spawnedEnemies.Add(enemy);
 
                 var ai = enemy.GetComponent<enemyAI>();
-                if (ai != null)
-                    ai.OnDeath += OnEnemyDeath;
-                else
+                //if (ai != null)
+                //    ai.OnDeath += OnEnemyDeath;
+                //else
                     Debug.LogWarning($"Enemy '{enemy.name}' missing enemyAI.OnDeath event.");
             }
 

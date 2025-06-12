@@ -11,9 +11,9 @@ public class ObjectPool
     private static Dictionary<PoolableObject, ObjectPool> ObjectPools = new Dictionary<PoolableObject, ObjectPool>();
     
     //Constructor
-    private ObjectPool(PoolableObject prefab, int Size)
+    private ObjectPool(PoolableObject Prefab, int Size)
     {
-        this.prefab = prefab;
+        this.prefab = Prefab;
         this.size = Size;
         avalilableObjects = new List<PoolableObject>(Size);
     }
@@ -24,23 +24,23 @@ public class ObjectPool
 
         if (ObjectPools.ContainsKey(prefab))
         {
-            pool = ObjectPools[prefab]; // Object pool is now not empty
+            pool = ObjectPools[prefab]; // pool now holds the prefab
         }
         else
         {
-            pool = new ObjectPool(prefab, Size);
+            pool = new ObjectPool(prefab, Size); // Create a new pool holding the set amount of prefabs (EX: the pool will hold 10 projectile prefabs)
 
-            pool.parent = new GameObject(prefab + "Pool");
-            pool.CreateObjects();
+            pool.parent = new GameObject(prefab + "Pool"); // The pools parent becomes the prefab(EX:ProjectPool); 
+            pool.CreateObjects(); // Create the wanted amount of objects
 
-            ObjectPools.Add(prefab, pool);
+            ObjectPools.Add(prefab, pool); // Add the prefab and the pool holding all the prefabs to the Disctionary of pools
         }
-        return pool;
+        return pool; // return the pool holding everything to where ever its being called
     }
 
     private void CreateObjects()
     {
-        for (int i = 0; i <= size; i++)
+        for (int i = 0; i < size; i++)
         {
             CreateObject();
         }
@@ -50,19 +50,15 @@ public class ObjectPool
     {
         PoolableObject poolableObject = GameObject.Instantiate(prefab, Vector3.zero, Quaternion.identity, parent.transform);
         poolableObject.parent = this;
-        poolableObject.gameObject.SetActive(false);
+        poolableObject.gameObject.SetActive(false); // on creation the game object is set to false (unuseable);
     }
 
     public PoolableObject GetObject (Vector3 Position, Quaternion Rotation)
     {
-        if(avalilableObjects.Count == 0)
-        {
-            CreateObject();
-        }
-
+       
         PoolableObject instance = avalilableObjects[0]; // instance is the first object
        
-        avalilableObjects.RemoveAt(0); // remove the first object from the list
+        avalilableObjects.RemoveAt(0); // remove the first object from the list of avalilable objects
 
         instance.transform.position = Position; // reset the position
         instance.transform.rotation = Rotation; // and rotation
@@ -72,14 +68,14 @@ public class ObjectPool
         return instance; // return the object to where ever GetObject is being called.
     }
 
-    public PoolableObject GetObject()
+    public PoolableObject GetObject() // this verison of GetObject is always called first to then GetObject with parameters is called to return the instance of the object.
     {
         return GetObject(Vector3.zero, Quaternion.identity);
     }
 
     public void ReturnObjectToPool(PoolableObject Object)
     {
-        avalilableObjects.Add(Object);
+        avalilableObjects.Add(Object); // Once the object is turned false it is added back to the avalilableObjects list. How it works can be found in the PoolableObjects script
     }
 
 }
