@@ -2,16 +2,20 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class gamemanager : MonoBehaviour
 {
     public static gamemanager instance;
 
     [Header("Menues")]
-    [SerializeField] GameObject MenuActive;
+    [SerializeField] public GameObject MenuActive;
     [SerializeField] GameObject MenuPaused;
     [SerializeField] GameObject MenuWin;
     [SerializeField] GameObject MenuLose;
+    [SerializeField] GameObject OptionsMenu;
+    public GameObject PauseMenu => MenuPaused;
+    public GameObject MenuOptions => OptionsMenu;
 
     [Header("Match Timer")]
     [SerializeField] TMP_Text winMessageText;
@@ -24,6 +28,9 @@ public class gamemanager : MonoBehaviour
     public GameObject Player;
     public playerController PlayerScript;
 
+    public GameObject TextPopup;
+    public TMP_Text PopupText;
+
     public bool isPaused;
 
     public collectiblePickup pickUp;
@@ -31,8 +38,13 @@ public class gamemanager : MonoBehaviour
     [Header("Enemy Info")]
     [SerializeField] TMP_Text gameGoalCountText;
 
+    [Header("InventoryUI")]
+    [SerializeField] inventoryUI invUI;
+    [SerializeField] inventoryController invController;
+    [SerializeField] inventorySO saveInv;
+
     float timeScaleOrig;
-    int gameGoalCount;
+    public int gameGoalCount;
 
     public int GameGoalCount => gameGoalCount;
 
@@ -73,13 +85,16 @@ public class gamemanager : MonoBehaviour
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
         }
-        
+
     }
 
     void Start()
     {
-        DontDestroyOnLoad(Player);
-        PlayerScript = Player.GetComponent<playerController>();
+        if (Player != null)
+        {
+            DontDestroyOnLoad(Player);
+            PlayerScript = Player.GetComponent<playerController>();
+        }
     }
 
     // Update is called once per frame
@@ -106,7 +121,19 @@ public class gamemanager : MonoBehaviour
                 }
             }
         }
+
+
+        if (Input.GetKeyDown(KeyCode.F5))
+        {
+            Save();
+        }
+
+        if (Input.GetKeyUp(KeyCode.F6))
+        {
+            Load();
+        }
     }
+
 
     public void statePause()
     {
@@ -122,10 +149,14 @@ public class gamemanager : MonoBehaviour
         isPaused = !isPaused;
 
         Time.timeScale = timeScaleOrig;
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
 
-        if(MenuActive != null)
+        if (SceneManager.GetActiveScene().buildIndex != 0)
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+
+        if (MenuActive != null)
         {
             MenuActive.SetActive(false);
             MenuActive = null;
@@ -144,18 +175,28 @@ public class gamemanager : MonoBehaviour
         gameGoalCount += amount;
         gameGoalCountText.text = gameGoalCount.ToString("F0");
         if (gameGoalCount <= 0)
-        {
-            matchEnded = true;
-            statePause();
-            MenuActive = MenuWin;
-            MenuActive.SetActive(true);
+            TryWin();
+    }
 
-            // update win text
-            if (winMessageText != null)
-            {
-                winMessageText.text = "You have clear this room in " + MatchTime() + "!\n\nPlease proceed to the next room";
-            }
-        }
+    private void TryWin()
+    {
+        // map Scene.buildIndex to the checkpoints list, so that:
+        // if scene 1 -> checkpoints[0], scene 2 -> checkpoints[1]
+        int checkpointIndex = SceneManager.GetActiveScene().buildIndex - 1;
+        var prog = Player.GetComponent<PlayerProgression>();
+        if (prog != null && prog.HasCheckpoint(checkpointIndex))
+            Win();
+    }
+
+    private void Win()
+    {
+        matchEnded = true;
+        statePause();
+        MenuActive = MenuWin;
+        MenuActive.SetActive(true);
+        if (winMessageText != null)
+            winMessageText.text =
+                $"You cleared this room in {MatchTime()}!\n\nPlease proceed to the next room";
     }
 
     public void SetMatchTime(int time)
@@ -174,20 +215,63 @@ public class gamemanager : MonoBehaviour
         return string.Format("{0}:{1:00}:{2:00}", hours, minutes, seconds);
     }
 
-    public void openInventory(GameObject inventoryMenu)
+    public void setActiveMenu(GameObject menu)
     {
-        if (Input.GetKeyDown(KeyCode.I))
+        if (MenuActive == null)
         {
-            if (MenuActive == null)
-            {
-                statePause();
-                MenuActive = inventoryMenu;
-                MenuActive.SetActive(isPaused);
-            }
-            else if (MenuActive == inventoryMenu)
-            {
-                stateUnpause();
-            }
+            statePause();
+            MenuActive = menu;
+            MenuActive.SetActive(isPaused);
         }
+        else if (MenuActive == menu)
+        {
+            MenuActive.SetActive(false);
+            MenuActive = null;
+            stateUnpause();
+        }
+        else
+        {
+            // Switching between menus
+            MenuActive.SetActive(false);
+            MenuActive = menu;
+            MenuActive.SetActive(true);
+        }
+    }
+
+    public void Save()
+    {
+        SaveData data = new SaveData();
+        data.playerX = Player.transform.position.x;
+        data.playerY = Player.transform.position.y;
+        data.playerZ = Player.transform.position.z;
+        data.playerHP = PlayerScript.HP;
+        data.playerShield = PlayerScript.Shield;
+        data.currentScene = SceneManager.GetActiveScene().name;
+        data.inventory = PlayerScript.weaponAgent.inventoryData.SaveInventory(PlayerScript.weaponAgent.inventoryData.inventoryItems);
+
+        SaveSystem.SaveGame(data);
+    }
+
+    public void Load()
+    {
+        SaveData data = SaveSystem.LoadGame();
+        if (data != null)
+        {
+            StartCoroutine(RestorePlayer(data));
+            SceneManager.LoadScene(data.currentScene);
+        }
+    }
+
+    private System.Collections.IEnumerator RestorePlayer(SaveData data)
+    {
+        Player.transform.position = new Vector3(data.playerX, data.playerY, data.playerZ);
+        PlayerScript.HP = data.playerHP;
+        PlayerScript.Shield = data.playerShield;
+        for (int i = 0; i < (data.inventory.Count - 1); i++)
+        {
+            PlayerScript.weaponAgent.inventoryData.inventoryItems[i] = data.inventory[i];
+        }
+
+        yield return new WaitForSeconds(0.5f);
     }
 }
