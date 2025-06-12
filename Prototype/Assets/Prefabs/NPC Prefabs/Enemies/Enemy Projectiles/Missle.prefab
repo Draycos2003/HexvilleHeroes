@@ -9,12 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8634220139657710383}
-  - component: {fileID: 6393213281199618775}
   - component: {fileID: 2328174950967161162}
   - component: {fileID: 8469519570472185729}
   - component: {fileID: 4542377516566019113}
   - component: {fileID: 493936546376018027}
   - component: {fileID: 459603300333326212}
+  - component: {fileID: -150037853840269889}
   m_Layer: 8
   m_Name: Missle
   m_TagString: Enemy
@@ -37,28 +37,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6393213281199618775
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5313342752221936860}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60e2c037ed6b84142a8069a5b8ea5e1b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  type: 2
-  body: {fileID: 459603300333326212}
-  obj: {fileID: 5313342752221936860}
-  playerController: {fileID: 0}
-  damageAmount: 3
-  damageRate: 0
-  speed: 10
-  destroyTime: 5
-  damageAOE: 0
-  radiusAOE: 0
 --- !u!96 &2328174950967161162
 TrailRenderer:
   serializedVersion: 3
@@ -267,3 +245,15 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &-150037853840269889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5313342752221936860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35183b76eb6d0aa4caba095040ef7dd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

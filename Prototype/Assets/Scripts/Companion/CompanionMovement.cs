@@ -5,17 +5,21 @@ public class CompanionMovement_1 : MonoBehaviour
 {
     [SerializeField]
     private Transform player;
+    
     [SerializeField]
     private GameObject companion;
+    
     [SerializeField]
     private NavMeshAgent agent;
     
     [SerializeField]
-    [Range(0,10f)]
+    [Range(5,10f)]
     private float companionSpeed;
+    
     [SerializeField]
     [Range(0,10f)]
     private float companionRotateSpeed;
+    
     [SerializeField]
     private float allowedDistance;
 

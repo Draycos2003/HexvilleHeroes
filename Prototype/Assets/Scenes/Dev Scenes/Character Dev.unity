@@ -456,7 +456,7 @@ MonoBehaviour:
   player: {fileID: 215115537}
   companion: {fileID: 1053146302}
   agent: {fileID: 1053146308}
-  companionSpeed: 5.34
+  companionSpeed: 5.35
   companionRotateSpeed: 0.22
   allowedDistance: 5
 --- !u!1001 &1668961862
@@ -538,7 +538,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5065834294800088226, guid: 9a8cefb2d6c49734e8d960bfefa2648c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.38
+      value: 2.42
       objectReference: {fileID: 0}
     - target: {fileID: 5065834294800088226, guid: 9a8cefb2d6c49734e8d960bfefa2648c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -584,6 +584,30 @@ PrefabInstance:
       propertyPath: playerController
       value: 
       objectReference: {fileID: 215115530}
+    - target: {fileID: 8188377154739322412, guid: 9a8cefb2d6c49734e8d960bfefa2648c, type: 3}
+      propertyPath: Prefab
+      value: 
+      objectReference: {fileID: -150037853840269889, guid: a4b6539581182aa4a8d37e6a64d8c48b, type: 3}
+    - target: {fileID: 8188377154739322412, guid: 9a8cefb2d6c49734e8d960bfefa2648c, type: 3}
+      propertyPath: companion
+      value: 
+      objectReference: {fileID: 1053146302}
+    - target: {fileID: 8188377154739322412, guid: 9a8cefb2d6c49734e8d960bfefa2648c, type: 3}
+      propertyPath: projectile
+      value: 
+      objectReference: {fileID: -150037853840269889, guid: a4b6539581182aa4a8d37e6a64d8c48b, type: 3}
+    - target: {fileID: 8188377154739322412, guid: 9a8cefb2d6c49734e8d960bfefa2648c, type: 3}
+      propertyPath: attackSpeed
+      value: 1.116
+      objectReference: {fileID: 0}
+    - target: {fileID: 8188377154739322412, guid: 9a8cefb2d6c49734e8d960bfefa2648c, type: 3}
+      propertyPath: shootPosition
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8188377154739322412, guid: 9a8cefb2d6c49734e8d960bfefa2648c, type: 3}
+      propertyPath: attackMoveSpeed
+      value: 4.09
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5474032932407895217, guid: 9a8cefb2d6c49734e8d960bfefa2648c, type: 3}
     m_RemovedGameObjects: []

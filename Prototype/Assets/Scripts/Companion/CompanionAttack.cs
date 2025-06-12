@@ -8,17 +8,14 @@ using System.ComponentModel;
 public class CompanionAttack : MonoBehaviour
 {
     [SerializeField]
-    private GameObject projectile;
+    private PoolableObject projectile;
+
+    [SerializeField]
+    private GameObject companion;
 
     [SerializeField]
     [Range(0.1f, 1f)]
-    private float attackDelay = 0.33f;
-
-    [SerializeField]
-    private float attackMoveSpeed = 3f;
-
-    [SerializeField] 
-    private Companion Companion;
+    private float attackDelay;
 
     private Coroutine attackCo;
 
@@ -56,30 +53,39 @@ public class CompanionAttack : MonoBehaviour
         WaitForSeconds Wait = new WaitForSeconds(attackDelay);
         while (enemies.Count > 0) {
 
-            yield return null;
+            yield return Wait;
 
             enemyAI closestEnemy = FindClosestEnemy();
 
-            Instantiate(projectile, transform.position, transform.rotation);
-            StartCoroutine(MoveAttack(projectile, closestEnemy));
+            ObjectPool pool = ObjectPool.CreateInstance(projectile, 10);
+            PoolableObject pooledObject = pool.GetObject();
+            pooledObject.transform.position = transform.position;
+
+
+            StartCoroutine(MoveAttack(pooledObject, closestEnemy));
         }
     }
 
-    private IEnumerator MoveAttack(GameObject projectile, enemyAI enemies)    {
+    private IEnumerator MoveAttack(PoolableObject projectile, enemyAI enemies)    {
 
         Vector3 startPosition = projectile.transform.position;
 
         float dist = Vector3.Distance(projectile.transform.position, enemies.transform.position);
-        float startingDistance = dist;
+
+        float startingDist = dist;
 
         while(dist > 0) {
 
-            projectile.transform.position = Vector3.Lerp(startPosition, enemies.transform.position, 1);
+            projectile.transform.position = Vector3.Lerp(startPosition, enemies.transform.position, 1 - (dist /startingDist));
 
-            dist -= Time.deltaTime * attackMoveSpeed;
+            dist -= Time.deltaTime * attackDelay;
+
+            yield return null;
         }
+
         yield return new WaitForSeconds(1f);
-        projectile.gameObject.SetActive(true);
+
+        projectile.gameObject.SetActive(false);
     }
 
     private enemyAI FindClosestEnemy() {
