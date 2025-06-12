@@ -171,4 +171,19 @@ public class buttonfunctions : MonoBehaviour
 
         gamemanager.instance.Load();
     }
+
+    public void onEquip()
+    {
+
+    }
+
+    public void onUse()
+    {
+
+    }
+
+    public void onDrop()
+    {
+
+    }
 }
