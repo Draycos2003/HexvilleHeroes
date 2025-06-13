@@ -5699,6 +5699,12 @@ MonoBehaviour:
   - quantity: 1
     item: {fileID: 11400000, guid: 3d15340023a85b14aad569a791c52587, type: 2}
     itemState: []
+  - quantity: 1
+    item: {fileID: 11400000, guid: 3ad4a1fb97eab54469d52e01747a9647, type: 2}
+    itemState: []
+  - quantity: 1
+    item: {fileID: 11400000, guid: 97729dc1b92b24c4ba3cc8280bf5fbe1, type: 2}
+    itemState: []
   dropClip: {fileID: 8300000, guid: 5d1960e3201152ccb9d31b7f993a501c, type: 3}
   audioSource: {fileID: 0}
 --- !u!114 &6267389457116180349
@@ -5956,6 +5962,7 @@ GameObject:
   - component: {fileID: 5218578598279785600}
   - component: {fileID: 7611836897901660080}
   - component: {fileID: 8899842164962572296}
+  - component: {fileID: 9104107393078706624}
   m_Layer: 0
   m_Name: Player (3rd Person)
   m_TagString: Player
@@ -6413,6 +6420,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c872fdb16425724a945f91056ffbbeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxCombo: 3
+  comboResetTime: 1
   holdToSprint: 1
 --- !u!4 &7616488980643176492
 Transform:
@@ -7210,6 +7219,22 @@ MonoBehaviour:
   animator: {fileID: 5218578598279785600}
   locomotionBlendSpeed: 4
   pc: {fileID: 0}
+--- !u!114 &9104107393078706624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6686092820374432773}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 154032dd2619efe47880e7e7d152e359, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 0}
+  cooldownTime: 1.1
+  nextFireTime: 0
+  maxComboDelay: 1
 --- !u!223 &9153284874548406089
 Canvas:
   m_ObjectHideFlags: 0
