@@ -12,34 +12,53 @@ public class enemyAI : MonoBehaviour, IDamage
     #endregion
 
     #region Inspector Fields
+    [Header("Debug")]
+    [SerializeField] public bool enableStateLogs;
+
     [Header("State Machine")]
-    [SerializeField] private StateType initialState = StateType.Patrol;
+    [SerializeField] private StateType initialState;
     [Tooltip("Tick to force a state on next frame")]
-    [SerializeField] private bool forceState = false;
-    [SerializeField] private StateType forcedState = StateType.Patrol;
-    [SerializeField] public bool enableStateLogs = true;
+    [SerializeField] private bool forceState;
+    [SerializeField] private StateType forcedState;
+
 
     [Header("Detection")]
     [SerializeField] public Transform target;
-    [SerializeField] public float detectionRange = 10f;
-    [SerializeField] public float attackRange = 2f;
+    [SerializeField] public float detectionRange;
+    [SerializeField] public float attackRange;
 
-    [Header("Movement and Animation")]
+    [Header("Chase Settings")]
+    [Tooltip("Seconds to keep chasing after losing sight")]
+    [SerializeField] public float chaseDuration;
+
+    [Header("Movement & Animation")]
     [SerializeField] public NavMeshAgent agent;
     [SerializeField] public Animator anim;
-    [SerializeField] public float animTransSpeed = 10f;
+    [SerializeField] public float animTransSpeed;
+
+    #region Rotation
+    [Header("Rotation Settings")]
+    [SerializeField] private float faceTargetSpeed;
+    #endregion
 
     [Header("Combat")]
     [SerializeField] public EnemyType type;
+
+    [ShowIf("type", EnemyType.Range)]
     [Header("Range Attack")]
     [SerializeField] public Transform shootPos;
+    [ShowIf("type", EnemyType.Range)]
     [SerializeField] public GameObject projectile;
-    [SerializeField] public float shootRate = 1f;
+    [ShowIf("type", EnemyType.Range)]
+    [SerializeField] public float shootRate;
+
+    [ShowIf("type", EnemyType.Melee)]
     [Header("Melee Attack")]
     [SerializeField] public GameObject weapon;
-    [SerializeField] public float attackRate = 1f;
+    [ShowIf("type", EnemyType.Melee)]
+    [SerializeField] public float attackRate;
 
-    [Header("Health and Loot")]
+    [Header("Health & Loot")]
     [SerializeField] public int HP;
     [SerializeField] public int Shield;
     [SerializeField] public Renderer model;
@@ -51,11 +70,13 @@ public class enemyAI : MonoBehaviour, IDamage
     public int CurrentShield => Shield;
     #endregion
 
-    #region Internal State
+    #region Internal States
     private StateMachine<enemyAI> stateMachine;
     private StateType currentState;
+    private Vector3 originPosition;
     private float shootTimer;
     private float attackTimer;
+    private float lostTimer;
     private Color colorOrig;
     private Coroutine flashRoutine;
     public event Action<GameObject> OnDeath;
@@ -72,6 +93,7 @@ public class enemyAI : MonoBehaviour, IDamage
     private void Start()
     {
         loot = GetComponent<LootBag>();
+        originPosition = transform.position;
         colorOrig = model != null ? model.material.color : Color.white;
         agent = agent != null ? agent : GetComponent<NavMeshAgent>();
         anim = anim != null ? anim : GetComponent<Animator>();
@@ -90,6 +112,8 @@ public class enemyAI : MonoBehaviour, IDamage
 
         shootTimer += Time.deltaTime;
         attackTimer += Time.deltaTime;
+        lostTimer += Time.deltaTime;
+
         float speed = agent.velocity.magnitude;
         anim.SetFloat("Speed", Mathf.Lerp(anim.GetFloat("Speed"), speed, Time.deltaTime * animTransSpeed));
 
@@ -101,32 +125,40 @@ public class enemyAI : MonoBehaviour, IDamage
     public void ChangeTo(StateType next)
     {
         if (enableStateLogs)
-            Debug.Log(name + " " + currentState + " -> " + next);
+            Debug.Log($"{name}: {currentState} -> {next}");
 
         currentState = next;
+        if (next == StateType.Chase) lostTimer = 0f;
 
         switch (next)
         {
-            case StateType.Patrol:
-                stateMachine.ChangeState(new PatrolState());
-                break;
-            case StateType.Chase:
-                stateMachine.ChangeState(new ChaseState());
-                break;
-            case StateType.Attack:
-                stateMachine.ChangeState(new AttackState());
-                break;
-            case StateType.Showcase:
-                stateMachine.ChangeState(new ShowcaseState());
-                break;
+            case StateType.Patrol: stateMachine.ChangeState(new PatrolState()); break;
+            case StateType.Chase: stateMachine.ChangeState(new ChaseState()); break;
+            case StateType.Attack: stateMachine.ChangeState(new AttackState()); break;
+            case StateType.Showcase: stateMachine.ChangeState(new ShowcaseState()); break;
         }
     }
     #endregion
 
-    #region Checks and Actions
+    #region Checks & Actions
     public bool CanSeePlayer() => target != null && Vector3.Distance(transform.position, target.position) <= detectionRange;
     public bool InAttackRange() => target != null && Vector3.Distance(transform.position, target.position) <= attackRange;
-    public void UpdatePath() { if (agent != null && target != null) agent.SetDestination(target.position); }
+
+    public void UpdatePath()
+    {
+        if (agent != null && target != null)
+            agent.SetDestination(target.position);
+    }
+
+    public void UpdatePathToOrigin()
+    {
+        if (agent != null)
+        {
+            agent.stoppingDistance = 0f;
+            agent.SetDestination(originPosition);
+        }
+    }
+
     public void PerformAttack()
     {
         if (type == EnemyType.Range)
@@ -146,9 +178,30 @@ public class enemyAI : MonoBehaviour, IDamage
             }
         }
     }
+
+    public void FaceTarget()
+    {
+        if (target == null) return;
+
+        Vector3 dir = target.position - transform.position;
+        dir.y = 0;
+        if (dir.sqrMagnitude < 0.0001f) return;
+
+        Quaternion targetRot = Quaternion.LookRotation(dir);
+        float slowFactor = 4f;
+        float t = (faceTargetSpeed * Time.deltaTime) / slowFactor;
+
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, t);
+    }
     #endregion
 
-    #region Damage and Death
+    #region Properties for States
+    public float LostTimer => lostTimer;
+    public float ChaseDuration => chaseDuration;
+    public Vector3 OriginPosition => originPosition;
+    #endregion
+
+    #region Damage & Death
     public void TakeDamage(int amount)
     {
         if (Shield > 0) Shield -= amount;
@@ -157,7 +210,6 @@ public class enemyAI : MonoBehaviour, IDamage
             HP -= amount;
             if (flashRoutine != null) StopCoroutine(flashRoutine);
             flashRoutine = StartCoroutine(FlashColor(Color.red));
-
             if (HP <= 0) Die();
         }
     }
@@ -166,7 +218,6 @@ public class enemyAI : MonoBehaviour, IDamage
     {
         var rends = GetComponentsInChildren<Renderer>();
         var origs = new Color[rends.Length][];
-
         for (int i = 0; i < rends.Length; i++)
         {
             var mats = rends[i].materials;
