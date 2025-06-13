@@ -44,6 +44,7 @@ namespace FinalController
         #region Action Input Hashes
 
         private static int isAttackingHash = Animator.StringToHash("isAttacking");
+        private static int canComboHash = Animator.StringToHash("canCombo");
         private static int isInteractingHash = Animator.StringToHash("isInteracting");
         private static int isPlayingActionHash = Animator.StringToHash("isPlayingAction");
         private int[] actionHashes;
@@ -105,6 +106,7 @@ namespace FinalController
             animator.SetBool(isAttackingHash, playerInput.attackPressed);
             animator.SetBool(isInteractingHash, playerInput.interactPressed);
             animator.SetBool(isPlayingActionHash, isPlayingAction);
+            
 
             // Input
             animator.SetFloat(inputXHash, blendInputCur.x);
@@ -112,7 +114,6 @@ namespace FinalController
             animator.SetFloat(inputMagnitudeHash, blendInputCur.magnitude);
             animator.SetFloat(rotationMismatchHash, pc.rotationMismatch);
         }
-
     }
 }
 
