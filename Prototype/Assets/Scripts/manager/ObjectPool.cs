@@ -56,6 +56,12 @@ public class ObjectPool
     public PoolableObject GetObject (Vector3 Position, Quaternion Rotation)
     {
        
+        if(avalilableObjects.Count == 0)
+        {
+            CreateObject();
+        }
+
+
         PoolableObject instance = avalilableObjects[0]; // instance is the first object
        
         avalilableObjects.RemoveAt(0); // remove the first object from the list of avalilable objects
@@ -67,6 +73,7 @@ public class ObjectPool
 
         return instance; // return the object to where ever GetObject is being called.
     }
+
 
     public PoolableObject GetObject() // this verison of GetObject is always called first to then GetObject with parameters is called to return the instance of the object.
     {

@@ -6,8 +6,13 @@ public class PoolableObject : MonoBehaviour
 
     public virtual void OnDisable()
     {
-        parent.ReturnObjectToPool(this);
-    }
+        if (parent != null)
+        {
+            parent.ReturnObjectToPool(this);
+        }
 
-    // Add damage
+       
+
+      
+    }
 }

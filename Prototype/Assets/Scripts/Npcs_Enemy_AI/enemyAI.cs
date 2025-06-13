@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.AI;
 using UnityEngine.Rendering;
 using Unity.VisualScripting;
+using UnityEngine.InputSystem.Processors;
 
 
 
@@ -22,6 +23,7 @@ public class enemyAI : MonoBehaviour, IDamage
     [SerializeField] float attackRange;
 
     [Header("Enemy Fields")]
+    private GameObject Enemy;
     public int HP;
     public int Shield;
     public Renderer model;
@@ -46,6 +48,7 @@ public class enemyAI : MonoBehaviour, IDamage
     bool inRange;
     float pathUpdateDely;
     private float dist;
+    public bool isDead;
     
 
     private void Start()
@@ -122,7 +125,8 @@ public class enemyAI : MonoBehaviour, IDamage
             if (HP <= 0)
             {
                 Destroy(gameObject);
-                gamemanager.instance.updateGameGoal(-1);
+                isDead = true;
+                //gamemanager.instance.updateGameGoal(-1);
 
             }
             else

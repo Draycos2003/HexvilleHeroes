@@ -37,10 +37,11 @@ public class Damage : MonoBehaviour
 
         if (type == DamageType.ranged || type == DamageType.homing || type == DamageType.DOT || type == DamageType.RDOT || type == DamageType.frost)
         {
-            Destroy(gameObject, destroyTime);
+            //Destroy(gameObject, destroyTime);
 
             if(type == DamageType.ranged || type == DamageType.frost || type == DamageType.RDOT)
             {
+                if(body != null)
                 body.linearVelocity = transform.forward * speed; 
             }
 
@@ -96,7 +97,7 @@ public class Damage : MonoBehaviour
 
         if (type == DamageType.ranged || type == DamageType.homing || type == DamageType.frost)
         {
-            Destroy(gameObject);
+            //Destroy(gameObject);
         }
 
         if (type == DamageType.AOE)

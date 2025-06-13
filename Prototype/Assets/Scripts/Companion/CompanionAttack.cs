@@ -1,9 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
-using UnityEngine.Pool;
-using Unity.VisualScripting;
-using System.ComponentModel;
+using UnityEngine.ProBuilder.MeshOperations;
 
 public class CompanionAttack : MonoBehaviour
 {
@@ -18,12 +16,17 @@ public class CompanionAttack : MonoBehaviour
     private float attackDelay;
 
     [SerializeField]
+    [Range(1,20)]
+    private int attackDamage;
+
+    [SerializeField]
     [Range(3, 5f)]
     private float projectileSpeed = 3;
 
     private Coroutine attackCo;
-
     private List<enemyAI> enemies = new List<enemyAI>();
+    private float dist;
+    private ObjectPool pool;
 
     private void OnTriggerEnter(Collider other) {
         
@@ -48,6 +51,7 @@ public class CompanionAttack : MonoBehaviour
             if (enemies.Count == 0) {
                 
                StopCoroutine(attackCo);
+               
             }
         }
     }
@@ -65,44 +69,73 @@ public class CompanionAttack : MonoBehaviour
             PoolableObject pooledObject = pool.GetObject();
             pooledObject.transform.position = transform.position;
 
-
-            StartCoroutine(MoveAttack(pooledObject, closestEnemy));
+            StartCoroutine(MoveAttack(pooledObject, closestEnemy, pool));
         }
     }
 
-    private IEnumerator MoveAttack(PoolableObject projectile, enemyAI enemies)    {
+    private IEnumerator MoveAttack(PoolableObject projectile, enemyAI currentEnemy, ObjectPool pool)    {
 
-        Vector3 startPosition = projectile.transform.position;
+        if(currentEnemy != null)
+        {
+            Vector3 startPosition = projectile.transform.position;
+        
+            dist = Vector3.Distance(projectile.transform.position, currentEnemy.transform.position);
 
-        float dist = Vector3.Distance(projectile.transform.position, enemies.transform.position);
+            float startingDist = dist;
 
-        float startingDist = dist;
+            while(dist > 0) {
+            
+                if(currentEnemy != null)
+                {
+                    projectile.transform.position = Vector3.Lerp(startPosition, currentEnemy.transform.position, 1 - (dist /startingDist));
+                }
+            
 
-        while(dist > 0) {
+                dist -= Time.deltaTime * projectileSpeed;
 
-            projectile.transform.position = Vector3.Lerp(startPosition, enemies.transform.position, 1 - (dist /startingDist));
+                yield return null;
 
-            dist -= Time.deltaTime * projectileSpeed;
+            
+            }
+        
+            if (dist == 0)
+            {
+                IDamage damage = GetComponentInChildren<IDamage>();
+                if (damage != null)
+                {
+                    damage.TakeDamage(attackDamage);
+                    projectile.gameObject.SetActive(false);
+                }
+            }
 
-            yield return null;
+            yield return new WaitForSeconds(1f);
+
+            projectile.gameObject.SetActive(false);
+
         }
 
-        yield return new WaitForSeconds(1f);
-
-        projectile.gameObject.SetActive(false);
     }
 
     private enemyAI FindClosestEnemy() {
+        
         float closestDist = float.MaxValue;
+        
         int closestIndex = 0;
-
+        
         for (int i = 0; i < enemies.Count; i++) {
 
+            if (enemies[i] == null) continue;
+
             float distance = Vector3.Distance(transform.position, enemies[i].transform.position);
-            if (distance < closestDist) { 
+
+                    
+            if (distance < closestDist) {
+
                 closestDist = distance;
                 closestIndex = i;
+                    
             }
+            
         }
         return enemies[closestIndex];
     }
