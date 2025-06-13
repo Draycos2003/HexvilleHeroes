@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 
 public class ObjectPool
@@ -51,12 +52,13 @@ public class ObjectPool
         PoolableObject poolableObject = GameObject.Instantiate(prefab, Vector3.zero, Quaternion.identity, parent.transform);
         poolableObject.parent = this;
         poolableObject.gameObject.SetActive(false); // on creation the game object is set to false (unuseable);
+        avalilableObjects.Add(poolableObject);
     }
 
     public PoolableObject GetObject (Vector3 Position, Quaternion Rotation)
     {
-       
-        if(avalilableObjects.Count == 0)
+
+        if (avalilableObjects.Count == 0)
         {
             CreateObject();
         }
@@ -83,6 +85,7 @@ public class ObjectPool
     public void ReturnObjectToPool(PoolableObject Object)
     {
         avalilableObjects.Add(Object); // Once the object is turned false it is added back to the avalilableObjects list. How it works can be found in the PoolableObjects script
+
     }
 
 }

@@ -7,9 +7,13 @@ public class CompanionAttack : MonoBehaviour
 {
     [SerializeField]
     private PoolableObject projectile;
+    
     [SerializeField]
     private GameObject companion;
 
+    [SerializeField]
+    [Min(1)]
+    private int poolSize;
 
     [SerializeField]
     [Range(0.1f, 1f)]
@@ -25,8 +29,14 @@ public class CompanionAttack : MonoBehaviour
 
     private Coroutine attackCo;
     private List<enemyAI> enemies = new List<enemyAI>();
-    private float dist;
+
     private ObjectPool pool;
+
+    private void Awake()
+    {
+        pool = ObjectPool.CreateInstance(projectile, poolSize);
+    }
+
 
     private void OnTriggerEnter(Collider other) {
         
@@ -51,7 +61,7 @@ public class CompanionAttack : MonoBehaviour
             if (enemies.Count == 0) {
                 
                StopCoroutine(attackCo);
-               
+                attackCo = null;
             }
         }
     }
@@ -59,13 +69,15 @@ public class CompanionAttack : MonoBehaviour
     private IEnumerator Attack() {
 
         WaitForSeconds Wait = new WaitForSeconds(attackDelay);
+        
         while (enemies.Count > 0) {
 
             yield return Wait;
 
             enemyAI closestEnemy = FindClosestEnemy();
 
-            ObjectPool pool = ObjectPool.CreateInstance(projectile, 10);
+            if (closestEnemy == null) continue; 
+
             PoolableObject pooledObject = pool.GetObject();
             pooledObject.transform.position = transform.position;
 
@@ -75,44 +87,25 @@ public class CompanionAttack : MonoBehaviour
 
     private IEnumerator MoveAttack(PoolableObject projectile, enemyAI currentEnemy, ObjectPool pool)    {
 
-        if(currentEnemy != null)
-        {
-            Vector3 startPosition = projectile.transform.position;
-        
-            dist = Vector3.Distance(projectile.transform.position, currentEnemy.transform.position);
+       while(currentEnemy != null)
+       {
+            Vector3 target = currentEnemy.transform.position;
+            target.y = projectile.transform.position.y;
+            projectile.transform.position = Vector3.MoveTowards(
+                projectile.transform.position,
+                target,
+                projectileSpeed * Time.deltaTime );
+            projectile.gameObject.SetActive(true);
 
-            float startingDist = dist;
-
-            while(dist > 0) {
-            
-                if(currentEnemy != null)
-                {
-                    projectile.transform.position = Vector3.Lerp(startPosition, currentEnemy.transform.position, 1 - (dist /startingDist));
-                }
-            
-
-                dist -= Time.deltaTime * projectileSpeed;
-
+            if (Vector3.Distance(projectile.transform.position, target) < 0.1)
+                break;
                 yield return null;
+       }
 
-            
-            }
-        
-            if (dist == 0)
-            {
-                IDamage damage = GetComponentInChildren<IDamage>();
-                if (damage != null)
-                {
-                    damage.TakeDamage(attackDamage);
-                    projectile.gameObject.SetActive(false);
-                }
-            }
-
-            yield return new WaitForSeconds(1f);
-
-            projectile.gameObject.SetActive(false);
-
-        }
+        if (currentEnemy != null)
+            currentEnemy.TakeDamage(attackDamage);
+        projectile.gameObject.SetActive(false);
+       
 
     }
 
