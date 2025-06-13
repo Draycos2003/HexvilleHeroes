@@ -62,7 +62,7 @@ public class HealthBarController : MonoBehaviour
         if (enemy != null)
         {
             maxHP = enemy.CurrentHP;
-            maxShield = enemy.currentShield;
+            maxShield = enemy.CurrentShield;
         }
         else if (player != null)
         {
@@ -107,7 +107,7 @@ public class HealthBarController : MonoBehaviour
         else if (gameObject.CompareTag("Enemy"))
         {
             currentHP = enemy.CurrentHP;
-            currentShield = enemy.currentShield;
+            currentShield = enemy.CurrentShield;
         }
 
 
