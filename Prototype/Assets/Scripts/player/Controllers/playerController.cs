@@ -496,17 +496,17 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     #region Weapon & Shooting
 
-    public void weaponColOn()
+    public void plrWeaponColOn()
     {
         weapon.GetComponent<Collider>().enabled = true;
     }
 
-    public void weaponColOff()
+    public void plrWeaponColOff()
     {
         weapon.GetComponent<Collider>().enabled = false;
     }
 
-    public void shoot()
+    public void plrShoot()
     {
         Instantiate(item.item.projectile, shootPos.position, Camera.main.transform.rotation);
     }

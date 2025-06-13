@@ -201,7 +201,17 @@ public class enemyAI : MonoBehaviour, IDamage
     public Vector3 OriginPosition => originPosition;
     #endregion
 
-    #region Damage & Death
+    #region Weapon, Damage & Death
+    public void weaponColOn()
+    {
+        weapon.GetComponent<Collider>().enabled = true;
+    }
+
+    public void weaponColOff()
+    {
+        weapon.GetComponent<Collider>().enabled = false;
+    }
+
     public void TakeDamage(int amount)
     {
         if (Shield > 0) Shield -= amount;
