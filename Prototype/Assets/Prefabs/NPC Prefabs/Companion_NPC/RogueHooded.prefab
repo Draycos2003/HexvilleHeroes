@@ -145,6 +145,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enableStateLogs: 0
+  showPatrolGizmos: 0
   initialState: 0
   forceState: 0
   forcedState: 0
@@ -153,7 +154,7 @@ MonoBehaviour:
   attackRange: 0
   chaseDuration: 5
   patrolRadius: 10
-  patrolWaitTime: 2
+  patrolWaitTime: 6
   agent: {fileID: 686957030658663308}
   anim: {fileID: 6770496911590430363}
   animTransSpeed: 1
@@ -168,6 +169,7 @@ MonoBehaviour:
   Shield: 0
   model: {fileID: 3572308494894061630}
   lootSpawnPos: {fileID: 7535289912286388790}
+  DefaultStoppingDistance: 1
 --- !u!114 &5660865347814456686
 MonoBehaviour:
   m_ObjectHideFlags: 0
