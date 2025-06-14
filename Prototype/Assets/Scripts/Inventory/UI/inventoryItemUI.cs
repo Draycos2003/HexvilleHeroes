@@ -10,11 +10,16 @@ public class inventoryItemUI : MonoBehaviour, IPointerClickHandler, IBeginDragHa
     [SerializeField] TMP_Text quantityTxt;
 
     [SerializeField] Image borderImage;
+    [SerializeField] GameObject actionPanel;
+     [SerializeField] TMP_Text actionTxt;
+
+    [SerializeField] inventorySO playerInv;
 
     public event Action<inventoryItemUI> OnItemClicked, OnItemDropped,
         OnItemBeginDrag, OnItemEndDrag, OnRightMouseBtnClick;
 
     private bool empty = true;
+    static int itemIndex;
 
     public void Awake()
     {
@@ -37,12 +42,21 @@ public class inventoryItemUI : MonoBehaviour, IPointerClickHandler, IBeginDragHa
     }
     public void Deselect()
     {
-        borderImage.enabled = false; ;
+        borderImage.enabled = false;
+        actionPanel.SetActive(false);
     }
 
     public void Select()
     {
+        Debug.Log($"{itemIndex}");
+        
+
         borderImage.enabled = true;
+    }
+
+    public static void SetItemIndex(int index)
+    {
+        itemIndex = index;
     }
 
     // pass the item being dragged through the mouse input system functions 
@@ -67,6 +81,16 @@ public class inventoryItemUI : MonoBehaviour, IPointerClickHandler, IBeginDragHa
     {
         if (data.button == PointerEventData.InputButton.Right)
         {
+            if (playerInv.inventoryItems[itemIndex].item.IType == ItemSO.ItemType.consumable)
+            {
+                actionTxt.text = "Use";
+            }
+            else
+            {
+                actionTxt.text = "Equip";
+            }
+
+            actionPanel.SetActive(true);
             OnRightMouseBtnClick?.Invoke(this);
         }
         else

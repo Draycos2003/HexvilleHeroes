@@ -1,21 +1,26 @@
 using NUnit.Framework.Internal;
+using System.Collections;
 using UnityEngine;
 
 public class playerTEST : MonoBehaviour
 {
-    public int speedOG { get; private set; }
     [SerializeField] private int speed;
     [SerializeField] private float rotationSpeed;
     [SerializeField] private int sprintMod;
     [SerializeField] private int jumpMax;
     [SerializeField] private int jumpForce;
 
+    [SerializeField] AudioSource aud;
+
+    [SerializeField] AudioClip[] steps;
+    [SerializeField] float stepVol;
+
     private Vector3 moveDir;
     private Vector3 playerVel;
     private bool isSprinting;
     private int jumpCount;
     private float shootTimer;
-    private bool isPlayerStep;
+    private bool isPlayingStep;
 
     [SerializeField] private int gravity;
 
@@ -23,15 +28,16 @@ public class playerTEST : MonoBehaviour
     [SerializeField] private CharacterController controller;
     [SerializeField] private Animator animator;
     [SerializeField] private float animTransSpeed;
+    public bool isInteracting;
 
     Quaternion targetRotation;
-    private camTest thirdPerson;
+    private ThirdPersonCamController thirdPerson;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        thirdPerson = FindFirstObjectByType<camTest>();
+        thirdPerson = FindFirstObjectByType<ThirdPersonCamController>();
         animator = GetComponent<Animator>();
 
         Cursor.visible = false;
@@ -50,12 +56,23 @@ public class playerTEST : MonoBehaviour
     private void LateUpdate()
     {
         thirdPerson.FollowTarget();
+
+        isInteracting = animator.GetBool("isInteracting");
     }
 
-    private void Movement()
+    public void Movement()
     {
-        if (controller.isGrounded && jumpCount != 0)
+        if(isInteracting)
         {
+            return;
+        }
+        if (controller.isGrounded)
+        {
+            if (moveDir.normalized.magnitude > 0.1f && !isPlayingStep)
+            {
+                StartCoroutine(playStep());
+            }
+
             jumpCount = 0;
             playerVel = Vector3.zero;
         }
@@ -80,6 +97,22 @@ public class playerTEST : MonoBehaviour
 
         controller.Move(playerVel * Time.deltaTime);
         playerVel.y -= gravity * Time.deltaTime;
+    }
+
+    IEnumerator playStep()
+    {
+        isPlayingStep = true;
+
+        aud.PlayOneShot(steps[Random.Range(0, steps.Length)], stepVol);
+
+        if (isSprinting)
+            yield return new WaitForSeconds(0.3f);
+        else if (animator.GetFloat("speed") > 0.9f)
+            yield return new WaitForSeconds(0.4f);
+        else
+            yield return new WaitForSeconds(0.5f);
+
+        isPlayingStep = false;
     }
 
     private void Sprint()
