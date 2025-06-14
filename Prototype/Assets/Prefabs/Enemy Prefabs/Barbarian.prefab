@@ -830,13 +830,12 @@ GameObject:
   m_Component:
   - component: {fileID: 6581370733415778772}
   - component: {fileID: 1634015680013426581}
-  - component: {fileID: 7593746979262333888}
   - component: {fileID: 5975286426324800492}
+  - component: {fileID: 7593746979262333888}
   - component: {fileID: 8246958467765881467}
-  - component: {fileID: 7858727941876204747}
   - component: {fileID: 2012783161411902517}
+  - component: {fileID: 7858727941876204747}
   - component: {fileID: 1314998057696334036}
-  - component: {fileID: -6253225976014014465}
   m_Layer: 6
   m_Name: Barbarian
   m_TagString: Enemy
@@ -879,38 +878,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a916b528e6f2244ba6ff1ede11ee90f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 0
-  HP: 30
-  Shield: 10
-  model: {fileID: 3209267505083806672}
-  faceTargetSpeed: 50
-  attackRange: 4
-  headPos: {fileID: 5664011093711154393}
-  FOV: 180
+  enableStateLogs: 0
+  initialState: 0
+  forceState: 0
+  forcedState: 3
+  target: {fileID: 0}
+  detectionRange: 10
+  attackRange: 3
+  chaseDuration: 5
   agent: {fileID: 2012783161411902517}
   anim: {fileID: 8246958467765881467}
   animTransSpeed: 1
-  lootSpawnPos: {fileID: 4666793819839031649}
+  faceTargetSpeed: 15
+  type: 0
   shootPos: {fileID: 0}
   projectile: {fileID: 0}
   shootRate: 0
-  attackRate: 4
   weapon: {fileID: 4922830334106831238}
---- !u!114 &7593746979262333888
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2727473855064272006}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 441e201af4abd954b85d1ed22bbd6420, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  droppedItemPrefab: {fileID: 4821314819406349842, guid: 51a40c46f7d97b74588c95440cc6efeb, type: 3}
-  lootList:
-  - {fileID: 11400000, guid: 7adbeb7456b8763489ef04005d0e4ce9, type: 2}
+  attackRate: 1
+  HP: 10
+  Shield: 10
+  model: {fileID: 3209267505083806672}
+  lootSpawnPos: {fileID: 4666793819839031649}
 --- !u!114 &5975286426324800492
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -926,6 +915,21 @@ MonoBehaviour:
   healthBarFill: {fileID: 7890802248931507632}
   shieldBarFill: {fileID: 6578525872959486747}
   hpText: {fileID: 1397391638238099279}
+--- !u!114 &7593746979262333888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2727473855064272006}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 441e201af4abd954b85d1ed22bbd6420, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  droppedItemPrefab: {fileID: 4821314819406349842, guid: 51a40c46f7d97b74588c95440cc6efeb, type: 3}
+  lootList:
+  - {fileID: 11400000, guid: 7adbeb7456b8763489ef04005d0e4ce9, type: 2}
 --- !u!95 &8246958467765881467
 Animator:
   serializedVersion: 7
@@ -948,27 +952,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!135 &7858727941876204747
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2727473855064272006}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 10
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!195 &2012783161411902517
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -991,6 +974,27 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!135 &7858727941876204747
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2727473855064272006}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 10
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!136 &1314998057696334036
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1010,37 +1014,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1
-  m_Height: 1
+  m_Radius: 0.5557556
+  m_Height: 2.3909988
   m_Direction: 1
-  m_Center: {x: 0, y: 1, z: 0}
---- !u!54 &-6253225976014014465
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2727473855064272006}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
+  m_Center: {x: 0.0019493103, y: 1.1954994, z: 0}
 --- !u!1 &2845154225852884179
 GameObject:
   m_ObjectHideFlags: 0

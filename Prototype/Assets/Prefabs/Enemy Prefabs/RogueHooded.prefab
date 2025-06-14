@@ -96,13 +96,12 @@ GameObject:
   m_Component:
   - component: {fileID: 7278041534099051114}
   - component: {fileID: 1673077562346509454}
-  - component: {fileID: -5247869738449393666}
   - component: {fileID: 5660865347814456686}
+  - component: {fileID: -5247869738449393666}
   - component: {fileID: 6770496911590430363}
+  - component: {fileID: 686957030658663308}
   - component: {fileID: 6925443511549330887}
   - component: {fileID: 1257436407184821691}
-  - component: {fileID: 686957030658663308}
-  - component: {fileID: -7351758754466054967}
   m_Layer: 6
   m_Name: RogueHooded
   m_TagString: Enemy
@@ -145,38 +144,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a916b528e6f2244ba6ff1ede11ee90f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 1
-  HP: 20
-  Shield: 0
-  model: {fileID: 3572308494894061630}
-  faceTargetSpeed: 50
-  attackRange: 10
-  headPos: {fileID: 2181659143713666306}
-  FOV: 180
+  enableStateLogs: 0
+  initialState: 0
+  forceState: 0
+  forcedState: 3
+  target: {fileID: 0}
+  detectionRange: 10
+  attackRange: 7
+  chaseDuration: 5
   agent: {fileID: 686957030658663308}
   anim: {fileID: 6770496911590430363}
   animTransSpeed: 1
-  lootSpawnPos: {fileID: 7535289912286388790}
+  faceTargetSpeed: 20
+  type: 1
   shootPos: {fileID: 2021521228802724177}
   projectile: {fileID: 6107948728500391942, guid: ac49740b51eb4464fbbe16eb7ccd55cd, type: 3}
-  shootRate: 5
-  attackRate: 0
+  shootRate: 2.5
   weapon: {fileID: 0}
---- !u!114 &-5247869738449393666
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 238476338173845793}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 441e201af4abd954b85d1ed22bbd6420, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  droppedItemPrefab: {fileID: 4821314819406349842, guid: 7483210bc2cff694ea3ea2ce9ee416b3, type: 3}
-  lootList:
-  - {fileID: 11400000, guid: 5a7e4955c6a1a7f419e0d9ed070ca055, type: 2}
+  attackRate: 0
+  HP: 15
+  Shield: 0
+  model: {fileID: 3572308494894061630}
+  lootSpawnPos: {fileID: 7535289912286388790}
 --- !u!114 &5660865347814456686
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -192,6 +181,21 @@ MonoBehaviour:
   healthBarFill: {fileID: 4314957020814681914}
   shieldBarFill: {fileID: 949012914191311249}
   hpText: {fileID: 4973245094919318981}
+--- !u!114 &-5247869738449393666
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 238476338173845793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 441e201af4abd954b85d1ed22bbd6420, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  droppedItemPrefab: {fileID: 4821314819406349842, guid: 7483210bc2cff694ea3ea2ce9ee416b3, type: 3}
+  lootList:
+  - {fileID: 11400000, guid: 5a7e4955c6a1a7f419e0d9ed070ca055, type: 2}
 --- !u!95 &6770496911590430363
 Animator:
   serializedVersion: 7
@@ -214,6 +218,28 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!195 &686957030658663308
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 238476338173845793}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 10
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!135 &6925443511549330887
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -254,59 +280,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.75
-  m_Height: 2
+  m_Radius: 0.5621815
+  m_Height: 2.243569
   m_Direction: 1
-  m_Center: {x: 0, y: 1, z: 0}
---- !u!195 &686957030658663308
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 238476338173845793}
-  m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.5
-  m_Speed: 3.5
-  m_Acceleration: 8
-  avoidancePriority: 50
-  m_AngularSpeed: 120
-  m_StoppingDistance: 10
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
-  m_Height: 2
-  m_BaseOffset: 0
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
---- !u!54 &-7351758754466054967
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 238476338173845793}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
+  m_Center: {x: 0.006128311, y: 1.1217844, z: 0}
 --- !u!1 &502939912670714514
 GameObject:
   m_ObjectHideFlags: 0
