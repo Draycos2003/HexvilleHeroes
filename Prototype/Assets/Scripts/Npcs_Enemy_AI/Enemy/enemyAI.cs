@@ -14,6 +14,7 @@ public class enemyAI : MonoBehaviour, IDamage
     #region Inspector Fields
     [Header("Debug")]
     [SerializeField] public bool enableStateLogs;
+    [SerializeField] public bool showPatrolGizmos = false;
 
     [Header("State Machine")]
     [SerializeField] private StateType initialState;
@@ -30,6 +31,10 @@ public class enemyAI : MonoBehaviour, IDamage
     [Header("Chase Settings")]
     [Tooltip("Seconds to keep chasing after losing sight")]
     [SerializeField] public float chaseDuration;
+
+    [Header("Patrol Settings")]
+    [SerializeField] public float patrolRadius;
+    [SerializeField] public float patrolWaitTime;
 
     [Header("Movement & Animation")]
     [SerializeField] public NavMeshAgent agent;
@@ -68,6 +73,9 @@ public class enemyAI : MonoBehaviour, IDamage
     #region Public Properties
     public int CurrentHP => HP;
     public int CurrentShield => Shield;
+
+    [HideInInspector] public float DefaultStoppingDistance = 1f;
+
     #endregion
 
     #region Internal States
@@ -92,6 +100,7 @@ public class enemyAI : MonoBehaviour, IDamage
 
     private void Start()
     {
+        DefaultStoppingDistance = agent.stoppingDistance;
         loot = GetComponent<LootBag>();
         originPosition = transform.position;
         colorOrig = model != null ? model.material.color : Color.white;
@@ -270,4 +279,12 @@ public class enemyAI : MonoBehaviour, IDamage
             target = null;
     }
     #endregion
+
+    private void OnDrawGizmosSelected()
+    {
+        if (!showPatrolGizmos) return;
+
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(originPosition != Vector3.zero ? originPosition : transform.position, patrolRadius);
+    }
 }

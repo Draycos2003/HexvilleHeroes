@@ -884,8 +884,10 @@ MonoBehaviour:
   forcedState: 3
   target: {fileID: 0}
   detectionRange: 10
-  attackRange: 3
+  attackRange: 0
   chaseDuration: 5
+  patrolRadius: 10
+  patrolWaitTime: 2
   agent: {fileID: 2012783161411902517}
   anim: {fileID: 8246958467765881467}
   animTransSpeed: 1
@@ -895,7 +897,7 @@ MonoBehaviour:
   projectile: {fileID: 0}
   shootRate: 0
   weapon: {fileID: 4922830334106831238}
-  attackRate: 1
+  attackRate: 99999
   HP: 10
   Shield: 10
   model: {fileID: 3209267505083806672}

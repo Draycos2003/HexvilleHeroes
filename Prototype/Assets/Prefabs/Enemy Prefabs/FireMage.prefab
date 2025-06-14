@@ -2186,6 +2186,8 @@ MonoBehaviour:
   detectionRange: 15
   attackRange: 7
   chaseDuration: 5
+  patrolRadius: 10
+  patrolWaitTime: 2
   agent: {fileID: 3429634135691362835}
   anim: {fileID: 8278446102394531361}
   animTransSpeed: 1
@@ -2193,7 +2195,7 @@ MonoBehaviour:
   type: 1
   shootPos: {fileID: 6062879582135962456}
   projectile: {fileID: 7491880933644792005, guid: 41c87ef8263594d43b3576c52c22006a, type: 3}
-  shootRate: 3
+  shootRate: 99999
   weapon: {fileID: 0}
   attackRate: 0
   HP: 10
