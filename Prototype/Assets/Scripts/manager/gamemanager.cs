@@ -246,7 +246,10 @@ public class gamemanager : MonoBehaviour
         data.playerHP = PlayerScript.HP;
         data.playerShield = PlayerScript.Shield;
         data.currentScene = SceneManager.GetActiveScene().name;
-        data.inventory = PlayerScript.weaponAgent.inventoryData.SaveInventory(PlayerScript.weaponAgent.inventoryData.inventoryItems);
+        data.inventory = PlayerScript.weaponAgent.inventoryData
+                                   .SaveInventory(PlayerScript.weaponAgent
+                                                  .inventoryData
+                                                  .inventoryItems);
 
         SaveSystem.SaveGame(data);
     }
@@ -256,21 +259,12 @@ public class gamemanager : MonoBehaviour
         SaveData data = SaveSystem.LoadGame();
         if (data != null)
         {
-            StartCoroutine(RestorePlayer(data));
+            var loader = FindFirstObjectByType<LoadHandler>();
+            if (loader != null)
+                loader.QueueRestore(data);
+
             SceneManager.LoadScene(data.currentScene);
         }
     }
 
-    private System.Collections.IEnumerator RestorePlayer(SaveData data)
-    {
-        Player.transform.position = new Vector3(data.playerX, data.playerY, data.playerZ);
-        PlayerScript.HP = data.playerHP;
-        PlayerScript.Shield = data.playerShield;
-        for (int i = 0; i < (data.inventory.Count - 1); i++)
-        {
-            PlayerScript.weaponAgent.inventoryData.inventoryItems[i] = data.inventory[i];
-        }
-
-        yield return new WaitForSeconds(0.5f);
-    }
 }
