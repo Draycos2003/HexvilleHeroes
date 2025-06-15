@@ -104,17 +104,6 @@ public class buttonfunctions : MonoBehaviour
             SceneManager.LoadScene(Lvl);
         }
 
-        playerControl = gamemanager.instance.PlayerScript;
-        if (playerControl.inventoryCanvas != null)
-        {
-            playerControl.inventoryCanvas.SetActive(true);
-        }
-
-        if (playerControl.playerMenu != null)
-        {
-            playerControl.playerMenu.SetActive(true);
-        }
-
         gm.stateUnpause();
     }
 
