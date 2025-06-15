@@ -246,6 +246,29 @@ public class enemyAI : MonoBehaviour, IDamage
         weapon.GetComponent<Collider>().enabled = false;
     }
 
+    public void createProjectile()
+    {
+        if (projectile != null && shootPos != null && target != null)
+        {
+            GameObject proj = Instantiate(projectile, shootPos.position, Quaternion.identity);
+
+            Vector3 direction = (target.position - shootPos.position).normalized;
+            proj.transform.forward = direction;
+
+            Rigidbody rb = proj.GetComponent<Rigidbody>();
+            Damage dmg = proj.GetComponent<Damage>();
+
+            if (rb != null && dmg != null)
+            {
+                rb.linearVelocity = direction * dmg.Speed;
+            }
+            else
+            {
+                Debug.LogWarning($"{name}: Missing Rigidbody or Damage component on projectile.");
+            }
+        }
+    }
+
     public void TakeDamage(int amount)
     {
         if (Shield > 0) Shield -= amount;
