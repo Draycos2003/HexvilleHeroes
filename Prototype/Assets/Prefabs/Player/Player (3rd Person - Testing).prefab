@@ -441,6 +441,56 @@ MonoBehaviour:
   m_Spacing: {x: 30, y: 0}
   m_Constraint: 0
   m_ConstraintCount: 2
+--- !u!1 &659742169432292349
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8232847010109127872}
+  - component: {fileID: 4693100318685803157}
+  m_Layer: 0
+  m_Name: LoadHandler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8232847010109127872
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 659742169432292349}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.6608646, z: -0, w: -0.7505052}
+  m_LocalPosition: {x: -16.177462, y: 2.3422248, z: -42.2433}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3502694744413591047}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4693100318685803157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 659742169432292349}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af7733d8f81d37b46859346f61530b83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  disableScenes:
+  - '! Main menu'
+  - Cutscene 1
+  - Cutscene 2
+  - Cutscene 3
+  - Intro
 --- !u!1 &800146603224589420
 GameObject:
   m_ObjectHideFlags: 0
@@ -4630,7 +4680,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6502741365704667416}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.6608646, z: -0, w: -0.7505052}
+  m_LocalRotation: {x: 0, y: -0.66086656, z: 0, w: 0.7505034}
   m_LocalPosition: {x: 1.3045793, y: 14, z: -19}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -4642,8 +4692,9 @@ Transform:
   - {fileID: 5260443509085090670}
   - {fileID: 5196717150812637896}
   - {fileID: 8817724760667100218}
+  - {fileID: 8232847010109127872}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -82.732, z: 0}
 --- !u!114 &8428378479117695589
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4723,8 +4774,8 @@ MonoBehaviour:
   jumpMax: 1
   jumpHeight: 9
   gold: 0
-  playerMenu: {fileID: 0}
-  inventoryCanvas: {fileID: 0}
+  playerMenu: {fileID: 5518774695677023774}
+  inventoryCanvas: {fileID: 7474205212137089148}
   weapon: {fileID: 0}
   shootPos: {fileID: 0}
   damageWithoutAWeapon: 3

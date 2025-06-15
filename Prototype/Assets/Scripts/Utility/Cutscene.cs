@@ -1,15 +1,46 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Cutscene : MonoBehaviour
+public class CutsceneManager : MonoBehaviour
 {
-    void Start()
+    [Header("Scene Loader (Build-index # or Name)")]
+    [Tooltip("Enter a scene build-index (e.g. “2”) or scene name (e.g. “Level2”).")]
+    [SerializeField] private string Scene;
+
+    private ThirdPersonCamController camCtrl;
+
+    private void Start()
     {
-        string sceneName = SceneManager.GetActiveScene().name;
-        if (sceneName.Contains("Cutscene") || sceneName.Contains("Intro"))
+        camCtrl = FindFirstObjectByType<ThirdPersonCamController>();
+        if (camCtrl != null)
+            camCtrl.enabled = false;
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetMouseButtonDown(0))
         {
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
+            // restore camera & cursor
+            if (camCtrl != null) camCtrl.enabled = true;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+
+            // try to parse as build-index, else treat as scene name
+            if (int.TryParse(Scene, out int sceneIndex) && sceneIndex >= 0)
+            {
+                SceneManager.LoadScene(sceneIndex);
+            }
+            else if (!string.IsNullOrWhiteSpace(Scene))
+            {
+                SceneManager.LoadScene(Scene);
+            }
+            else
+            {
+                Debug.LogError("CutsceneManager: Hotkey Scene field is empty or invalid!");
+            }
         }
     }
 }
