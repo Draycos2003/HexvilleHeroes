@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 namespace FinalController
 {
@@ -7,6 +8,15 @@ namespace FinalController
     public class playerInput : MonoBehaviour, InputSystem_Actions.IPlayerActions
     {
         private playerState playerState;
+        private Animator animator;
+
+        [Header("Combo Settings")]
+        public int maxCombo = 3;
+        public float comboResetTime = 1.0f;
+
+        private int currentCombo = 0;
+        private float lastAttackTime = 0f;
+        private bool isAttacking = false;
 
         #region Locomotion Input Varibles
         [SerializeField] private bool holdToSprint = true; 
@@ -29,6 +39,7 @@ namespace FinalController
         private void Awake()
         {
             playerState = GetComponent<playerState>();
+            animator = GetComponent<Animator>();
         }
 
         private void OnEnable()
@@ -51,15 +62,12 @@ namespace FinalController
         #endregion
 
         #region LateUpdate Logic
+
         private void LateUpdate()
         {
             jumpPressed = false;
         }
 
-        public void OnMove(InputAction.CallbackContext context)
-        {
-            movementInput = context.ReadValue<Vector2>();
-        }
         #endregion
 
         #region Update Logic
@@ -77,6 +85,12 @@ namespace FinalController
         #endregion
 
         #region Input Callbacks
+
+        public void OnMove(InputAction.CallbackContext context)
+        {
+            movementInput = context.ReadValue<Vector2>();
+        }
+
         public void OnSprint(InputAction.CallbackContext context)
         {
             if(context.performed)
@@ -112,9 +126,27 @@ namespace FinalController
         {
             if (!context.performed) { return; }
 
-            attackPressed = true;
+            if(Time.time - lastAttackTime > comboResetTime)
+            {
+                currentCombo = 0;
+            }
 
-            print(attackPressed);
+            if (!animator.GetBool("isAttacking"))
+            {
+                currentCombo++;
+                currentCombo = Mathf.Clamp(currentCombo, 1, maxCombo);
+                attackPressed = true;
+                lastAttackTime = Time.time;
+            }
+            else
+            {
+                if(currentCombo < maxCombo)
+                {
+                    currentCombo++;
+                    currentCombo = Mathf.Clamp(currentCombo, 1, maxCombo);
+                }
+            }
+
         }
 
         public void OnAttack2(InputAction.CallbackContext context)
