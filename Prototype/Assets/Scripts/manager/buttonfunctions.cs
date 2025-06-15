@@ -16,41 +16,7 @@ public class buttonfunctions : MonoBehaviour
         }
     }
 
-    private static readonly string teleportTargetName = "SpawnPoint";
     private playerController playerControl;
-
-    void OnEnable()
-    {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
-
-    void OnDisable()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
-
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        GameObject target = GameObject.Find(teleportTargetName);
-        if (target != null && gamemanager.instance.Player != null)
-        {
-            Transform player = gamemanager.instance.Player.transform;
-
-            var cc = player.GetComponent<CharacterController>();
-            if (cc != null) cc.enabled = false;
-
-            player.position = target.transform.position;
-            player.rotation = target.transform.rotation;
-
-            if (cc != null) cc.enabled = true;
-
-            //Debug.Log("[ButtonFunctions] Teleported to: " + teleportTargetName);
-        }
-        else
-        {
-            //Debug.LogWarning("[ButtonFunctions] SpawnPoint not found.");
-        }
-    }
 
     public void Resume()
     {
