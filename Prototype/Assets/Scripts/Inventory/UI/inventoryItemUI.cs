@@ -11,7 +11,7 @@ public class inventoryItemUI : MonoBehaviour, IPointerClickHandler, IBeginDragHa
 
     [SerializeField] Image borderImage;
     [SerializeField] GameObject actionPanel;
-     [SerializeField] TMP_Text actionTxt;
+    [SerializeField] TMP_Text actionTxt;
 
     [SerializeField] inventorySO playerInv;
 
