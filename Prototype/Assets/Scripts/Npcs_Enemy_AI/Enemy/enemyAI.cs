@@ -63,6 +63,15 @@ public class enemyAI : MonoBehaviour, IDamage
     [ShowIf("type", EnemyType.Melee)]
     [SerializeField] public float attackRate;
 
+    [Header("Sound")]
+    [ShowIf("type", EnemyType.Melee)]
+    [SerializeField] private AudioClip[] meleeAttackSFX;
+    [ShowIf("type", EnemyType.Range)]
+    [SerializeField] private AudioClip[] rangedAttackSFX;
+    [SerializeField] private float sfxVolume;
+    [SerializeField] private float sfxMinDistance;
+    [SerializeField] private float sfxMaxDistance;
+
     [Header("Health & Loot")]
     [SerializeField] public int HP;
     [SerializeField] public int Shield;
@@ -176,6 +185,13 @@ public class enemyAI : MonoBehaviour, IDamage
             {
                 anim.SetTrigger("shoot");
                 shootTimer = 0f;
+
+                if (rangedAttackSFX != null && rangedAttackSFX.Length > 0)
+                {
+                    soundFXmanager.instance.PlayRandomSoundFX3DClip(
+                        rangedAttackSFX, transform, sfxVolume, sfxMinDistance, sfxMaxDistance
+                    );
+                }
             }
         }
         else
@@ -184,9 +200,18 @@ public class enemyAI : MonoBehaviour, IDamage
             {
                 anim.SetTrigger("attack");
                 attackTimer = 0f;
+
+                if (meleeAttackSFX != null && meleeAttackSFX.Length > 0)
+                {
+                    soundFXmanager.instance.PlayRandomSoundFX3DClip(
+                        meleeAttackSFX, transform, sfxVolume, sfxMinDistance, sfxMaxDistance
+                    );
+                }
             }
         }
     }
+
+
 
     public void FaceTarget()
     {

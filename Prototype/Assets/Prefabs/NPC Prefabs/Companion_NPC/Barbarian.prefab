@@ -885,7 +885,7 @@ MonoBehaviour:
   forcedState: 3
   target: {fileID: 0}
   detectionRange: 10
-  attackRange: 0
+  attackRange: 4
   chaseDuration: 5
   patrolRadius: 10
   patrolWaitTime: 6
@@ -898,7 +898,17 @@ MonoBehaviour:
   projectile: {fileID: 0}
   shootRate: 0
   weapon: {fileID: 4922830334106831238}
-  attackRate: 99999
+  attackRate: 1
+  meleeAttackSFX:
+  - {fileID: 8300000, guid: 4ce39b0e4a53bc649b48d981414c104b, type: 3}
+  - {fileID: 8300000, guid: e67f7d908890bda42a8525be3e830057, type: 3}
+  - {fileID: 8300000, guid: 99b8f290a2045db4cbbc8c7f3c90c533, type: 3}
+  - {fileID: 8300000, guid: edbd798821a5b5941a6ce5866d2a96ab, type: 3}
+  - {fileID: 8300000, guid: ce10b6211d76e8a42b592d44ec25e34b, type: 3}
+  rangedAttackSFX: []
+  sfxVolume: 0.5
+  sfxMinDistance: 1
+  sfxMaxDistance: 15
   HP: 10
   Shield: 10
   model: {fileID: 3209267505083806672}

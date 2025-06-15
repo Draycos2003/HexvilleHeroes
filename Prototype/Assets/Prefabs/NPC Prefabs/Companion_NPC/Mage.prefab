@@ -2556,13 +2556,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enableStateLogs: 0
-  showPatrolGizmos: 0
+  showPatrolGizmos: 1
   initialState: 0
   forceState: 0
   forcedState: 3
   target: {fileID: 0}
   detectionRange: 15
-  attackRange: 5
+  attackRange: 12
   chaseDuration: 5
   patrolRadius: 10
   patrolWaitTime: 6
@@ -2573,9 +2573,15 @@ MonoBehaviour:
   type: 1
   shootPos: {fileID: 7357865037738214253}
   projectile: {fileID: 5313342752221936860, guid: a4b6539581182aa4a8d37e6a64d8c48b, type: 3}
-  shootRate: 99999
+  shootRate: 1
   weapon: {fileID: 0}
   attackRate: 0
+  meleeAttackSFX: []
+  rangedAttackSFX:
+  - {fileID: 8300000, guid: d8f78cd52d2b452499530fbafa226939, type: 3}
+  sfxVolume: 0.5
+  sfxMinDistance: 1
+  sfxMaxDistance: 15
   HP: 10
   Shield: 10
   model: {fileID: 575146262698126400}
