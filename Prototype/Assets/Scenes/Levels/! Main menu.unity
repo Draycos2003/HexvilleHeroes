@@ -471,6 +471,27 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 478382811}
   m_Mesh: {fileID: 4021805801945829177, guid: 418a250e67774e847a472682a01106b7, type: 3}
+--- !u!1 &521738129 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 667617095345391183, guid: 46a3d8f0dd61f02418b386074998b6e1, type: 3}
+  m_PrefabInstance: {fileID: 980505975}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &521738134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 521738129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f19623b085748c4dbec030d78b26266, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clickSound: {fileID: 8300000, guid: 082c37c789953314a9e25e393d483aed, type: 3}
+  hoverSound: {fileID: 8300000, guid: e51d0090a438e8840abca622e0b87679, type: 3}
+  clickVolume: 1
+  hoverVolume: 1
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -1146,7 +1167,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3074052659620325993, guid: 46a3d8f0dd61f02418b386074998b6e1, type: 3}
       insertIndex: 7
       addedObject: {fileID: 1828951650}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 667617095345391183, guid: 46a3d8f0dd61f02418b386074998b6e1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 521738134}
   m_SourcePrefab: {fileID: 100100000, guid: 46a3d8f0dd61f02418b386074998b6e1, type: 3}
 --- !u!224 &980505976 stripped
 RectTransform:
