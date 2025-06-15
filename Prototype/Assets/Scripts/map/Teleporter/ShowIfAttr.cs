@@ -1,13 +1,14 @@
+using System;
 using UnityEngine;
 
+[AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
 public class ShowIfAttribute : PropertyAttribute
 {
-    public string ConditionField;
-    public object DesiredValue;
-
-    public ShowIfAttribute(string conditionField, object desiredValue)
+    public string FieldName { get; }
+    public object[] CompareValues { get; }
+    public ShowIfAttribute(string fieldName, params object[] compareValues)
     {
-        ConditionField = conditionField;
-        DesiredValue = desiredValue;
+        FieldName = fieldName;
+        CompareValues = compareValues;
     }
 }

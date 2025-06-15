@@ -38,6 +38,9 @@ public class TeleportPad : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        if (isOnCooldown)
+            return;
+
         var gm = gamemanager.instance;
         if (gm != null && other.CompareTag("Player"))
         {

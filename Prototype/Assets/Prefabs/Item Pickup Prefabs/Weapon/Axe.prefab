@@ -1389,9 +1389,9 @@ GameObject:
   - component: {fileID: 4253707874814544148}
   - component: {fileID: 432654660321530764}
   - component: {fileID: 8085500728113450473}
-  - component: {fileID: 4907371479632689888}
   - component: {fileID: 1967421124398517139}
   - component: {fileID: 1626669373269285352}
+  - component: {fileID: 4330793606725209962}
   - component: {fileID: 4457835923553981515}
   m_Layer: 0
   m_Name: Axe
@@ -1408,7 +1408,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5419141177097821925}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.50000024, y: 0.50000066, z: -0.4999998, w: 0.49999943}
+  m_LocalRotation: {x: 0.5, y: 0.5, z: -0.5, w: 0.5}
   m_LocalPosition: {x: 4.7812223, y: -1.8925925, z: 3.712054}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1469,29 +1469,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &4907371479632689888
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5419141177097821925}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 4
-  m_Height: 1.7752621
-  m_Direction: 1
-  m_Center: {x: -0.0000037298519, y: 0.5218652, z: 0.0000000124793935}
 --- !u!114 &1967421124398517139
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1548,6 +1525,27 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.7143206, y: 1.244423, z: 0.18496203}
   m_Center: {x: 0.23169692, y: 0.34916255, z: 0.0000008344689}
+--- !u!135 &4330793606725209962
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5419141177097821925}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 5
+  m_Center: {x: 0.23169692, y: 0.3491623, z: 0.0000005960503}
 --- !u!54 &4457835923553981515
 Rigidbody:
   m_ObjectHideFlags: 0

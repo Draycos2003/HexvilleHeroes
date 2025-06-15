@@ -11,7 +11,10 @@ public class CommandHandler
     {
         log = outputLogger;
         Register(new ShowcaseCommand(log));
+
         Register(new HelpCommand(commands, log));
+
+        Register(new SceneCommand(log));
     }
 
     public void Register(IConsoleCommand cmd)

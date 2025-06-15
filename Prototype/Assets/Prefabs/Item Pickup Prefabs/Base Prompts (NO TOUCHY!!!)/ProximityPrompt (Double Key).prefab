@@ -345,7 +345,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 12
+  m_Radius: 15
   m_Height: 25
   m_Direction: 1
   m_Center: {x: 0, y: 0.000000074505806, z: 0}
@@ -361,7 +361,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 906cff6eeff868f40b98d3d6a699f42a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item: {fileID: 0}
+  promptType: 0
+  keyIndex: -1
   promptCanvasGroup: {fileID: 4594535025826003514}
   primaryPromptTextLabel: {fileID: 7626603292056212611}
   primarykeyTextLabel: {fileID: 4050698060509896792}
