@@ -1,163 +1,324 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Damage : MonoBehaviour
 {
-
-    enum DamageType
+    #region Enums
+    public enum DamageType
     {
-        ranged, melee, frost, homing, DOT, AOE, RDOT
+        Ranged,
+        Melee,
+        Homing,
+        DOT,
+        AOE,
+        RDOT
     }
+    public enum Subtype
+    {
+        None,
+        Slow,
+        Chill,
+        Freeze,
+    }
+    #endregion
 
-    [SerializeField] DamageType type;
-    [SerializeField] Rigidbody body;
-    [SerializeField] GameObject obj;
-    [SerializeField] playerController playerController;
+    #region Debug
+    [Header("Debug")]
+    [SerializeField] private bool showDebugGizmos;
+    #endregion
 
+    #region General Settings
+    [Header("General Settings")]
+    [SerializeField] private DamageType type;
+    #endregion
+
+    #region Subtype Settings
+    [Header("Subtype Settings (Debuffs/Effects)")]
+    [ShowIf("type", DamageType.Ranged, DamageType.Melee, DamageType.Homing, DamageType.DOT, DamageType.AOE, DamageType.RDOT)]
+    [Tooltip("If using a debuff/effect, choose its subtype here")]
+    [SerializeField] private Subtype subtype;
+    #endregion
+
+    #region References
+    [Header("References")]
+    [ShowIf("type", DamageType.Ranged, DamageType.Homing, DamageType.RDOT)]
+    [SerializeField] private Rigidbody body;
+    [ShowIf("type", DamageType.RDOT)]
+    [SerializeField] private GameObject obj;
+
+    private playerController playerController;
+    #endregion
+
+    #region Damage Properties
+    [Header("Damage Properties")]
     public int damageAmount;
-    [SerializeField] int damageRate;
-    [SerializeField] int speed;
-    [SerializeField] int destroyTime;
-    [SerializeField] int damageAOE;
-    [SerializeField] float radiusAOE;
 
+    [ShowIf("type", DamageType.Ranged, DamageType.Homing, DamageType.RDOT)]
+    [SerializeField] private float speed;
+    public float Speed => speed;
 
-    Vector2 centerAOE;
-    Vector2 rangeAOE;
-    
-    bool isDamaging;
-    bool frozen;
-    float frozenTimer;
+    [ShowIf("type", DamageType.Ranged, DamageType.Homing, DamageType.RDOT)]
+    [SerializeField] private float destroyTime;
 
+    [ShowIf("type", DamageType.AOE)]
+    [SerializeField] private int damageAOE;
+    [ShowIf("type", DamageType.AOE)]
+    [SerializeField] private float radiusAOE;
+    #endregion
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    #region DOT / RDOT Settings
+    [Header("DOT / RDOT Settings")]
+    [ShowIf("type", DamageType.DOT, DamageType.RDOT)]
+    [Tooltip("Total duration (sec) of the damage-over-time effect")]
+    [SerializeField] private float dotDuration;
+
+    [ShowIf("type", DamageType.DOT, DamageType.RDOT)]
+    [Tooltip("How many times to tick damage evenly over the duration")]
+    [SerializeField] private int dotMaxTicks;
+
+    [ShowIf("type", DamageType.DOT, DamageType.RDOT)]
+    [Tooltip("Damage amount per tick (over time)")]
+    [SerializeField] private int dotDamageAmount;
+    #endregion
+
+    #region VFX / SFX
+    [Header("VFX / SFX")]
+    [SerializeField] private GameObject hitEffect;
+    [SerializeField] private AudioClip hitSFX;
+    [SerializeField] private float sfxVolume;
+    #endregion
+
+    private bool isDamaging;
+
+    #region Unity Callbacks
+    private void Awake()
     {
+        if (type == DamageType.Ranged || type == DamageType.Melee)
+            playerController = Object.FindFirstObjectByType<playerController>();
+    }
 
-        if (type == DamageType.ranged || type == DamageType.homing || type == DamageType.DOT || type == DamageType.RDOT || type == DamageType.frost)
+    private void Start()
+    {
+        if (IsProjectile() && body != null)
         {
+            body.linearVelocity = transform.forward * speed;
             Destroy(gameObject, destroyTime);
-
-            if(type == DamageType.ranged || type == DamageType.frost || type == DamageType.RDOT)
-            {
-                body.linearVelocity = transform.forward * speed; 
-            }
-
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        if(type == DamageType.homing)
+        if (type == DamageType.Homing && body != null && gamemanager.instance.Player != null)
         {
-            body.linearVelocity = (gamemanager.instance.Player.transform.position - transform.position).normalized * speed * Time.deltaTime;
+            Vector3 dir = (gamemanager.instance.Player.transform.position - transform.position).normalized;
+            body.linearVelocity = dir * speed;
         }
-
-        //rangeAOE = gamemanager.instance.Player.transform.position;
     }
+    #endregion
 
+    #region Collision Handlers
     private void OnTriggerEnter(Collider other)
     {
-        if(other.isTrigger)
+        if (other.isTrigger) return;
+        var dmgTarget = other.GetComponent<IDamage>();
+
+        switch (type)
         {
-            return;
+            case DamageType.Ranged:
+                if (dmgTarget != null)
+                {
+                    dmgTarget.TakeDamage(damageAmount);
+                    HandleImpactFeedback();
+                    StartCoroutine(DebuffOverTime());
+                    Destroy(gameObject);
+                }
+                break;
+
+            case DamageType.Melee:
+                if (dmgTarget != null)
+                {
+                    dmgTarget.TakeDamage(damageAmount);
+                    HandleImpactFeedback();
+                    StartCoroutine(DebuffOverTime());
+                }
+                break;
+
+            case DamageType.Homing:
+                if (dmgTarget != null)
+                {
+                    dmgTarget.TakeDamage(damageAmount);
+                    HandleImpactFeedback();
+                    StartCoroutine(DebuffOverTime());
+                }
+                break;
+
+            case DamageType.DOT:
+                if (dmgTarget != null)
+                {
+                    dmgTarget.TakeDamage(damageAmount);
+                    StartCoroutine(DamageOverTime(dmgTarget));
+                    HandleImpactFeedback();
+                    StartCoroutine(DebuffOverTime());
+                }
+                break;
+
+            case DamageType.AOE:
+                if (gamemanager.instance.Player != null)
+                {
+                    float dist = Vector3.Distance(
+                        transform.position,
+                        gamemanager.instance.Player.transform.position
+                    );
+                    if (dist <= radiusAOE && dmgTarget != null)
+                    {
+                        dmgTarget.TakeDamage(damageAmount);
+                        HandleImpactFeedback();
+                        StartCoroutine(DebuffOverTime());
+                    }
+                }
+                break;
+
+            case DamageType.RDOT:
+                if (other.CompareTag("Player") && gamemanager.instance.Player != null)
+                {
+                    var rend = GetComponent<Renderer>();
+                    obj.transform.SetParent(gamemanager.instance.Player.transform);
+
+                    if (body != null)
+                        body.linearVelocity = Vector3.zero;
+                    if (rend != null)
+                        rend.enabled = false;
+
+                    dmgTarget?.TakeDamage(damageAmount);
+                    StartCoroutine(DamageOverTime(dmgTarget));
+                    StartCoroutine(DebuffOverTime());
+                    HandleImpactFeedback();
+                    Destroy(gameObject);
+
+                    return;
+                }
+                break;
+
         }
 
-        IDamage damage = other.GetComponent<IDamage>();
-        
-        if (damage != null && (type == DamageType.ranged || type == DamageType.melee))
-        {
-            if (playerController!=null)
-            {
-                damageAmount = playerController.damageAmount;
-            }
-            damage.TakeDamage(damageAmount);
-        }
-
-        if (damage != null && type == DamageType.frost)
-        {
-            damage.TakeDamage(damageAmount);
-            
-            //if (!frozen)
-            //{
-            //    frozenTimer += Time.deltaTime;
-            //    StartCoroutine(frozenInTime());
-            //    damage.TakeDamage(damageAmount);
-            //    if(frozenTimer >= damageRate)
-            //    {
-            //        gamemanager.instance.PlayerScript.speed = gamemanager.instance.PlayerScript.speedOG;
-            //        Debug.Log("unFrozen");
-            //    }
-            //}
-
-        }
-
-        if (type == DamageType.ranged || type == DamageType.homing || type == DamageType.frost)
-        {
+        if (type == DamageType.Ranged || type == DamageType.Homing)
             Destroy(gameObject);
-        }
-
-        if (type == DamageType.AOE)
-        {
-            centerAOE = gamemanager.instance.Player.transform.position;
-
-            if (Vector2.Distance(centerAOE, rangeAOE) <= radiusAOE)
-            {
-                damage.TakeDamage(damageAmount);
-            }
-        }
-
-        if (type == DamageType.RDOT)
-        {
-            if (other.CompareTag("Player") && gamemanager.instance.Player != null)
-            {
-                obj.transform.SetParent(gamemanager.instance.Player.transform);
-
-                body.linearVelocity = Vector3.zero;
-                GetComponent<Renderer>().enabled = false;
-           
-            }
-        }
     }
-
 
     private void OnTriggerStay(Collider other)
     {
-        if(other.isTrigger)
-        {
-            return;
-        }
+        if (other.isTrigger) return;
+        var dmg = other.GetComponent<IDamage>();
 
-        IDamage damage = other.GetComponent<IDamage>();
-
-        if(damage != null && type == DamageType.DOT || type == DamageType.RDOT)
-        {
-            if(!isDamaging)
-            {
-                StartCoroutine(damageOverTime(damage));
-            }
-        }
+        if ((type == DamageType.DOT || type == DamageType.RDOT) && dmg != null && !isDamaging)
+            StartCoroutine(DamageOverTime(dmg));
     }
+    #endregion
 
-    //IEnumerator frozenInTime()
-    //{
-    //    frozen = true;
-
-    //    gamemanager.instance.PlayerScript.speed = 0;
-    //    Debug.Log("HAHAHAHAH FROZEN");
-
-    //    yield return new WaitForSeconds(damageRate);
-    //    Debug.Log("This isnt working");
-    //    frozen = false;
-    //}
-
-    IEnumerator damageOverTime(IDamage damage)
+    #region Coroutines
+    private IEnumerator DamageOverTime(IDamage dmg)
     {
         isDamaging = true;
-        damage.TakeDamage(damageAmount);
-        yield return new WaitForSeconds(damageRate);
+        string startScene = SceneManager.GetActiveScene().name;
+
+        float interval = dotDuration / Mathf.Max(dotMaxTicks, 1);
+        int ticks = 0;
+        float elapsed = 0f;
+
+        while (isDamaging)
+        {
+            if (SceneManager.GetActiveScene().name != startScene ||
+                dmg == null ||
+                gamemanager.instance == null ||
+                gamemanager.instance.Player == null)
+                break;
+
+            if (ticks >= dotMaxTicks || elapsed >= dotDuration)
+                break;
+
+            dmg.TakeDamage(dotDamageAmount);
+            yield return new WaitForSeconds(interval);
+            ticks++;
+            elapsed += interval;
+        }
+
         isDamaging = false;
     }
+
+    private IEnumerator DebuffOverTime()
+    {
+        float elapsed = 0f;
+        float interval = dotDuration / Mathf.Max(dotMaxTicks, 1);
+
+        while (elapsed < dotDuration)
+        {
+            switch (subtype)
+            {
+
+                case Subtype.Slow:
+                    
+                    break;
+                case Subtype.Chill:
+                    
+                    break;
+                case Subtype.Freeze:
+                    
+                    break;
+                case Subtype.None:
+                default:
+                    break;
+            }
+
+            yield return new WaitForSeconds(interval);
+            elapsed += interval;
+        }
+    }
+    #endregion
+
+    #region Utilities
+    private bool IsProjectile()
+        => type == DamageType.Ranged
+        || type == DamageType.Homing
+        || type == DamageType.DOT
+        || type == DamageType.RDOT;
+    #endregion
+
+    #region Impact Feedback
+    private void HandleImpactFeedback()
+    {
+        // Particle effect on hit
+        /*
+        if (hitEffect != null)
+        {
+            Instantiate(hitEffect, transform.position, Quaternion.identity);
+        }
+        */
+
+        // Play a hit sound
+        /*
+        if (hitSFX != null && soundFXmanager.instance != null)
+        {
+            soundFXmanager.instance.PlaySoundFX3DClip(
+                hitSFX,
+                transform,
+                sfxVolume,
+                2f,     // minDistance
+                15f     // maxDistance
+            );
+        }
+        */
+    }
+    #endregion
+
+    #region Gizmos
+    private void OnDrawGizmosSelected()
+    {
+        if (!showDebugGizmos) return;
+        Gizmos.color = Color.red;
+
+        if (type == DamageType.AOE || type == DamageType.RDOT)
+            Gizmos.DrawWireSphere(transform.position, radiusAOE);
+    }
+    #endregion
 }

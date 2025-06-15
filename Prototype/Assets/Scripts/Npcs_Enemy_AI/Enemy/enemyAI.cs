@@ -14,6 +14,7 @@ public class enemyAI : MonoBehaviour, IDamage
     #region Inspector Fields
     [Header("Debug")]
     [SerializeField] public bool enableStateLogs;
+    [SerializeField] public bool showPatrolGizmos = false;
 
     [Header("State Machine")]
     [SerializeField] private StateType initialState;
@@ -30,6 +31,10 @@ public class enemyAI : MonoBehaviour, IDamage
     [Header("Chase Settings")]
     [Tooltip("Seconds to keep chasing after losing sight")]
     [SerializeField] public float chaseDuration;
+
+    [Header("Patrol Settings")]
+    [SerializeField] public float patrolRadius;
+    [SerializeField] public float patrolWaitTime;
 
     [Header("Movement & Animation")]
     [SerializeField] public NavMeshAgent agent;
@@ -58,6 +63,15 @@ public class enemyAI : MonoBehaviour, IDamage
     [ShowIf("type", EnemyType.Melee)]
     [SerializeField] public float attackRate;
 
+    [Header("Sound")]
+    [ShowIf("type", EnemyType.Melee)]
+    [SerializeField] private AudioClip[] meleeAttackSFX;
+    [ShowIf("type", EnemyType.Range)]
+    [SerializeField] private AudioClip[] rangedAttackSFX;
+    [SerializeField] private float sfxVolume;
+    [SerializeField] private float sfxMinDistance;
+    [SerializeField] private float sfxMaxDistance;
+
     [Header("Health & Loot")]
     [SerializeField] public int HP;
     [SerializeField] public int Shield;
@@ -68,6 +82,9 @@ public class enemyAI : MonoBehaviour, IDamage
     #region Public Properties
     public int CurrentHP => HP;
     public int CurrentShield => Shield;
+
+    [HideInInspector] public float DefaultStoppingDistance = 1f;
+
     #endregion
 
     #region Internal States
@@ -92,6 +109,7 @@ public class enemyAI : MonoBehaviour, IDamage
 
     private void Start()
     {
+        DefaultStoppingDistance = agent.stoppingDistance;
         loot = GetComponent<LootBag>();
         originPosition = transform.position;
         colorOrig = model != null ? model.material.color : Color.white;
@@ -167,6 +185,13 @@ public class enemyAI : MonoBehaviour, IDamage
             {
                 anim.SetTrigger("shoot");
                 shootTimer = 0f;
+
+                if (rangedAttackSFX != null && rangedAttackSFX.Length > 0)
+                {
+                    soundFXmanager.instance.PlayRandomSoundFX3DClip(
+                        rangedAttackSFX, transform, sfxVolume, sfxMinDistance, sfxMaxDistance
+                    );
+                }
             }
         }
         else
@@ -175,9 +200,18 @@ public class enemyAI : MonoBehaviour, IDamage
             {
                 anim.SetTrigger("attack");
                 attackTimer = 0f;
+
+                if (meleeAttackSFX != null && meleeAttackSFX.Length > 0)
+                {
+                    soundFXmanager.instance.PlayRandomSoundFX3DClip(
+                        meleeAttackSFX, transform, sfxVolume, sfxMinDistance, sfxMaxDistance
+                    );
+                }
             }
         }
     }
+
+
 
     public void FaceTarget()
     {
@@ -210,6 +244,29 @@ public class enemyAI : MonoBehaviour, IDamage
     public void weaponColOff()
     {
         weapon.GetComponent<Collider>().enabled = false;
+    }
+
+    public void createProjectile()
+    {
+        if (projectile != null && shootPos != null && target != null)
+        {
+            GameObject proj = Instantiate(projectile, shootPos.position, Quaternion.identity);
+
+            Vector3 direction = (target.position - shootPos.position).normalized;
+            proj.transform.forward = direction;
+
+            Rigidbody rb = proj.GetComponent<Rigidbody>();
+            Damage dmg = proj.GetComponent<Damage>();
+
+            if (rb != null && dmg != null)
+            {
+                rb.linearVelocity = direction * dmg.Speed;
+            }
+            else
+            {
+                Debug.LogWarning($"{name}: Missing Rigidbody or Damage component on projectile.");
+            }
+        }
     }
 
     public void TakeDamage(int amount)
@@ -270,4 +327,12 @@ public class enemyAI : MonoBehaviour, IDamage
             target = null;
     }
     #endregion
+
+    private void OnDrawGizmosSelected()
+    {
+        if (!showPatrolGizmos) return;
+
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(originPosition != Vector3.zero ? originPosition : transform.position, patrolRadius);
+    }
 }
