@@ -145,27 +145,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enableStateLogs: 0
+  showPatrolGizmos: 1
   initialState: 0
   forceState: 0
   forcedState: 3
   target: {fileID: 0}
   detectionRange: 10
-  attackRange: 7
+  attackRange: 8
   chaseDuration: 5
+  patrolRadius: 10
+  patrolWaitTime: 6
   agent: {fileID: 686957030658663308}
   anim: {fileID: 6770496911590430363}
   animTransSpeed: 1
   faceTargetSpeed: 20
   type: 1
   shootPos: {fileID: 2021521228802724177}
-  projectile: {fileID: 6107948728500391942, guid: ac49740b51eb4464fbbe16eb7ccd55cd, type: 3}
-  shootRate: 2.5
+  projectile: {fileID: 1858165284739961418, guid: a16017705a1fe15439af3de0b8892f75, type: 3}
+  shootRate: 1
   weapon: {fileID: 0}
   attackRate: 0
-  HP: 15
+  meleeAttackSFX: []
+  rangedAttackSFX:
+  - {fileID: 8300000, guid: d857e6ddff13ba249abb0db1a906fc65, type: 3}
+  sfxVolume: 0.5
+  sfxMinDistance: 1
+  sfxMaxDistance: 15
+  HP: 10
   Shield: 0
   model: {fileID: 3572308494894061630}
   lootSpawnPos: {fileID: 7535289912286388790}
+  DefaultStoppingDistance: 1
 --- !u!114 &5660865347814456686
 MonoBehaviour:
   m_ObjectHideFlags: 0
