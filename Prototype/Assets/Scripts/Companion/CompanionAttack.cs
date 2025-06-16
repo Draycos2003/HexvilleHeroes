@@ -7,7 +7,7 @@ public class CompanionAttack : MonoBehaviour
 {
     [SerializeField]
     private PoolableObject projectile;
-    
+
     [SerializeField]
     private GameObject companion;
 
@@ -20,12 +20,18 @@ public class CompanionAttack : MonoBehaviour
     private float attackDelay;
 
     [SerializeField]
-    [Range(1,20)]
+    [Range(1, 20)]
     private int attackDamage;
 
     [SerializeField]
     [Range(3, 5f)]
     private float projectileSpeed = 3;
+
+
+    [SerializeField] AudioClip[] attackSound;
+    
+    [SerializeField]
+    [Range(1, 10f)] private int attackSFXVolume;
 
     private Coroutine attackCo;
     private List<enemyAI> enemies = new List<enemyAI>();
@@ -104,6 +110,7 @@ public class CompanionAttack : MonoBehaviour
 
         if (currentEnemy != null)
             currentEnemy.TakeDamage(attackDamage);
+            
         projectile.gameObject.SetActive(false);
        
 
