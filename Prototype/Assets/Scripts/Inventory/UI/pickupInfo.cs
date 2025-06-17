@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
 using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
 
 [RequireComponent(typeof(Collider))]
 public class pickupInfo : MonoBehaviour
