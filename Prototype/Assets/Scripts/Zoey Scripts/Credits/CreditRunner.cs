@@ -1,6 +1,5 @@
 using UnityEngine;
-using UnityEngine.UI;            // for LayoutRebuilder
-using TMPro;
+using UnityEngine.UI;
 
 public class UGUICreditsRoller : MonoBehaviour
 {
@@ -26,7 +25,7 @@ public class UGUICreditsRoller : MonoBehaviour
         foreach (var line in creditsData.lines)
         {
             var go = Instantiate(entryPrefab, contentContainer);
-            var entry = go.GetComponent<CreditEntry>(); // Idk why this is showing up as an error when it isnt an null...?
+            var entry = go.GetComponent<CreditEntry>();
             entry.nameText.text = line.name;
             entry.roleText.text = line.role;
         }
