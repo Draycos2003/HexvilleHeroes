@@ -31,6 +31,7 @@ namespace FinalController
 
         public bool attackPressed { get; private set; }
         public bool rangedAttack { get; private set; }
+        public bool isReloading { get; private set; }
         public bool interactPressed { get; private set; }
 
         #endregion
@@ -206,7 +207,8 @@ namespace FinalController
         public void SetAttackPressedFalse()
         {
             attackPressed = false;
-
+            isReloading = false;
+       
             if (queuedNextAttack && currentCombo < maxCombo)
             {
                 currentCombo++;
@@ -226,7 +228,7 @@ namespace FinalController
         public void SetRangedAttackFalse()
         {
             rangedAttack = false;
-            attackPressed = false;
+            isReloading = true;
         }
 
         #endregion

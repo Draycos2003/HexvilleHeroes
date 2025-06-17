@@ -514,7 +514,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     public void plrShoot()
     {
-        Instantiate(item.item.projectile, shootPos.position, Camera.main.transform.rotation);
+        Instantiate(item.item.projectile, shootPos.position, transform.rotation);
     }
 
     #endregion

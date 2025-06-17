@@ -7,8 +7,8 @@ using UnityEditor;
 public class ButtonFunctions : MonoBehaviour
 {
     private gamemanager gm => gamemanager.instance;
-    private GameObject player => gm?.Player;
-    private playerController playerController => gm?.PlayerScript;
+    private GameObject player => gm != null ? gm.Player : null;
+    private playerController playerController => gm != null ? gm.PlayerScript : null;
 
     private void Awake()
     {

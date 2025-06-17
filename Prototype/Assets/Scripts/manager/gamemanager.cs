@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
+[DefaultExecutionOrder(-1)]
 public class gamemanager : MonoBehaviour
 {
     public static gamemanager instance;
