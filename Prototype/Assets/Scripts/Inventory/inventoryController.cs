@@ -57,29 +57,29 @@ public class inventoryController : MonoBehaviour
 
     private void HandleItemActionRequest(int itemIndex)
     {
-        //InventoryItem item = inventoryData.GetItemAt(itemIndex);
-        //if (item.isEmpty) 
-        //    return;
-        //IDestroyableItem _item = item.item as IDestroyableItem;
-        //if (_item != null)
-        //{
-        //    IEquippable eq = item.item as IEquippable;
-        //    if (eq != null)
-        //    {
-        //        int equipSlotIndex = inventoryData.inventoryItems.Count - 1;
+        InventoryItem item = inventoryData.GetItemAt(itemIndex);
+        if (item.isEmpty)
+            return;
+        IDestroyableItem _item = item.item as IDestroyableItem;
+        if (_item != null)
+        {
+            IEquippable eq = item.item as IEquippable;
+            if (eq != null)
+            {
+                int equipSlotIndex = inventoryData.inventoryItems.Count - 1;
 
-        //        inventoryData.SwapItems(itemIndex, equipSlotIndex);
-        //    }
-        //    else
-        //    {
-        //        inventoryData.RemoveItem(itemIndex, 1);
-        //    }
-        //}
-        //IItemAction itemAction = item.item as IItemAction;
-        //if(itemAction != null)
-        //{
-        //    itemAction.PerformAction(gameObject, item.itemState);
-        //}
+                inventoryData.SwapItems(itemIndex, equipSlotIndex);
+            }
+            else
+            {
+                inventoryData.RemoveItem(itemIndex, 1);
+            }
+        }
+        IItemAction itemAction = item.item as IItemAction;
+        if (itemAction != null)
+        {
+            itemAction.PerformAction(gameObject, item.itemState);
+        }
     }
 
     private void DropItem(int itemIndex, int quantity)
@@ -161,6 +161,5 @@ public class inventoryController : MonoBehaviour
         {
             invUI.UpdateData(item.Key, item.Value.item.itemIcon, item.Value.quantity);
         }
-        Debug.Log("OPEN");
     }
 }

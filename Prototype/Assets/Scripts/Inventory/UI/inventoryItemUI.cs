@@ -48,9 +48,6 @@ public class inventoryItemUI : MonoBehaviour, IPointerClickHandler, IBeginDragHa
 
     public void Select()
     {
-        Debug.Log($"{itemIndex}");
-        
-
         borderImage.enabled = true;
     }
 
@@ -79,24 +76,24 @@ public class inventoryItemUI : MonoBehaviour, IPointerClickHandler, IBeginDragHa
 
     public void OnPointerClick(PointerEventData data)
     {
-        if (data.button == PointerEventData.InputButton.Right)
-        {
-            if (playerInv.inventoryItems[itemIndex].item.IType == ItemSO.ItemType.consumable)
-            {
-                actionTxt.text = "Use";
-            }
-            else
-            {
-                actionTxt.text = "Equip";
-            }
+        //if (data.button == PointerEventData.InputButton.Right)
+        //{
+        //    if (playerInv.inventoryItems[itemIndex].item.IType == ItemSO.ItemType.consumable)
+        //    {
+        //        actionTxt.text = "Use";
+        //    }
+        //    else
+        //    {
+        //        actionTxt.text = "Equip";
+        //    }
 
-            actionPanel.SetActive(true);
-            OnRightMouseBtnClick?.Invoke(this);
-        }
-        else
-        {       
+        //    actionPanel.SetActive(true);
+        //    OnRightMouseBtnClick?.Invoke(this);
+        //}
+        //else
+        //{ }   
             OnItemClicked?.Invoke(this);
-        }
+        
     }
 
     public void OnDrag(PointerEventData eventData)

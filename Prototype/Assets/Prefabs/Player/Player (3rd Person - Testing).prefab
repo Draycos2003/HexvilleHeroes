@@ -491,6 +491,7 @@ MonoBehaviour:
   - Cutscene 2
   - Cutscene 3
   - Intro
+  teleportTargetName: SpawnPoint
 --- !u!1 &800146603224589420
 GameObject:
   m_ObjectHideFlags: 0
@@ -4656,6 +4657,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3502694744413591047}
   - component: {fileID: 8428378479117695589}
+  - component: {fileID: 7538794872481496380}
   - component: {fileID: 1190382190030797874}
   - component: {fileID: 3994593201212909952}
   - component: {fileID: 1509573433031423626}
@@ -4663,7 +4665,6 @@ GameObject:
   - component: {fileID: 509778922578034548}
   - component: {fileID: 3792159596215269736}
   - component: {fileID: 52628555156169496}
-  - component: {fileID: 7538794872481496380}
   - component: {fileID: 6876157256963708046}
   m_Layer: 0
   m_Name: Player (3rd Person - Testing)
@@ -4708,6 +4709,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <playerMovementStateCur>k__BackingField: 0
+--- !u!114 &7538794872481496380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6502741365704667416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c872fdb16425724a945f91056ffbbeb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxCombo: 2
+  comboResetTime: 1
+  holdToSprint: 1
 --- !u!114 &1190382190030797874
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4900,21 +4916,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &7538794872481496380
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6502741365704667416}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c872fdb16425724a945f91056ffbbeb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxCombo: 3
-  comboResetTime: 1
-  holdToSprint: 1
 --- !u!82 &6876157256963708046
 AudioSource:
   m_ObjectHideFlags: 0

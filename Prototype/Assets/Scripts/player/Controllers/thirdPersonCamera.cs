@@ -9,7 +9,6 @@ public class thirdPersonCamera : MonoBehaviour
     public Vector3 dollyDir;
     public Vector3 dollyDirAdjusted;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
         dollyDir = transform.localPosition.normalized;
