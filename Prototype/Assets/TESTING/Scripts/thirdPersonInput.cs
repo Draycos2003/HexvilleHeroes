@@ -18,20 +18,20 @@ namespace FinalController
 
         private void OnEnable()
         {
-            if (playerInputManager.Instance?.playerControls == null)
+            if (playerInputManager.Instance?.PlayerControls == null)
             {
                 Debug.LogError("Player controls is not initialized - cannot enable");
                 return;
             }
 
-            playerInputManager.Instance.playerControls.ThirdPerson.Enable();
-            playerInputManager.Instance.playerControls.ThirdPerson.SetCallbacks(this);
+            playerInputManager.Instance.PlayerControls.ThirdPerson.Enable();
+            playerInputManager.Instance.PlayerControls.ThirdPerson.SetCallbacks(this);
         }
 
         private void OnDisable()
         {
-            playerInputManager.Instance.playerControls.ThirdPerson.Disable();
-            playerInputManager.Instance.playerControls.ThirdPerson.RemoveCallbacks(this);
+            playerInputManager.Instance.PlayerControls.ThirdPerson.Disable();
+            playerInputManager.Instance.PlayerControls.ThirdPerson.RemoveCallbacks(this);
         }
 
         #endregion

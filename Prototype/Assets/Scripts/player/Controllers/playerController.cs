@@ -127,7 +127,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
         controller = GetComponent<CharacterController>();
 
-        
+        DontDestroyOnLoad(gameObject);
     }
 
     private void Start()

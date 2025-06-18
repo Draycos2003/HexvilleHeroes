@@ -46,20 +46,20 @@ namespace FinalController
 
         private void OnEnable()
         {
-            if(playerInputManager.Instance?.playerControls == null)
+            if(playerInputManager.Instance?.PlayerControls == null)
             {
                 Debug.LogError("Player controls is not initialized - cannot enable");
                 return;
             }
 
-            playerInputManager.Instance.playerControls.Player.Enable();
-            playerInputManager.Instance.playerControls.Player.SetCallbacks(this);
+            playerInputManager.Instance.PlayerControls.Player.Enable();
+            playerInputManager.Instance.PlayerControls.Player.SetCallbacks(this);
         }
 
         private void OnDisable()
         {
-            playerInputManager.Instance.playerControls.Player.Disable();
-            playerInputManager.Instance.playerControls.Player.RemoveCallbacks(this);
+            playerInputManager.Instance.PlayerControls.Player.Disable();
+            playerInputManager.Instance.PlayerControls.Player.RemoveCallbacks(this);
         }
         #endregion
 
@@ -214,7 +214,6 @@ namespace FinalController
                 currentCombo++;
                 queuedNextAttack = false;
                 PlayCombo(currentCombo);
-                Debug.Log("COMBO");
             }
             else
             {

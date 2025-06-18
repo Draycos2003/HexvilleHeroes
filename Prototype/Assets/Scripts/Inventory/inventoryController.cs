@@ -151,7 +151,6 @@ public class inventoryController : MonoBehaviour
             {
                 invUI.gameObject.SetActive(false);
                 gamemanager.instance.stateUnpause();
-                Debug.Log("CLOSE");
             }
             else
             {

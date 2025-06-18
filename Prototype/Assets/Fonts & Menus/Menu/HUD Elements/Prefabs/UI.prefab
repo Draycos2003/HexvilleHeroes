@@ -7786,25 +7786,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65c28d8dd9ab06240b9abf8053ba352c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MenuActive: {fileID: 0}
-  MenuPaused: {fileID: 8220928585950412917}
-  MenuWin: {fileID: 6592127049281146334}
-  MenuLose: {fileID: 105115792509381516}
-  OptionsMenu: {fileID: 2494908947681558443}
+  pauseMenu: {fileID: 8220928585950412917}
+  optionsMenu: {fileID: 2494908947681558443}
+  winMenu: {fileID: 6592127049281146334}
+  loseMenu: {fileID: 105115792509381516}
+  backgroundShade: {fileID: 8725274648192084950}
+  hideOnPauseMenus: []
+  rectTweener: {fileID: 0}
+  viewerTween: {fileID: 0}
+  postProcessVolume: {fileID: 0}
   winMessageText: {fileID: 5606677648496445279}
+  gameGoalCountText: {fileID: 1682826218076982507}
   playerDMGScreen: {fileID: 5646840052122666275}
   playerShieldDMGScreen: {fileID: 7896812353596947825}
-  Player: {fileID: 0}
-  PlayerScript: {fileID: 0}
   TextPopup: {fileID: 7197801710663816672}
   PopupText: {fileID: 1615838663084803276}
-  isPaused: 0
-  pickUp: {fileID: 0}
-  gameGoalCountText: {fileID: 1682826218076982507}
   invUI: {fileID: 0}
   invController: {fileID: 0}
   saveInv: {fileID: 0}
-  gameGoalCount: 0
 --- !u!1 &8220928585950412917
 GameObject:
   m_ObjectHideFlags: 0
@@ -8068,6 +8067,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec32c30eba0835a4f9f79e9b26dbdf6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rectTweener: {fileID: 0}
+  backgroundImageRect: {fileID: 0}
 --- !u!1 &8400628444271935016
 GameObject:
   m_ObjectHideFlags: 0
