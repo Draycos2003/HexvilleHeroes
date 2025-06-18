@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -7,10 +8,7 @@ public class CompanionMovement_1 : MonoBehaviour
     private Transform player;
     
     [SerializeField]
-    private GameObject companion;
-    
-    [SerializeField]
-    private NavMeshAgent agent;
+    private Transform companion;
     
     [SerializeField]
     [Range(5,10f)]
@@ -21,6 +19,7 @@ public class CompanionMovement_1 : MonoBehaviour
     private float companionRotateSpeed;
     
     [SerializeField]
+    [Range(3,10)]
     private float allowedDistance;
 
     private float playerDist;
@@ -28,17 +27,14 @@ public class CompanionMovement_1 : MonoBehaviour
     
     private void Awake()
     {
-        agent = GetComponent<NavMeshAgent>();
     }
 
-    // Update is called once per frame
-
-    // Try to make this into States.
 
     void Update()
     {
 
-        transform.LookAt(player.transform.position);
+        transform.LookAt(player.position);
+        var playerPosition = player.position + (player.right * -4f + player.up); // off setting player position for companion
 
         if (Physics.Raycast(companion.transform.position, transform.TransformDirection(Vector3.forward), out hit))
         {
@@ -46,14 +42,10 @@ public class CompanionMovement_1 : MonoBehaviour
 
             if (playerDist > allowedDistance)
             {
-               
-                agent.speed = companionSpeed;
-                agent.SetDestination(player.transform.position);
+                companion.position = Vector3.MoveTowards(companion.position, playerPosition, companionSpeed * Time.deltaTime); // Companion movement
+                //companion.rotation = (player.position - companion.position) * companionRotateSpeed * Time.deltaTime; // Companion rotation
             }
-            else
-            {
-                agent.speed = 0;
-            }
+ 
 
         }
     }
