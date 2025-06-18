@@ -147,6 +147,9 @@ public class gamemanager : MonoBehaviour
     #region Escape / Pause Flow
     private void HandleEscape()
     {
+#if UNITY_WEBGL
+        if (Input.GetKeyDown(KeyCode.Escape)) return;
+#endif
         if (optionsMenu.activeSelf)
         {
             viewerTween.ResetPanels();
