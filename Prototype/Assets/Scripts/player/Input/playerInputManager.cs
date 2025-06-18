@@ -6,7 +6,7 @@ namespace FinalController
     public class playerInputManager : MonoBehaviour
     {
         public static playerInputManager Instance;
-        public InputSystem_Actions playerControls {  get; private set; }
+        public InputSystem_Actions PlayerControls {  get; private set; }
 
         private void Awake()
         {
@@ -21,13 +21,13 @@ namespace FinalController
 
         private void OnEnable()
         {
-            playerControls = new InputSystem_Actions();
-            playerControls.Enable();
+            PlayerControls = new InputSystem_Actions();
+            PlayerControls.Enable();
         }
 
         private void OnDisable()
         {
-            playerControls.Disable();
+            PlayerControls.Disable();
         }
     }
 }

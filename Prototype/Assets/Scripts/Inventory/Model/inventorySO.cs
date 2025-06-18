@@ -38,17 +38,14 @@ public class inventorySO : ScriptableObject
     {
         if (InventoryFull())
         {
-            Debug.Log("INVENTORY FULL");
             return 0;
         }
         if (!item.isStackable)
         {
-            Debug.Log("NO STACK");
             quantity -= AddNonStackableItem(item, 1, itemState);
         }
         else if (item.isStackable)
         {
-            Debug.Log("STACK");
             quantity = AddStackableItem(item, quantity); 
         }
         InformAbountChange();
