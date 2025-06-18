@@ -24,10 +24,12 @@ public class PauseManager : MonoBehaviour
 
     void Update()
     {
+#if UNITY_WEBGL
         if (Input.GetKeyDown(pauseKey))
         {
             TogglePause();
         }
+#endif
     }
 
     public void TogglePause()
