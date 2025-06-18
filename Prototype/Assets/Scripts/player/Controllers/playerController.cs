@@ -61,7 +61,6 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     [Header("Inventory")]
     [SerializeField] private GameObject itemModel;
-    [SerializeField] private GameObject equipSlot;
 
     [Header("Animation")]
     [SerializeField] private float animTransSpeed;
@@ -454,11 +453,6 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     private void Equip()
     {
-        if (SceneManager.GetActiveScene().buildIndex != 0 && !equipSlot.activeSelf)
-        {
-            equipSlot.SetActive(true);
-        }
-
         if (!item.isEmpty)
         {
             if (item.item.IType == ItemSO.ItemType.ranged)

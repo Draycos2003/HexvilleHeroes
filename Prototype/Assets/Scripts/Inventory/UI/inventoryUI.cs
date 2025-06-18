@@ -8,13 +8,11 @@ public class inventoryUI : MonoBehaviour
 {
     [SerializeField] inventoryItemUI itemPrefab;
 
-    [SerializeField] inventoryItemUI equipSlot;
-
     [SerializeField] RectTransform contentPanel;
 
-    [SerializeField] RectTransform equipPanel;
+    [SerializeField] RectTransform quickBuffPanel, shieldPanel, weaponPanel;
 
-    [SerializeField] inventoryItemDescription description;
+    // [SerializeField] inventoryItemDescription description;
 
     [HideInInspector] public List<inventoryItemUI> listOfUIItems = new List<inventoryItemUI>();
 
@@ -26,7 +24,7 @@ public class inventoryUI : MonoBehaviour
 
     private void Start()
     {
-        description.ResetDescription();
+        //description.ResetDescription(); !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
 
     public void InitializeInventoryUI(int inventorySize)
@@ -45,9 +43,46 @@ public class inventoryUI : MonoBehaviour
             uiItem.OnRightMouseBtnClick += HandleShowItemActions;
         }
 
-        // add the equip slot
-        inventoryItemUI equipItem = Instantiate(equipSlot, Vector3.zero, Quaternion.identity);
-        equipItem.transform.SetParent(equipPanel);
+        // add the buff equip slot
+        InitializeQuickBuffSlot();
+
+        // add the shield equip slot
+        InitializeShieldSlot();
+
+        // add the weapon equip slot
+        InitializeWeaponSlot();
+    }
+
+    private void InitializeQuickBuffSlot()
+    {
+        inventoryItemUI equipItem = Instantiate(itemPrefab, Vector3.zero, Quaternion.identity);
+        equipItem.transform.SetParent(quickBuffPanel);
+        listOfUIItems.Add(equipItem);
+
+        equipItem.OnItemClicked += HandleItemSelection;
+        equipItem.OnItemBeginDrag += HandleBeginDrag;
+        equipItem.OnItemDropped += HandleSwap;
+        equipItem.OnItemEndDrag += HandleEndDrag;
+        equipItem.OnRightMouseBtnClick += HandleShowItemActions;
+    }
+
+    private void InitializeShieldSlot()
+    {
+        inventoryItemUI equipItem = Instantiate(itemPrefab, Vector3.zero, Quaternion.identity);
+        equipItem.transform.SetParent(shieldPanel);
+        listOfUIItems.Add(equipItem);
+
+        equipItem.OnItemClicked += HandleItemSelection;
+        equipItem.OnItemBeginDrag += HandleBeginDrag;
+        equipItem.OnItemDropped += HandleSwap;
+        equipItem.OnItemEndDrag += HandleEndDrag;
+        equipItem.OnRightMouseBtnClick += HandleShowItemActions;
+    }
+
+    private void InitializeWeaponSlot()
+    {
+        inventoryItemUI equipItem = Instantiate(itemPrefab, Vector3.zero, Quaternion.identity);
+        equipItem.transform.SetParent(weaponPanel);
         listOfUIItems.Add(equipItem);
 
         equipItem.OnItemClicked += HandleItemSelection;
@@ -115,7 +150,7 @@ public class inventoryUI : MonoBehaviour
 
     public void ResetSelection()
     {
-        description.ResetDescription();
+        //description.ResetDescription(); !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         DeselectAllItems();
     }
 
@@ -129,7 +164,7 @@ public class inventoryUI : MonoBehaviour
 
     public void UpdateDescription(int _itemIndex, Sprite _itemIcon, string _name, string _description)
     {
-        description.SetDescription(_itemIcon, _name, _description);
+        //description.SetDescription(_itemIcon, _name, _description); !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         DeselectAllItems();
         listOfUIItems[_itemIndex].Select();
     }

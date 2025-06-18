@@ -20,9 +20,12 @@ public class inventorySO : ScriptableObject
         {
             inventoryItems.Add(InventoryItem.GetEmptyItem());
         }
-
-        // add one more empty for equip slot
-        inventoryItems.Add(InventoryItem.GetEmptyItem());
+        
+        // add empty items  for equip slots
+        for(int j  = 0; j < 3; j++)
+        {
+            inventoryItems.Add(InventoryItem.GetEmptyItem());
+        }
     }
 
     public List<InventoryItem> SaveInventory(List<InventoryItem> listToSave)
