@@ -115,6 +115,9 @@ public class gamemanager : MonoBehaviour
         player = GameObject.FindWithTag("Player");
         playerScript = player ? player.GetComponent<playerController>() : null;
 
+        if (player != null)
+            DontDestroyOnLoad(player);
+
         if (playerScript != null)
         {
             var list = new List<GameObject>(hideOnPauseMenus);
@@ -155,7 +158,7 @@ public class gamemanager : MonoBehaviour
         }
         else
         {
-            Pause();
+            Pause(false);
         }
     }
 
@@ -168,25 +171,41 @@ public class gamemanager : MonoBehaviour
     }
 
 
-    private void Pause()
+    private void Pause(bool Result = false)
     {
-        foreach (var go in hideOnPauseMenus)
-            go.SetActive(false);
-
-        activeMenu = pauseMenu;
-        pauseMenu.SetActive(true);
-
-        if (SceneManager.GetActiveScene().buildIndex != 0)
+        if (Result != true)
         {
-            
-            Time.timeScale = 0f;
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
-            
-        }
+            foreach (var go in hideOnPauseMenus)
+                go.SetActive(false);
 
-        backgroundShade.SetActive(true);
-        if (postProcessVolume != null) postProcessVolume.weight = 1f;
+            activeMenu = pauseMenu;
+            pauseMenu.SetActive(true);
+
+            if (SceneManager.GetActiveScene().buildIndex != 0)
+            {
+
+                Time.timeScale = 0f;
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.None;
+
+            }
+
+            backgroundShade.SetActive(true);
+            if (postProcessVolume != null) postProcessVolume.weight = 1f;
+        }
+        else
+        {
+            if (SceneManager.GetActiveScene().buildIndex != 0)
+            {
+
+                Time.timeScale = 0f;
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.None;
+
+            }
+            if (postProcessVolume != null) postProcessVolume.weight = 1f;
+        }
+        
     }
 
     private void Unpause()
@@ -214,7 +233,7 @@ public class gamemanager : MonoBehaviour
         activeMenu = null;
     }
 
-    public void statePause() => Pause();
+    public void statePause() => Pause(false);
     public void stateUnpause() => Unpause();
     #endregion
 
@@ -223,7 +242,7 @@ public class gamemanager : MonoBehaviour
     {
         if (matchEnded) return;
         matchEnded = true;
-        Pause();
+        Pause(true);
         loseMenu.SetActive(true);
     }
 
@@ -245,7 +264,7 @@ public class gamemanager : MonoBehaviour
     {
         if (matchEnded) return;
         matchEnded = true;
-        Pause();
+        Pause(true);
         winMenu.SetActive(true);
         if (winMessageText != null)
             winMessageText.text =
