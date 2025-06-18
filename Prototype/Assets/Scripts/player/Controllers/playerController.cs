@@ -51,10 +51,10 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     public GameObject inventoryCanvas;
 
     [Header("Weapon")]
-    [SerializeField] private GameObject weapon;
+    [SerializeField] private GameObject weaponCol;
     [SerializeField] private Transform shootPos;
     [SerializeField] private int damageWithoutAWeapon;
-    public int damageAmount;
+    [SerializeField] public int damageAmount;
     [HideInInspector] public float shootRate;
     [HideInInspector] public int shootDist;
     [HideInInspector] public agentWeapon weaponAgent;
@@ -81,6 +81,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
     public InventoryItem item { get; private set; }
     public float rotationMismatch { get; private set; } = 0f;
     public bool isRotating { get; private set; } = false;
+    public bool isRanged { get; private set; }
 
     #endregion
 
@@ -126,7 +127,7 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
         controller = GetComponent<CharacterController>();
 
-        
+        DontDestroyOnLoad(gameObject);
     }
 
     private void Start()
@@ -460,6 +461,11 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
         if (!item.isEmpty)
         {
+            if (item.item.IType == ItemSO.ItemType.ranged)
+                isRanged = true;
+            else
+                isRanged = false;
+
             ChangeEquippedItem();
         }
         else
@@ -498,17 +504,17 @@ public class playerController : MonoBehaviour, IDamage, IPickup
 
     public void plrWeaponColOn()
     {
-        weapon.GetComponent<Collider>().enabled = true;
+        weaponCol.GetComponent<Collider>().enabled = true;
     }
 
     public void plrWeaponColOff()
     {
-        weapon.GetComponent<Collider>().enabled = false;
+        weaponCol.GetComponent<Collider>().enabled = false;
     }
 
     public void plrShoot()
     {
-        Instantiate(item.item.projectile, shootPos.position, Camera.main.transform.rotation);
+        Instantiate(item.item.projectile, shootPos.position, transform.rotation);
     }
 
     #endregion

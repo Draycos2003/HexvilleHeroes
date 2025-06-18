@@ -117,7 +117,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.91567564, z: -0, w: 0.40191814}
   m_LocalPosition: {x: -20.567, y: 4.327, z: 25.208}
-  m_LocalScale: {x: 0.02648784, y: 0.039603554, z: 0.54038}
+  m_LocalScale: {x: 0.02648784, y: 0.03, z: 0.3}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 9208802457754113550}
@@ -209,16 +209,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60e2c037ed6b84142a8069a5b8ea5e1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  showDebugGizmos: 0
   type: 0
+  subtype: 0
   body: {fileID: 8275245546413860675}
   obj: {fileID: 0}
-  playerController: {fileID: 0}
   damageAmount: 20
-  damageRate: 0
   speed: 50
   destroyTime: 2
   damageAOE: 0
   radiusAOE: 0
+  dotDuration: 0
+  dotMaxTicks: 0
+  dotDamageAmount: 0
+  hitEffect: {fileID: 0}
+  hitSFX: {fileID: 0}
+  sfxVolume: 0
 --- !u!54 &8275245546413860675
 Rigidbody:
   m_ObjectHideFlags: 0

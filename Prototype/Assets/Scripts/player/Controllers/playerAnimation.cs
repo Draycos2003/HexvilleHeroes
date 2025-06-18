@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 namespace FinalController
 {
@@ -44,6 +45,8 @@ namespace FinalController
         #region Action Input Hashes
 
         private static int isAttackingHash = Animator.StringToHash("isAttacking");
+        private static int isRangedHash = Animator.StringToHash("isRanged");
+        private static int isReloadingHash = Animator.StringToHash("isReloading");
         private static int canComboHash = Animator.StringToHash("canCombo");
         private static int isInteractingHash = Animator.StringToHash("isInteracting");
         private static int isPlayingActionHash = Animator.StringToHash("isPlayingAction");
@@ -103,7 +106,9 @@ namespace FinalController
             animator.SetBool(isRotatingHash, pc.isRotating);
 
             // Actions
-            animator.SetBool(isAttackingHash, playerInput.attackPressed);
+            animator.SetBool(isAttackingHash, playerInput.attackPressed || playerInput.rangedAttack);
+            animator.SetBool(isRangedHash, playerInput.rangedAttack);
+            animator.SetBool(isReloadingHash, playerInput.isReloading);
             animator.SetBool(isInteractingHash, playerInput.interactPressed);
             animator.SetBool(isPlayingActionHash, isPlayingAction);
             

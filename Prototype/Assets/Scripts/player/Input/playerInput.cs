@@ -16,7 +16,7 @@ namespace FinalController
 
         private int currentCombo = 0;
         private float lastAttackTime = 0f;
-        private bool isAttacking = false;
+        private bool queuedNextAttack = false;
 
         #region Locomotion Input Varibles
         [SerializeField] private bool holdToSprint = true; 
@@ -30,6 +30,8 @@ namespace FinalController
         #region Combat Input Variables
 
         public bool attackPressed { get; private set; }
+        public bool rangedAttack { get; private set; }
+        public bool isReloading { get; private set; }
         public bool interactPressed { get; private set; }
 
         #endregion
@@ -44,20 +46,20 @@ namespace FinalController
 
         private void OnEnable()
         {
-            if(playerInputManager.Instance?.playerControls == null)
+            if(playerInputManager.Instance?.PlayerControls == null)
             {
                 Debug.LogError("Player controls is not initialized - cannot enable");
                 return;
             }
 
-            playerInputManager.Instance.playerControls.Player.Enable();
-            playerInputManager.Instance.playerControls.Player.SetCallbacks(this);
+            playerInputManager.Instance.PlayerControls.Player.Enable();
+            playerInputManager.Instance.PlayerControls.Player.SetCallbacks(this);
         }
 
         private void OnDisable()
         {
-            playerInputManager.Instance.playerControls.Player.Disable();
-            playerInputManager.Instance.playerControls.Player.RemoveCallbacks(this);
+            playerInputManager.Instance.PlayerControls.Player.Disable();
+            playerInputManager.Instance.PlayerControls.Player.RemoveCallbacks(this);
         }
         #endregion
 
@@ -83,6 +85,47 @@ namespace FinalController
         }
 
         #endregion
+
+        public void OnAttack1(InputAction.CallbackContext context)
+        {
+            if (!context.performed) { return; }
+
+            if (playerController.instance.isRanged)
+            {
+                rangedAttack = true;
+                attackPressed = true;
+                return;
+            }
+               
+            if (Time.time - lastAttackTime > comboResetTime)
+            {
+                currentCombo = 0;
+            }
+
+            if (!animator.GetBool("isAttacking"))
+            {
+                // start combo
+                currentCombo = 1;
+                PlayCombo(currentCombo);
+            }
+            else
+            {
+                // queue next attack
+                if (currentCombo < maxCombo)
+                {
+                    queuedNextAttack = true;
+                }
+            }
+
+        }
+
+        private void PlayCombo(int comboStep)
+        {
+            lastAttackTime = Time.time;
+
+            attackPressed = true;
+            animator.SetInteger("comboStep", comboStep);
+        }
 
         #region Input Callbacks
 
@@ -122,32 +165,7 @@ namespace FinalController
             walkToggledOn = !walkToggledOn;
         }
 
-        public void OnAttack1(InputAction.CallbackContext context)
-        {
-            if (!context.performed) { return; }
-
-            if(Time.time - lastAttackTime > comboResetTime)
-            {
-                currentCombo = 0;
-            }
-
-            if (!animator.GetBool("isAttacking"))
-            {
-                currentCombo++;
-                currentCombo = Mathf.Clamp(currentCombo, 1, maxCombo);
-                attackPressed = true;
-                lastAttackTime = Time.time;
-            }
-            else
-            {
-                if(currentCombo < maxCombo)
-                {
-                    currentCombo++;
-                    currentCombo = Mathf.Clamp(currentCombo, 1, maxCombo);
-                }
-            }
-
-        }
+       
 
         public void OnAttack2(InputAction.CallbackContext context)
         {
@@ -189,6 +207,27 @@ namespace FinalController
         public void SetAttackPressedFalse()
         {
             attackPressed = false;
+            isReloading = false;
+       
+            if (queuedNextAttack && currentCombo < maxCombo)
+            {
+                currentCombo++;
+                queuedNextAttack = false;
+                PlayCombo(currentCombo);
+            }
+            else
+            {
+                currentCombo = 0;
+                queuedNextAttack = false;
+                attackPressed = false;
+                animator.SetInteger("comboStep", 0);
+            }
+        }
+
+        public void SetRangedAttackFalse()
+        {
+            rangedAttack = false;
+            isReloading = true;
         }
 
         #endregion
