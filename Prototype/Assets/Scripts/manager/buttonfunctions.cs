@@ -1,189 +1,103 @@
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
-public class buttonfunctions : MonoBehaviour
+public class ButtonFunctions : MonoBehaviour
 {
-    private GameObject Player;
+    private gamemanager gm => gamemanager.instance;
+    private GameObject player => gm?.Player;
+    private playerController playerController => gm?.PlayerScript;
 
-    void Start()
+    private void Awake()
     {
-        Player = gamemanager.instance?.Player;
-
-        if (Player == null)
-        {
-            Debug.LogError("[Currency] Player not found from GameManager.");
-        }
-    }
-
-    private static readonly string teleportTargetName = "SpawnPoint";
-    private playerController playerControl;
-
-    void OnEnable()
-    {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
-
-    void OnDisable()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
-
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        GameObject target = GameObject.Find(teleportTargetName);
-        if (target != null && gamemanager.instance.Player != null)
-        {
-            Transform player = gamemanager.instance.Player.transform;
-
-            var cc = player.GetComponent<CharacterController>();
-            if (cc != null) cc.enabled = false;
-
-            player.position = target.transform.position;
-            player.rotation = target.transform.rotation;
-
-            if (cc != null) cc.enabled = true;
-
-            //Debug.Log("[ButtonFunctions] Teleported to: " + teleportTargetName);
-        }
-        else
-        {
-            //Debug.LogWarning("[ButtonFunctions] SpawnPoint not found.");
-        }
+        if (player == null)
+            Debug.LogError("[ButtonFunctions] Player not found in GameManager.");
     }
 
     public void Resume()
     {
-        gamemanager.instance.stateUnpause();
+        gm.stateUnpause();
     }
 
     public void Restart()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        gamemanager.instance.stateUnpause();
+        var sceneName = SceneManager.GetActiveScene().name;
+        SceneManager.LoadScene(sceneName);
+        gm.stateUnpause();
 
-        playerController pc = Player.GetComponent<playerController>();
-        if (pc != null)
+        if (playerController != null)
         {
-            //Debug.Log($"[ButtonFunctions] HP before reset: {pc.HP}, Shield before reset: {pc.Shield}");
-            //Debug.Log($"[ButtonFunctions] HPOrig: {pc.MAXHPOrig}, ShieldOrig: {pc.MAXShieldOrig}");
-
-            pc.HP = pc.MAXHPOrig;
-            pc.Shield = pc.MAXShieldOrig;
-
-            //Debug.Log($"[ButtonFunctions] HP after reset: {pc.HP}, Shield after reset: {pc.Shield}");
+            playerController.HP = playerController.MAXHPOrig;
+            playerController.Shield = playerController.MAXShieldOrig;
         }
     }
 
     public void Quit()
     {
 #if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
+        EditorApplication.isPlaying = false;
 #else
-            Application.Quit();
+        Application.Quit();
 #endif
     }
 
-    public void loadLevel(int Lvl)
+    public void LoadLevel(int levelIndex)
     {
-        int currentScene = SceneManager.GetActiveScene().buildIndex;
-        var gm = gamemanager.instance;
-
-        if (currentScene == 1)
+        int currentIndex = SceneManager.GetActiveScene().buildIndex;
+        if (currentIndex == 1 && playerController != null)
         {
-            if (gm != null && gm.PlayerScript != null)
-            {
-                int originalScene = gm.PlayerScript.GetOriginalSceneIndex();
-                //Debug.Log("[ButtonFunctions] Returning to original scene: " + originalScene);
-                SceneManager.LoadScene(originalScene);
-            }
+            int original = playerController.GetOriginalSceneIndex();
+            SceneManager.LoadScene(original);
         }
         else
         {
-            //Debug.Log("[ButtonFunctions] Loading scene: " + Lvl);
-            SceneManager.LoadScene(Lvl);
+            SceneManager.LoadScene(levelIndex);
         }
-
-        playerControl = gamemanager.instance.PlayerScript;
-        if (playerControl.inventoryCanvas != null)
-        {
-            playerControl.inventoryCanvas.SetActive(true);
-        }
-
-        if (playerControl.playerMenu != null)
-        {
-            playerControl.playerMenu.SetActive(true);
-        }
-
         gm.stateUnpause();
     }
 
     public void ReturnToOriginalScene()
     {
-        var gm = gamemanager.instance;
-
-        if (gm != null && gm.PlayerScript != null)
+        if (playerController != null)
         {
-            int originalScene = gm.PlayerScript.GetOriginalSceneIndex();
-            SceneManager.LoadScene(originalScene);
+            int original = playerController.GetOriginalSceneIndex();
+            SceneManager.LoadScene(original);
             gm.stateUnpause();
         }
     }
 
-    public void onClickOptions()
+    public void ToggleOptions()
     {
-        var gm = gamemanager.instance;
-        int sceneIndex = SceneManager.GetActiveScene().buildIndex;
+        if (gm.MenuOptions == null || gm.PauseMenu == null) return;
 
-        if (gm.MenuOptions != null && gm.PauseMenu != null)
+        bool optionsActive = gm.MenuOptions.activeSelf;
+        if (!optionsActive)
         {
-            bool optionsActive = gm.MenuOptions.activeSelf;
-
-            if (!optionsActive)
-            {
-                gm.PauseMenu.SetActive(false);
-                gm.setActiveMenu(gm.MenuOptions);
-            }
+            gm.PauseMenu.SetActive(false);
+            gm.setActiveMenu(gm.MenuOptions);
+        }
+        else
+        {
+            gm.MenuOptions.SetActive(false);
+            if (SceneManager.GetActiveScene().buildIndex != 0)
+                gm.setActiveMenu(gm.PauseMenu);
             else
             {
-                gm.MenuOptions.SetActive(false);
-
-                if (sceneIndex != 0)
-                {
-                    gm.setActiveMenu(gm.PauseMenu);
-                }
-                else
-                {
-                    gm.MenuActive = null;
-                    gm.stateUnpause();
-                }
+                gm.MenuActive = null;
+                gm.stateUnpause();
             }
         }
     }
 
-    public void onLoadGame()
+    public void LoadGame()
     {
-        playerControl = gamemanager.instance.PlayerScript;
-        if (playerControl.playerMenu != null)
-        {
-            playerControl.playerMenu.SetActive(true);
-        }
-
-        gamemanager.instance.Load();
+        playerController?.playerMenu?.SetActive(true);
+        gm.Load();
     }
 
-    public void onEquip()
-    {
-
-    }
-
-    public void onUse()
-    {
-
-    }
-
-    public void onDrop()
-    {
-
-    }
+    public void OnEquip() { }
+    public void OnUse() { }
+    public void OnDrop() { }
 }
