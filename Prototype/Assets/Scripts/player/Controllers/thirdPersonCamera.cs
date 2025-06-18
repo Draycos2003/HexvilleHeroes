@@ -8,6 +8,7 @@ public class thirdPersonCamera : MonoBehaviour
     public float smooth;
     public Vector3 dollyDir;
     public Vector3 dollyDirAdjusted;
+    public LayerMask companion;
 
     void Awake()
     {
@@ -21,7 +22,14 @@ public class thirdPersonCamera : MonoBehaviour
         Vector3 desiredCamPos = transform.parent.TransformPoint(dollyDir * maxDistance);
         RaycastHit hit;
 
-        if(Physics.Linecast(transform.parent.position, desiredCamPos, out hit))
+        
+        if(!Physics.Linecast(transform.position, desiredCamPos, companion))
+        {
+            distance = maxDistance;
+            return;
+        }
+
+        if (Physics.Linecast(transform.parent.position, desiredCamPos, out hit))
         {
             distance = Mathf.Clamp(hit.distance * 0.85f, minDistance, maxDistance);
         }
@@ -29,6 +37,7 @@ public class thirdPersonCamera : MonoBehaviour
         {
             distance = maxDistance;
         }
+
         transform.localPosition = Vector3.Lerp(transform.localPosition, dollyDir * distance, Time.deltaTime * smooth);
     }
 }
