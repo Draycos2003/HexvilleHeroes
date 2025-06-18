@@ -139,14 +139,26 @@ public class inventoryController : MonoBehaviour
         return null;
     }
 
-    public void Update()
+    private void Update()
     {
-        // press I to open/close inventory
+        if (SceneManager.GetActiveScene().buildIndex == 0) return;
+
         if (Input.GetKeyDown(KeyCode.I))
         {
-            if (SceneManager.GetActiveScene().buildIndex != 0)
+            bool wasOpen = invUI.gameObject.activeSelf;
+
+            if (wasOpen)
+            {
+                invUI.gameObject.SetActive(false);
+                gamemanager.instance.stateUnpause();
+                Debug.Log("CLOSE");
+            }
+            else
             {
                 invUI.gameObject.SetActive(true);
+                Time.timeScale = 0f;
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.None;
                 gamemanager.instance.setActiveMenu(invUI.gameObject);
                 Show();
             }

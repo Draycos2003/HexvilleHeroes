@@ -43,9 +43,9 @@ public class Spawner : MonoBehaviour
             spawnCount++;
 
             var ai = enemy.GetComponent<enemyAI>();
-            //if (ai != null)
-            //    ai.OnDeath += OnEnemyDeath;  // subscribe a named method
-            //else
+            if (ai != null)
+                ai.OnDeath += OnEnemyDeath;
+            else
                 Debug.LogWarning($"'{enemy.name}' has no enemyAI.OnDeath event.");
         }
     }
@@ -60,7 +60,7 @@ public class Spawner : MonoBehaviour
 
         // unsubscribe so no leaky
         var ai = enemy.GetComponent<enemyAI>();
-        //if (ai != null)
-        //    ai.OnDeath -= OnEnemyDeath;
+        if (ai != null)
+            ai.OnDeath -= OnEnemyDeath;
     }
 }

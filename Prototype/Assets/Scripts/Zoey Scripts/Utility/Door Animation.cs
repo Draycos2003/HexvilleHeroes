@@ -53,27 +53,31 @@ public class doorOpen : MonoBehaviour
         initialYRotation = transform.localEulerAngles.y;
         var col = GetComponent<Collider>();
         col.isTrigger = true;
+        if (GetComponent<Rigidbody>() == null)
+        {
+            var rb = gameObject.AddComponent<Rigidbody>();
+            rb.isKinematic = true;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (isAnimating || isOpen || !other.CompareTag("Player"))
-            return;
+        if (isAnimating || isOpen || !other.CompareTag("Player")) return;
 
-        // If no key is required, open immediately
+        // no key needed
         if (doorRequirement == DoorRequirement.None)
         {
             OpenDoor();
             return;
         }
 
-        // If a key is required, check PlayerProgression for the required key index
-        var prog = other.GetComponent<PlayerProgression>();
+        // look on the root Player object for your PlayerProgression component
+        var playerRoot = other.transform.root;
+        var prog = playerRoot.GetComponentInChildren<PlayerProgression>();
         if (prog != null && prog.HasKey(requiredKeyIndex))
-        {
             OpenDoor();
-        }
     }
+
 
     private void OnTriggerExit(Collider other)
     {
