@@ -48,6 +48,7 @@ public class Damage : MonoBehaviour
     [SerializeField] private GameObject obj;
 
     private playerController playerController;
+
     #endregion
 
     #region Damage Properties
@@ -103,7 +104,6 @@ public class Damage : MonoBehaviour
         if (IsProjectile() && body != null)
         {
             body.linearVelocity = transform.forward * speed;
-            Destroy(gameObject, destroyTime);
         }
     }
 
@@ -131,7 +131,7 @@ public class Damage : MonoBehaviour
                     dmgTarget.TakeDamage(damageAmount);
                     HandleImpactFeedback();
                     StartCoroutine(DebuffOverTime());
-                    Destroy(gameObject);
+                  
                 }
                 break;
 
@@ -194,7 +194,6 @@ public class Damage : MonoBehaviour
                     StartCoroutine(DamageOverTime(dmgTarget));
                     StartCoroutine(DebuffOverTime());
                     HandleImpactFeedback();
-                    Destroy(gameObject);
 
                     return;
                 }
@@ -202,8 +201,6 @@ public class Damage : MonoBehaviour
 
         }
 
-        if (type == DamageType.Ranged || type == DamageType.Homing)
-            Destroy(gameObject);
     }
 
     private void OnTriggerStay(Collider other)
