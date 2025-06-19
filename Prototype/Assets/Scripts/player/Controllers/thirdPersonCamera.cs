@@ -22,8 +22,7 @@ public class thirdPersonCamera : MonoBehaviour
         Vector3 desiredCamPos = transform.parent.TransformPoint(dollyDir * maxDistance);
         RaycastHit hit;
 
-        
-        if(!Physics.Linecast(transform.position, desiredCamPos, companion))
+        if(Physics.Linecast(transform.position, desiredCamPos, companion))
         {
             distance = maxDistance;
             return;
