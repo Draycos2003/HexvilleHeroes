@@ -853,6 +853,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4952630705940334109, guid: eaa8e9316b666f74e997eab9b9fff419, type: 3}
+      propertyPath: audioSource
+      value: 
+      objectReference: {fileID: 1409607641}
     - target: {fileID: 6502741365704667416, guid: eaa8e9316b666f74e997eab9b9fff419, type: 3}
       propertyPath: m_Name
       value: Player (3rd Person - Testing)
@@ -1083,6 +1087,11 @@ Transform:
   - {fileID: 1741913173}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &1409607641 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 6876157256963708046, guid: eaa8e9316b666f74e997eab9b9fff419, type: 3}
+  m_PrefabInstance: {fileID: 594069804}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1467628991
 GameObject:
   m_ObjectHideFlags: 0

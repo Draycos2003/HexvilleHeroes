@@ -11,20 +11,25 @@ public class inventoryItemUI : MonoBehaviour, IPointerClickHandler, IBeginDragHa
 
     [SerializeField] Image borderImage;
     [SerializeField] GameObject actionPanel;
-    [SerializeField] TMP_Text actionTxt;
+    [SerializeField] TMP_Text actionText;
 
     [SerializeField] inventorySO playerInv;
 
-    public event Action<inventoryItemUI> OnItemClicked, OnItemDropped,
-        OnItemBeginDrag, OnItemEndDrag, OnRightMouseBtnClick;
+    public event Action<inventoryItemUI> OnItemClicked, OnItemSwap,
+        OnItemBeginDrag, OnItemEndDrag, OnRightMouseBtnClick, OnItemAction, OnItemDrop;
 
+    private bool drop = false;
     private bool empty = true;
-    static int itemIndex;
+    public static string ActionTxt;
 
     public void Awake()
     {
         ResetData();
         Deselect();
+    }
+
+    private void Update()
+    {
     }
 
     public void ResetData()
@@ -43,7 +48,6 @@ public class inventoryItemUI : MonoBehaviour, IPointerClickHandler, IBeginDragHa
     public void Deselect()
     {
         borderImage.enabled = false;
-        actionPanel.SetActive(false);
     }
 
     public void Select()
@@ -51,9 +55,14 @@ public class inventoryItemUI : MonoBehaviour, IPointerClickHandler, IBeginDragHa
         borderImage.enabled = true;
     }
 
-    public static void SetItemIndex(int index)
+    public void ResetActionPanel()
     {
-        itemIndex = index;
+        actionPanel.SetActive(false);
+    }
+
+    public void SetActionPanel()
+    {
+        actionPanel.SetActive(true);
     }
 
     // pass the item being dragged through the mouse input system functions 
@@ -66,7 +75,7 @@ public class inventoryItemUI : MonoBehaviour, IPointerClickHandler, IBeginDragHa
 
     public void OnDrop(PointerEventData data)
     {
-        OnItemDropped?.Invoke(this);
+        OnItemSwap?.Invoke(this);
     }
 
     public void OnEndDrag(PointerEventData data)
@@ -76,27 +85,35 @@ public class inventoryItemUI : MonoBehaviour, IPointerClickHandler, IBeginDragHa
 
     public void OnPointerClick(PointerEventData data)
     {
-        //if (data.button == PointerEventData.InputButton.Right)
-        //{
-        //    if (playerInv.inventoryItems[itemIndex].item.IType == ItemSO.ItemType.consumable)
-        //    {
-        //        actionTxt.text = "Use";
-        //    }
-        //    else
-        //    {
-        //        actionTxt.text = "Equip";
-        //    }
-
-        //    actionPanel.SetActive(true);
-        //    OnRightMouseBtnClick?.Invoke(this);
-        //}
-        //else
-        //{ }   
+        if (data.button == PointerEventData.InputButton.Right)
+        {
+            actionPanel.SetActive(true);
+            OnRightMouseBtnClick?.Invoke(this);
+        }
+        else
+        {
             OnItemClicked?.Invoke(this);
-        
+        }
+
+        UpadteActionTxt();
     }
 
     public void OnDrag(PointerEventData eventData)
     {
+    }
+
+    private void UpadteActionTxt()
+    {
+        actionText.text = ActionTxt;
+    }
+
+    public void OnActionPresssed()
+    {
+        OnItemAction?.Invoke(this);
+    }
+
+    public void OnDropItem()
+    {
+        OnItemDrop?.Invoke(this);
     }
 }

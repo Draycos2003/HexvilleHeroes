@@ -12,11 +12,11 @@ public class inventoryUI : MonoBehaviour
 
     [SerializeField] RectTransform quickBuffPanel, shieldPanel, weaponPanel;
 
-    // [SerializeField] inventoryItemDescription description;
+    [SerializeField] inventoryItemDescription description;
 
     [HideInInspector] public List<inventoryItemUI> listOfUIItems = new List<inventoryItemUI>();
 
-    public event Action<int> OnDescriptionRequested, OnItemActionRequested, OnStartDragging;
+    public event Action<int> OnDescriptionRequested, OnItemActionRequested, OnStartDragging, OnItemAction, OnItemDropped;
 
     public event Action<int, int> OnSwapItems;
 
@@ -24,7 +24,8 @@ public class inventoryUI : MonoBehaviour
 
     private void Start()
     {
-        //description.ResetDescription(); !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //description.ResetDescription();
+        ResetAllActionPanels();
     }
 
     public void InitializeInventoryUI(int inventorySize)
@@ -38,9 +39,11 @@ public class inventoryUI : MonoBehaviour
 
             uiItem.OnItemClicked += HandleItemSelection;
             uiItem.OnItemBeginDrag += HandleBeginDrag;
-            uiItem.OnItemDropped += HandleSwap;
+            uiItem.OnItemSwap += HandleSwap;
             uiItem.OnItemEndDrag += HandleEndDrag;
             uiItem.OnRightMouseBtnClick += HandleShowItemActions;
+            uiItem.OnItemAction += HandleItemAction;
+            uiItem.OnItemDrop += HandleItemDrop;
         }
 
         // add the buff equip slot
@@ -61,9 +64,11 @@ public class inventoryUI : MonoBehaviour
 
         equipItem.OnItemClicked += HandleItemSelection;
         equipItem.OnItemBeginDrag += HandleBeginDrag;
-        equipItem.OnItemDropped += HandleSwap;
+        equipItem.OnItemSwap += HandleSwap;
         equipItem.OnItemEndDrag += HandleEndDrag;
         equipItem.OnRightMouseBtnClick += HandleShowItemActions;
+        equipItem.OnItemAction += HandleItemAction;
+        equipItem.OnItemDrop += HandleItemDrop;
     }
 
     private void InitializeShieldSlot()
@@ -74,9 +79,11 @@ public class inventoryUI : MonoBehaviour
 
         equipItem.OnItemClicked += HandleItemSelection;
         equipItem.OnItemBeginDrag += HandleBeginDrag;
-        equipItem.OnItemDropped += HandleSwap;
+        equipItem.OnItemSwap += HandleSwap;
         equipItem.OnItemEndDrag += HandleEndDrag;
         equipItem.OnRightMouseBtnClick += HandleShowItemActions;
+        equipItem.OnItemAction += HandleItemAction;
+        equipItem.OnItemDrop += HandleItemDrop;
     }
 
     private void InitializeWeaponSlot()
@@ -87,9 +94,33 @@ public class inventoryUI : MonoBehaviour
 
         equipItem.OnItemClicked += HandleItemSelection;
         equipItem.OnItemBeginDrag += HandleBeginDrag;
-        equipItem.OnItemDropped += HandleSwap;
+        equipItem.OnItemSwap += HandleSwap;
         equipItem.OnItemEndDrag += HandleEndDrag;
         equipItem.OnRightMouseBtnClick += HandleShowItemActions;
+        equipItem.OnItemAction += HandleItemAction;
+        equipItem.OnItemDrop += HandleItemDrop;
+    }
+
+    private void HandleItemDrop(inventoryItemUI item)
+    {
+        int index = listOfUIItems.IndexOf(item);
+        if (index == -1)
+        {
+            return;
+        }
+        OnItemDropped?.Invoke(index);
+        ResetAllActionPanels();
+    }
+
+    private void HandleItemAction(inventoryItemUI item)
+    {
+        int index = listOfUIItems.IndexOf(item);
+        if (index == -1)
+        {
+            return;
+        }
+        OnItemAction?.Invoke(index);
+        ResetAllActionPanels();
     }
 
     private void HandleItemSelection(inventoryItemUI item)
@@ -162,11 +193,26 @@ public class inventoryUI : MonoBehaviour
         }
     }
 
+    private void ResetAllActionPanels()
+    {
+        foreach (inventoryItemUI item in listOfUIItems)
+        {
+            item.ResetActionPanel();
+        }
+    }
+
     public void UpdateDescription(int _itemIndex, Sprite _itemIcon, string _name, string _description)
     {
         //description.SetDescription(_itemIcon, _name, _description); !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ResetAllActionPanels();
         DeselectAllItems();
         listOfUIItems[_itemIndex].Select();
+    }
+
+    public void UpdateActionPanel(int _itemIndex)
+    {
+        ResetAllActionPanels();
+        listOfUIItems[_itemIndex].SetActionPanel();
     }
 
     internal void ResetAllItems()

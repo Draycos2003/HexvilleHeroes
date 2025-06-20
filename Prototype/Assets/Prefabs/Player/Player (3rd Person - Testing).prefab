@@ -2499,7 +2499,19 @@ MonoBehaviour:
       m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_AlphaFadeSpeed: 0.15
 --- !u!114 &4678775717645793390
 MonoBehaviour:
@@ -3434,6 +3446,7 @@ MonoBehaviour:
   quickBuffPanel: {fileID: 3102917085116133726}
   shieldPanel: {fileID: 8254241954447984835}
   weaponPanel: {fileID: 8556185471935474132}
+  description: {fileID: 0}
   listOfUIItems: []
 --- !u!222 &9071668902871761432
 CanvasRenderer:
@@ -5983,6 +5996,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   invUI: {fileID: 650786639012808725}
   des: {fileID: 0}
+  inventoryItemUI: {fileID: 6437061301661840666, guid: 99b9dcdb12c523d4eaad5424cb0b9f4e, type: 3}
   inventoryData: {fileID: 11400000, guid: b6eae350c45abe74fac0fe70c4018117, type: 2}
   initialItems:
   - quantity: 1
