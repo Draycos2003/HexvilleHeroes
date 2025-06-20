@@ -120,7 +120,7 @@ public class Damage : MonoBehaviour
     #region Collision Handlers
     private void OnTriggerEnter(Collider other)
     {
-        if (other.isTrigger) return;
+        //if (other.isTrigger) return;
         var dmgTarget = other.GetComponent<IDamage>();
 
         switch (type)

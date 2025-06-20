@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using System.Diagnostics.Contracts;
 
 public class CompanionAttack : MonoBehaviour
 {
@@ -32,8 +33,9 @@ public class CompanionAttack : MonoBehaviour
     [SerializeField]
     [Range(1, 10f)] private int attackSFXVolume;
 
+    public bool attack;
     private Coroutine attackCo;
-    private List<enemyAI> enemies = new List<enemyAI>();
+    public List<enemyAI> enemies = new List<enemyAI>();
 
     private ObjectPool pool;
 
@@ -46,14 +48,16 @@ public class CompanionAttack : MonoBehaviour
     private void OnTriggerEnter(Collider other) {
         
         if (other.TryGetComponent<enemyAI>(out enemyAI currentEnemy)) {
-            
+
             enemies.Add(currentEnemy);
 
             if (attackCo != null) {
 
                 StopCoroutine(attackCo);
             }
+            attack = true;
             attackCo = StartCoroutine(Attack());
+            
         }
     }
 
@@ -67,6 +71,7 @@ public class CompanionAttack : MonoBehaviour
                 
                StopCoroutine(attackCo);
                 attackCo = null;
+                attack = false;
             }
         }
     }
@@ -95,14 +100,14 @@ public class CompanionAttack : MonoBehaviour
        while(currentEnemy != null)
        {
             Vector3 target = currentEnemy.transform.position;
-            target.y = projectile.transform.position.y;
+            target.y = currentEnemy.transform.position.y * 2f;
             projectile.transform.position = Vector3.MoveTowards(
                 projectile.transform.position,
                 target,
                 projectileSpeed * Time.deltaTime );
             projectile.gameObject.SetActive(true);
 
-            if (Vector3.Distance(projectile.transform.position, target) < 0.1)
+            if (Vector3.Distance(projectile.transform.position, target) < 0.01)
                 break;
                 yield return null;
        }
@@ -115,7 +120,7 @@ public class CompanionAttack : MonoBehaviour
 
     }
 
-    private enemyAI FindClosestEnemy() {
+    public enemyAI FindClosestEnemy() {
         
         float closestDist = float.MaxValue;
         
@@ -123,11 +128,10 @@ public class CompanionAttack : MonoBehaviour
         
         for (int i = 0; i < enemies.Count; i++) {
 
-            if (enemies[i] == null) continue;
+            if (enemies[i] == null) break;
 
             float distance = Vector3.Distance(transform.position, enemies[i].transform.position);
 
-                    
             if (distance < closestDist) {
 
                 closestDist = distance;
