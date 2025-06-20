@@ -6,6 +6,8 @@ using UnityEngine.UIElements;
 
 public class inventoryUI : MonoBehaviour
 {
+    #region Fields
+
     [SerializeField] inventoryItemUI itemPrefab;
 
     [SerializeField] RectTransform contentPanel;
@@ -22,11 +24,19 @@ public class inventoryUI : MonoBehaviour
 
     private int currentlyDraggedItmeIndex = -1;
 
+    #endregion
+
+    #region Unity Callbacks
+
     private void Start()
     {
         //description.ResetDescription();
         ResetAllActionPanels();
     }
+
+    #endregion
+
+    #region InventoryUI Initialization 
 
     public void InitializeInventoryUI(int inventorySize)
     {
@@ -101,6 +111,10 @@ public class inventoryUI : MonoBehaviour
         equipItem.OnItemDrop += HandleItemDrop;
     }
 
+    #endregion
+
+    #region Event Functions
+
     private void HandleItemDrop(inventoryItemUI item)
     {
         int index = listOfUIItems.IndexOf(item);
@@ -161,14 +175,6 @@ public class inventoryUI : MonoBehaviour
         ResetDraggedItem();
     }
 
-    public void UpdateData(int itemIndex, Sprite itemImage, int itemQuantity)
-    {
-        if(listOfUIItems.Count > itemIndex)
-        {
-            listOfUIItems[itemIndex].SetData(itemImage, itemQuantity);
-        }
-    }
-
     private void HandleShowItemActions(inventoryItemUI item)
     {
         int index = listOfUIItems.IndexOf(item);
@@ -177,6 +183,32 @@ public class inventoryUI : MonoBehaviour
             return;
         }
         OnItemActionRequested?.Invoke(index);
+    }
+
+    #endregion
+
+    #region Updating UI Functions
+
+    public void UpdateData(int itemIndex, Sprite itemImage, int itemQuantity)
+    {
+        if(listOfUIItems.Count > itemIndex)
+        {
+            listOfUIItems[itemIndex].SetData(itemImage, itemQuantity);
+        }
+    }
+
+    public void UpdateDescription(int _itemIndex, Sprite _itemIcon, string _name, string _description)
+    {
+        //description.SetDescription(_itemIcon, _name, _description); !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ResetAllActionPanels();
+        DeselectAllItems();
+        listOfUIItems[_itemIndex].Select();
+    }
+
+    public void UpdateActionPanel(int _itemIndex)
+    {
+        ResetAllActionPanels();
+        listOfUIItems[_itemIndex].SetActionPanel();
     }
 
     public void ResetSelection()
@@ -201,20 +233,6 @@ public class inventoryUI : MonoBehaviour
         }
     }
 
-    public void UpdateDescription(int _itemIndex, Sprite _itemIcon, string _name, string _description)
-    {
-        //description.SetDescription(_itemIcon, _name, _description); !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        ResetAllActionPanels();
-        DeselectAllItems();
-        listOfUIItems[_itemIndex].Select();
-    }
-
-    public void UpdateActionPanel(int _itemIndex)
-    {
-        ResetAllActionPanels();
-        listOfUIItems[_itemIndex].SetActionPanel();
-    }
-
     internal void ResetAllItems()
     {
        foreach(var item in listOfUIItems)
@@ -223,4 +241,6 @@ public class inventoryUI : MonoBehaviour
             item.Deselect();
         }
     }
+
+    #endregion
 }

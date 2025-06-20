@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class inventoryItemUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDropHandler, IEndDragHandler, IDragHandler
 {
+    #region Fields
+
     [SerializeField] Image itemImage;
     [SerializeField] TMP_Text quantityTxt;
 
@@ -22,15 +24,18 @@ public class inventoryItemUI : MonoBehaviour, IPointerClickHandler, IBeginDragHa
     private bool empty = true;
     public static string ActionTxt;
 
+    #endregion
+
+    #region Unity Callbacks
     public void Awake()
     {
         ResetData();
         Deselect();
     }
 
-    private void Update()
-    {
-    }
+    #endregion
+
+    #region UI/Data Magament
 
     public void ResetData()
     {
@@ -64,6 +69,10 @@ public class inventoryItemUI : MonoBehaviour, IPointerClickHandler, IBeginDragHa
     {
         actionPanel.SetActive(true);
     }
+
+    #endregion
+
+    #region Pointer Events
 
     // pass the item being dragged through the mouse input system functions 
     public void OnBeginDrag(PointerEventData data)
@@ -102,6 +111,10 @@ public class inventoryItemUI : MonoBehaviour, IPointerClickHandler, IBeginDragHa
     {
     }
 
+    #endregion
+
+    #region Helper Functions
+
     private void UpadteActionTxt()
     {
         actionText.text = ActionTxt;
@@ -116,4 +129,6 @@ public class inventoryItemUI : MonoBehaviour, IPointerClickHandler, IBeginDragHa
     {
         OnItemDrop?.Invoke(this);
     }
+
+    #endregion
 }
