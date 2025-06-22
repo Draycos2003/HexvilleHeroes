@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 public class CutsceneManager : MonoBehaviour
 {
     [Header("Scene Loader (Build-index # or Name)")]
-    [Tooltip("Enter a scene build-index (e.g. “2”) or scene name (e.g. “Level2”).")]
+    [Tooltip("Enter a scene build-index (e.g. “2”) or scene name (e.g. “Level 2”).")]
     [SerializeField] private string Scene;
 
     private ThirdPersonCamController camCtrl;
@@ -21,7 +21,7 @@ public class CutsceneManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKey(KeyCode.LeftControl) && Input.GetMouseButtonDown(0))
+        if (Input.GetKeyDown(KeyCode.Escape)) //(Input.GetMouseButtonDown(0) // && Input.GetKey(KeyCode.LeftControl)) (Can add this back if need be)
         {
             // restore camera & cursor
             if (camCtrl != null) camCtrl.enabled = true;
