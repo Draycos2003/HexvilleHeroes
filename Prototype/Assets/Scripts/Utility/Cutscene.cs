@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 public class CutsceneManager : MonoBehaviour
 {
     [Header("Scene Loader (Build-index # or Name)")]
-    [Tooltip("Enter a scene build-index (e.g. “2”) or scene name (e.g. “Level 2”).")]
+    [Tooltip("Enter a scene build-index (e.g. '2') or scene name (e.g. 'Level 2').")]
     [SerializeField] private string Scene;
 
     private ThirdPersonCamController camCtrl;
