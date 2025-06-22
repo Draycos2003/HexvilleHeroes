@@ -1,5 +1,8 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,6 +10,7 @@ public class inventoryController : MonoBehaviour
 {
     [SerializeField] inventoryUI invUI;
     [SerializeField] inventoryItemDescription des;
+    [SerializeField] inventoryItemUI inventoryItemUI;
 
     public inventorySO inventoryData;
 
@@ -17,10 +21,18 @@ public class inventoryController : MonoBehaviour
 
     private gamemanager gm = gamemanager.instance;
 
+    private int ConsumableSlotIndex;
+    private int ShieldSlotIndex;
+    private int WeaponSlotIndex;
+
     public void Start()
     {
         PrepareUI();
         PrepareInventoryData();
+
+        ConsumableSlotIndex = inventoryData.inventoryItems.Count - 1;
+        ShieldSlotIndex = inventoryData.inventoryItems.Count - 2;
+        WeaponSlotIndex = inventoryData.inventoryItems.Count - 3;
     }
 
     private void PrepareInventoryData()
@@ -53,11 +65,44 @@ public class inventoryController : MonoBehaviour
         invUI.OnSwapItems += HandleSwapItems;
         invUI.OnStartDragging += HandleDragging;
         invUI.OnItemActionRequested += HandleItemActionRequest;
+        invUI.OnItemAction += HandleItemAction;
+        invUI.OnItemDropped += HandleItemDropped;
+    }
+
+    private void HandleItemDropped(int itemIndex)
+    {
+        InventoryItem item = inventoryData.GetItemAt(itemIndex);
+        Vector3 dropPos = new Vector3(transform.position.x, transform.position.y, transform.position.z + 3);
+        Instantiate(item.item.model, dropPos, transform.rotation);
+        DropItem(itemIndex, 1);
     }
 
     private void HandleItemActionRequest(int itemIndex)
     {
+        InventoryItem invItem = inventoryData.GetItemAt(itemIndex);
+        invUI.UpdateActionPanel(itemIndex);
+
+        if (invItem.isEmpty)
+        {
+            inventoryItemUI.ActionTxt = null;
+            return;
+        }
+
+        if (invItem.item.IType == ItemSO.ItemType.consumable)
+        {
+            inventoryItemUI.ActionTxt = "Use";
+        }
+        else
+        {
+            inventoryItemUI.ActionTxt = "Equip";
+        }
+    }
+
+    public void HandleItemAction(int itemIndex)
+    {
+
         InventoryItem item = inventoryData.GetItemAt(itemIndex);
+
         if (item.isEmpty)
             return;
         IDestroyableItem _item = item.item as IDestroyableItem;

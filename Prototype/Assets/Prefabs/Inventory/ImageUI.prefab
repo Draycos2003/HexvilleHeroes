@@ -332,7 +332,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1993174036763585412}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6437061301661840666}
+        m_TargetAssemblyTypeName: inventoryItemUI, Assembly-CSharp
+        m_MethodName: OnDropItem
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &3058677328177896570
 GameObject:
   m_ObjectHideFlags: 0
@@ -427,7 +439,7 @@ MonoBehaviour:
   quantityTxt: {fileID: 1017541006656156790}
   borderImage: {fileID: 3120730318842793956}
   actionPanel: {fileID: 5426126919136441288}
-  actionTxt: {fileID: 5197841683491602330}
+  actionText: {fileID: 5197841683491602330}
   playerInv: {fileID: 11400000, guid: b6eae350c45abe74fac0fe70c4018117, type: 2}
 --- !u!1 &4253693053625423868
 GameObject:
@@ -1026,7 +1038,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6028462267227854985}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6437061301661840666}
+        m_TargetAssemblyTypeName: inventoryItemUI, Assembly-CSharp
+        m_MethodName: OnActionPresssed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
 --- !u!1 &9010547140056586781
 GameObject:
   m_ObjectHideFlags: 0

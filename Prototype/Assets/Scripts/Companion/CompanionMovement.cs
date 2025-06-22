@@ -1,6 +1,7 @@
 
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngineInternal;
 
 public class CompanionMovement_1 : MonoBehaviour
 {
@@ -8,46 +9,57 @@ public class CompanionMovement_1 : MonoBehaviour
     private Transform player;
     
     [SerializeField]
-    private Transform companion;
+    private NavMeshAgent agent;
     
     [SerializeField]
     [Range(5,10f)]
     private float companionSpeed;
-    
-    [SerializeField]
-    [Range(0,10f)]
-    private float companionRotateSpeed;
-    
-    [SerializeField]
-    [Range(3,10)]
-    private float allowedDistance;
 
-    private float playerDist;
-    private RaycastHit hit;
+    CompanionAttack ca;
+   
     
     private void Awake()
     {
+        agent = GetComponent<NavMeshAgent>();
+        ca = GetComponentInChildren<CompanionAttack>();
+        agent.updatePosition = false; 
+        agent.updateRotation = false;
     }
 
 
     void Update()
     {
+        MovementHandler();
+    }
 
-        transform.LookAt(player.position);
-        var playerPosition = player.position + (player.right * -4f + player.up); // off setting player position for companion
-
-        if (Physics.Raycast(companion.transform.position, transform.TransformDirection(Vector3.forward), out hit))
+    void MovementHandler()
+    {
+        if(ca.attack && ca.FindClosestEnemy() != null)
         {
-            float playerDist = hit.distance;
+            agent.speed = companionSpeed;
+            Vector3 enemyPos = ca.FindClosestEnemy().transform.position + (ca.FindClosestEnemy().transform.right * 1.5f);
 
-            if (playerDist > allowedDistance)
-            {
-                companion.position = Vector3.MoveTowards(companion.position, playerPosition, companionSpeed * Time.deltaTime); // Companion movement
-                //companion.rotation = (player.position - companion.position) * companionRotateSpeed * Time.deltaTime; // Companion rotation
-            }
- 
+            agent.SetDestination(enemyPos);
+            agent.transform.LookAt(enemyPos);
+         
+            var next = agent.nextPosition + Vector3.up * 1.5f;
+             
+            agent.transform.position = Vector3.Lerp(agent.transform.position, next, companionSpeed);
+        }
+        else
+        {
+            agent.speed = companionSpeed;
+            agent.SetDestination(player.transform.position + (player.transform.right * 1.5f));
+            agent.transform.LookAt(player);
+            var next1 = agent.nextPosition + Vector3.up * 1.5f;
+            agent.transform.position = Vector3.Lerp(agent.transform.position, next1, companionSpeed);
+        
 
         }
+
+      
+        
     }
+    
 }
             
