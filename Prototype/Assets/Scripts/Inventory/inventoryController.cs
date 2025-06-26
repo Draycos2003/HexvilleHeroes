@@ -8,6 +8,8 @@ using UnityEngine.SceneManagement;
 
 public class inventoryController : MonoBehaviour
 {
+    #region Fields
+
     [SerializeField] inventoryUI invUI;
     [SerializeField] inventoryItemDescription des;
     [SerializeField] inventoryItemUI inventoryItemUI;
@@ -17,6 +19,9 @@ public class inventoryController : MonoBehaviour
     public List<InventoryItem> initialItems = new();
 
     [SerializeField] AudioClip dropClip;
+    [SerializeField] AudioClip moveItemClip;
+    [SerializeField] AudioClip equipClip;
+    [SerializeField] AudioClip consumeClip;
     [SerializeField] AudioSource audioSource;
 
     private gamemanager gm = gamemanager.instance;
@@ -24,6 +29,10 @@ public class inventoryController : MonoBehaviour
     private int ConsumableSlotIndex;
     private int ShieldSlotIndex;
     private int WeaponSlotIndex;
+
+    #endregion
+
+    #region Unity Callbacks
 
     public void Start()
     {
@@ -34,6 +43,35 @@ public class inventoryController : MonoBehaviour
         ShieldSlotIndex = inventoryData.inventoryItems.Count - 2;
         WeaponSlotIndex = inventoryData.inventoryItems.Count - 3;
     }
+
+    private void Update()
+    {
+        if (SceneManager.GetActiveScene().buildIndex == 0) return;
+
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            bool wasOpen = invUI.gameObject.activeSelf;
+
+            if (wasOpen)
+            {
+                invUI.gameObject.SetActive(false);
+                gamemanager.instance.stateUnpause();
+            }
+            else
+            {
+                invUI.gameObject.SetActive(true);
+                Time.timeScale = 0f;
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.None;
+                gamemanager.instance.setActiveMenu(invUI.gameObject);
+                Show();
+            }
+        }
+    }
+
+    #endregion
+
+    #region Preperation Functions
 
     private void PrepareInventoryData()
     {
@@ -49,15 +87,6 @@ public class inventoryController : MonoBehaviour
         }
     }
 
-    private void UpdateUI(Dictionary<int, InventoryItem> state)
-    {
-        invUI.ResetAllItems();
-        foreach (var item in state)
-        {
-            invUI.UpdateData(item.Key, item.Value.item.itemIcon, item.Value.quantity);
-        }
-    }
-
     private void PrepareUI()
     {
         invUI.InitializeInventoryUI(inventoryData.Size);
@@ -69,9 +98,38 @@ public class inventoryController : MonoBehaviour
         invUI.OnItemDropped += HandleItemDropped;
     }
 
+    public string PrepareDescription(InventoryItem invItem)
+    {
+        if (!invItem.isEmpty)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(invItem.item.description);
+            sb.AppendLine();
+            for (int i = 0; i < invItem.itemState.Count; i++)
+            {
+                sb.Append($"{invItem.itemState[i].itemParameter.ParameterName}" +
+                    $": {invItem.itemState[i].value}");
+                sb.AppendLine();
+            }
+            return sb.ToString();
+        }
+        return null;
+    }
+
+    #endregion
+
+    #region Event Functions
+
     private void HandleItemDropped(int itemIndex)
     {
         InventoryItem item = inventoryData.GetItemAt(itemIndex);
+
+        if (item.isEmpty)
+        {
+            inventoryItemUI.ActionTxt = null;
+            return;
+        }
+
         Vector3 dropPos = new Vector3(transform.position.x, transform.position.y, transform.position.z + 3);
         Instantiate(item.item.model, dropPos, transform.rotation);
         DropItem(itemIndex, 1);
@@ -100,7 +158,6 @@ public class inventoryController : MonoBehaviour
 
     public void HandleItemAction(int itemIndex)
     {
-
         InventoryItem item = inventoryData.GetItemAt(itemIndex);
 
         if (item.isEmpty)
@@ -114,10 +171,13 @@ public class inventoryController : MonoBehaviour
                 int equipSlotIndex = inventoryData.inventoryItems.Count - 1;
 
                 inventoryData.SwapItems(itemIndex, equipSlotIndex);
+
+                audioSource.PlayOneShot(equipClip);
             }
             else
             {
                 inventoryData.RemoveItem(itemIndex, 1);
+                audioSource.PlayOneShot(consumeClip);
             }
         }
         IItemAction itemAction = item.item as IItemAction;
@@ -125,13 +185,6 @@ public class inventoryController : MonoBehaviour
         {
             itemAction.PerformAction(gameObject, item.itemState);
         }
-    }
-
-    private void DropItem(int itemIndex, int quantity)
-    {
-        inventoryData.RemoveItem(itemIndex, quantity);
-        invUI.ResetSelection();
-        audioSource.PlayOneShot(dropClip);
     }
 
     private void HandleDragging(int itemIndex)
@@ -151,6 +204,7 @@ public class inventoryController : MonoBehaviour
     private void HandleSwapItems(int itemIndex_1, int itemIndex_2)
     {
         inventoryData.SwapItems(itemIndex_1, itemIndex_2);
+        audioSource.PlayOneShot(moveItemClip);
     }
 
     private void HandleDescriptionRequest(int itemIndex)
@@ -166,47 +220,24 @@ public class inventoryController : MonoBehaviour
         invUI.UpdateDescription(itemIndex, item.itemIcon, item.name, description);
     }
 
-    public string PrepareDescription(InventoryItem invItem)
+    #endregion
+
+    #region Helper Functions
+
+    private void UpdateUI(Dictionary<int, InventoryItem> state)
     {
-        if (!invItem.isEmpty)
+        invUI.ResetAllItems();
+        foreach (var item in state)
         {
-            StringBuilder sb = new StringBuilder();
-            sb.Append(invItem.item.description);
-            sb.AppendLine();
-            for (int i = 0; i < invItem.itemState.Count; i++)
-            {
-                sb.Append($"{invItem.itemState[i].itemParameter.ParameterName}" +
-                    $": {invItem.itemState[i].value}");
-                sb.AppendLine();
-            }
-            return sb.ToString();
+            invUI.UpdateData(item.Key, item.Value.item.itemIcon, item.Value.quantity);
         }
-        return null;
     }
 
-    private void Update()
+    private void DropItem(int itemIndex, int quantity)
     {
-        if (SceneManager.GetActiveScene().buildIndex == 0) return;
-
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            bool wasOpen = invUI.gameObject.activeSelf;
-
-            if (wasOpen)
-            {
-                invUI.gameObject.SetActive(false);
-                gamemanager.instance.stateUnpause();
-            }
-            else
-            {
-                invUI.gameObject.SetActive(true);
-                Time.timeScale = 0f;
-                Cursor.visible = true;
-                Cursor.lockState = CursorLockMode.None;
-                gamemanager.instance.setActiveMenu(invUI.gameObject);
-                Show();
-            }
-        }
+        inventoryData.RemoveItem(itemIndex, quantity);
+        invUI.ResetSelection();
+        audioSource.PlayOneShot(dropClip);
     }
 
     public void Show()
@@ -218,4 +249,26 @@ public class inventoryController : MonoBehaviour
             invUI.UpdateData(item.Key, item.Value.item.itemIcon, item.Value.quantity);
         }
     }
+
+    public void OnExit()
+    {
+        bool wasOpen = invUI.gameObject.activeSelf;
+
+        if (wasOpen)
+        {
+            invUI.gameObject.SetActive(false);
+            gamemanager.instance.stateUnpause();
+        }
+        else
+        {
+            invUI.gameObject.SetActive(true);
+            Time.timeScale = 0f;
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+            gamemanager.instance.setActiveMenu(invUI.gameObject);
+            Show();
+        }
+    }
+
+    #endregion
 }

@@ -3,15 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.InputSystem.Interactions;
 
 [CreateAssetMenu (menuName = "Scriptable object/inventory")]
 public class inventorySO : ScriptableObject
 {
+    #region Fields
+
     public List<InventoryItem> inventoryItems;
+    public List<InventoryItem> inventoryItemsPlaceHolder;
 
     [field : SerializeField] public int Size { get; private set; } = 10;
 
     public event Action<Dictionary<int, InventoryItem>> InventoryChanged;
+
+    #endregion
+
+    #region Initalization/Saving
 
     public void Initialize()
     {
@@ -37,6 +45,10 @@ public class inventorySO : ScriptableObject
         return listToSave;
     }
 
+    #endregion
+
+    #region Add Item Functions
+
     public int AddItem(ItemSO item, int quantity, List<ItemParameter> itemState = null)
     {
         if (InventoryFull())
@@ -51,7 +63,7 @@ public class inventorySO : ScriptableObject
         {
             quantity = AddStackableItem(item, quantity); 
         }
-        InformAbountChange();
+        InformAboutChange();
         return quantity;
     }
 
@@ -71,38 +83,6 @@ public class inventorySO : ScriptableObject
             }
         }
         return 0;
-    }
-
-    public int AddEquippableItem(ItemSO item, int quantity, List<ItemParameter> itemState = null)
-    {
-        for (int i = 0; i < inventoryItems.Count; i++)
-        {
-            if (inventoryItems[i].isEmpty)
-            {
-                inventoryItems[i] = new InventoryItem
-                {
-                    item = item,
-                    quantity = quantity,
-                    itemState = new List<ItemParameter>(itemState == null ? item.defaultParameterList : itemState)
-                };
-                return quantity;
-            }
-        }
-        return 0;
-    }
-
-    private bool InventoryFull() // Had to change the way this works since when hitting last slot, regardless of stack, it would return full inventory. 
-    {
-        foreach (var slot in inventoryItems)
-        {
-            if (slot.isEmpty)
-                return false;
-
-            if (slot.item.isStackable && slot.quantity < slot.item.maxStack)
-                return false;
-        }
-
-        return true;
     }
 
     private int AddStackableItem(ItemSO item, int quantity)
@@ -134,9 +114,45 @@ public class inventorySO : ScriptableObject
             quantity -= toAdd;
         }
 
-        InformAbountChange();
+        InformAboutChange();
 
         return quantity;
+    }
+
+    public int AddEquippableItem(ItemSO item, int quantity, List<ItemParameter> itemState = null)
+    {
+        for (int i = 0; i < inventoryItems.Count; i++)
+        {
+            if (inventoryItems[i].isEmpty)
+            {
+                inventoryItems[i] = new InventoryItem
+                {
+                    item = item,
+                    quantity = quantity,
+                    itemState = new List<ItemParameter>(itemState == null ? item.defaultParameterList : itemState)
+                };
+                return quantity;
+            }
+        }
+        return 0;
+    }
+
+    #endregion
+
+    #region Helper Functions
+
+    private bool InventoryFull() // Had to change the way this works since when hitting last slot, regardless of stack, it would return full inventory. 
+    {
+        foreach (var slot in inventoryItems)
+        {
+            if (slot.isEmpty)
+                return false;
+
+            if (slot.item.isStackable && slot.quantity < slot.item.maxStack)
+                return false;
+        }
+
+        return true;
     }
 
     public Dictionary<int, InventoryItem> GetCurrentInventoryState()
@@ -160,10 +176,10 @@ public class inventorySO : ScriptableObject
     public void SwapItems(int itemIndex_1, int itemIndex_2)
     {
         (inventoryItems[itemIndex_2], inventoryItems[itemIndex_1]) = (inventoryItems[itemIndex_1], inventoryItems[itemIndex_2]);
-        InformAbountChange();
+        InformAboutChange();
     }
 
-    private void InformAbountChange()
+    private void InformAboutChange()
     {
         InventoryChanged?.Invoke(GetCurrentInventoryState());
     }
@@ -178,9 +194,33 @@ public class inventorySO : ScriptableObject
                 inventoryItems[itemIndex] = InventoryItem.GetEmptyItem();
             else
                 inventoryItems[itemIndex] = inventoryItems[itemIndex].ChangeQuantity(remainder);
-            InformAbountChange();
+            InformAboutChange();
         }
     }
+
+    public void FilterAll()
+    {
+
+    }
+
+    public void FilterConsumables()
+    {
+
+    }
+
+    public void FilterWeapons()
+    {
+
+    }
+
+    public void FilterShields()
+    {
+
+    }
+
+    #endregion
+
+
 }
 
 [Serializable]
