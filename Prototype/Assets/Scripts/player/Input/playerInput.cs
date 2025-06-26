@@ -86,9 +86,13 @@ namespace FinalController
 
         #endregion
 
+        #region Input Callbacks
+
         public void OnAttack1(InputAction.CallbackContext context)
         {
             if (!context.performed) { return; }
+
+            if (gamemanager.instance.activeMenu != null) { return; }
 
             if (playerController.instance.isRanged)
             {
@@ -96,7 +100,7 @@ namespace FinalController
                 attackPressed = true;
                 return;
             }
-               
+
             if (Time.time - lastAttackTime > comboResetTime)
             {
                 currentCombo = 0;
@@ -118,16 +122,6 @@ namespace FinalController
             }
 
         }
-
-        private void PlayCombo(int comboStep)
-        {
-            lastAttackTime = Time.time;
-
-            attackPressed = true;
-            animator.SetInteger("comboStep", comboStep);
-        }
-
-        #region Input Callbacks
 
         public void OnMove(InputAction.CallbackContext context)
         {
@@ -228,6 +222,14 @@ namespace FinalController
         {
             rangedAttack = false;
             isReloading = true;
+        }
+
+        private void PlayCombo(int comboStep)
+        {
+            lastAttackTime = Time.time;
+
+            attackPressed = true;
+            animator.SetInteger("comboStep", comboStep);
         }
 
         #endregion

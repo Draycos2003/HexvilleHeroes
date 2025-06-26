@@ -64,7 +64,7 @@ public class gamemanager : MonoBehaviour
     private int gameGoalCount;
     private GameObject player;
     private playerController playerScript;
-    private GameObject activeMenu;
+    public GameObject activeMenu;
     #endregion
 
     #region Properties
