@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Collections;
+using TMPro;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -14,6 +16,8 @@ public class ButtonFunctions : MonoBehaviour
 
     private gamemanager gm => gamemanager.instance;
     private playerController pc => gm.PlayerScript;
+
+    [SerializeField] TMP_Text sensLable;
 
     private const float COLLAPSED_SHADE_HEIGHT = 435f;
     private const float EXPANDED_SHADE_HEIGHT = 1085f;
@@ -146,7 +150,9 @@ public class ButtonFunctions : MonoBehaviour
         gm.setActiveMenu(gm.PauseMenu);
     }
 
-    public void OnEquip() { }
-    public void OnUse() { }
-    public void OnDrop() { }
+    public void OnChangeSens(float value)
+    {
+        ThirdPersonCamController.SetSensitivity(value);
+        sensLable.text = value.ToString();
+    }
 }

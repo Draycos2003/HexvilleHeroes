@@ -1,4 +1,5 @@
 using FinalController;
+using TMPro;
 using UnityEngine;
 
 public class ThirdPersonCamController : MonoBehaviour
@@ -9,7 +10,7 @@ public class ThirdPersonCamController : MonoBehaviour
 
     public float cameraFollowSpeed = 0.2f;
 
-    public float mouseSensitivity = 100.0f;
+    public static float mouseSensitivity = 100.0f;
     public float lookSensH = 0.1f;
     public float lookSensV = 0.1f;
     public float clampAngle = 80.0f;
@@ -19,7 +20,6 @@ public class ThirdPersonCamController : MonoBehaviour
 
     [Header("Player Look Direction")]
     [SerializeField] private playerInput PLI;
-
 
     private void Awake()
     {
@@ -53,6 +53,11 @@ public class ThirdPersonCamController : MonoBehaviour
     }
 
     public Quaternion PlanarRotation => Quaternion.Euler(0, rotY, 0);
+
+    public static void SetSensitivity(float sensitivity)
+    {
+        mouseSensitivity = sensitivity;
+    }
 }
    
 
