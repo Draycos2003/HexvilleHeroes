@@ -152,6 +152,7 @@ public class ProximityPrompt : MonoBehaviour
             {
                 Debug.Log("Pressed primary key");
                 onPrimaryPressed?.Invoke();
+                Destroy(gameObject);
                 TryPickup();
             }
 

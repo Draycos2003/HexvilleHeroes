@@ -104,6 +104,7 @@ public class Damage : MonoBehaviour
         if (IsProjectile() && body != null)
         {
             body.linearVelocity = transform.forward * speed;
+            Destroy(gameObject, destroyTime);
         }
     }
 
@@ -129,7 +130,8 @@ public class Damage : MonoBehaviour
                 if (dmgTarget != null)
                 {
                     dmgTarget.TakeDamage(damageAmount);
-                    HandleImpactFeedback();
+                    Destroy(gameObject);
+                   HandleImpactFeedback();
                     StartCoroutine(DebuffOverTime());
                   
                 }
@@ -148,6 +150,8 @@ public class Damage : MonoBehaviour
                 if (dmgTarget != null)
                 {
                     dmgTarget.TakeDamage(damageAmount);
+                    Destroy(gameObject);
+
                     HandleImpactFeedback();
                     StartCoroutine(DebuffOverTime());
                 }
@@ -192,6 +196,8 @@ public class Damage : MonoBehaviour
 
                     dmgTarget?.TakeDamage(damageAmount);
                     StartCoroutine(DamageOverTime(dmgTarget));
+                    Destroy(gameObject);
+
                     StartCoroutine(DebuffOverTime());
                     HandleImpactFeedback();
 
