@@ -50,6 +50,7 @@ public class inventoryController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.I))
         {
+            if(gamemanager.instance.IsPaused) { return; }
             bool wasOpen = invUI.gameObject.activeSelf;
 
             if (wasOpen)
